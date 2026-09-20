@@ -260,9 +260,24 @@ rapida della mano. È una **bozza autoriale** (pose e tempi scelti a mano,
 `provenance: authored`), non una formalizzazione scientifica: il test è che
 il JSON da solo basti a ricostruire il modello.
 
-Limite noto del linguaggio emerso dalla bozza: il legame stato↔keyframe è
-solo per `time` (implicito); un riferimento esplicito `state.keyframeId`
-renderebbe la catena meno ambigua.
+Tre correzioni applicate dopo la prima lettura a freddo (rev. esterna):
+
+- **stato↔keyframe esplicito**: `S2.keyframeId = "KF2"` — prima il legame era
+  solo implicito via `time` (fragile: più stati possono condividere un
+  istante, e uno stato semantico non è una posa);
+- **`M2.representationStatus: 'not_available'`** (`reason: skeleton_scope`) —
+  la rotazione del tronco è dichiarata fuori scope dello skeleton, non una
+  traiettoria dimenticata. La differenza tra "movimento rappresentato" e
+  "movimento semanticamente dichiarato" è ora leggibile nel JSON;
+- **LOCK con semantica temporale esplicita**: `L1.associatedState: 'S2'` +
+  `role: 'constrain-next-transition'` — `start`/`end` sono la *finestra di
+  validità del vincolo* (può attraversare le transizioni), non la durata di
+  uno stato.
+
+Regola confermata dal test: se la teoria richiede una distinzione che il
+modello dati non sa esprimere, si corregge il modello dati (es. vettori
+`displacement` per V₁≈V₂ — uno spostamento nel tempo non è un vettore
+giunto→giunto).
 
 Quando il braccio sinistro raggiunge la configurazione terminale, nella
 descrizione del Director comincia la parte importante della rotazione
