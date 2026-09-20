@@ -4,12 +4,49 @@
 **Data:** 2026-09-20
 **Desiderata:** `.mw/desiderata.md` v1 FROZEN
 **Provenienza:** deliberazione multi-AI web (`mw-iterative-deliberate --phase plan`,
-transport web via sessioni personali Chrome CDP). Panel: A=chatgpt, B=gemini-web.
-Convergenza in 1 ciclo ("no critiques found" — B ha prodotto un piano indipendente
-convergente sull'ordine delle capability). Artefatti: `.mw/runs/plan-v1-tool/`
-(gitignored).
+transport web via sessioni personali Chrome CDP). Run 1 (`plan-v1-tool/`): panel
+A=chatgpt + B=gemini-web — il testo sotto è `final.md` di quella run.
+Run 2 (`plan-v1-tool-web4/`): ri-raccolta a 4 modelli — A=chatgpt, B=gemini-web,
+C=deepseek, D=claude (grok escluso: rate-limit/upsell). Nota sul protocollo:
+`--phase plan` usa solo gli slot A+B; le risposte di deepseek e claude sono state
+raccolte come piani indipendenti sullo stesso prompt (file `cycle-01/C.md`,
+`cycle-01/D.md` nella run, gitignored).
 **Nota epistemica:** questo è il piano prodotto dal protocollo, non una decisione.
 Diventa operativo solo dopo approvazione del Director.
+
+---
+
+## Confronto multi-modello sul nodo aperto (ordine capability)
+
+Sul primo nodo — *import-dati vs authoring-semantico* — il panel si è **diviso 2-2**,
+non convergente come appariva dalla sola run 1:
+
+| Modello | Posizione |
+|---|---|
+| chatgpt (A, piano finale run 1) | semantica prima |
+| gemini-web (B) | nella sua sintesi comparativa: **import prima** (dopo lo store canonico) |
+| deepseek (C, indipendente) | **import prima** |
+| claude (D, indipendente) | semantica prima |
+
+**Argomento "semantica prima" (chatgpt, claude):** l'importer deve sapere in quale
+modello scrivere; importare mocap senza contenitori S/M/C produce un visualizzatore
+di tracce grezze e costringe a riadattare il modello dati dopo.
+
+**Argomento "import prima" (gemini sintesi, deepseek):** lo store di giunti 3D
+condiviso è prerequisito della multi-vista, e l'import mocap lo forza subito —
+l'authoring semantico sul modello 2D attuale consoliderebbe un'astrazione
+sbagliata; inoltre formalizzare la semantica senza dati reali rischia DSL
+prematuro, mentre con le 5 rep OSS importate si può verificare se una C candidata
+è esprimibile. I dati esistono già e il costo di import è basso.
+
+**Punto di accordo unanime:** la Slice 1 è in ogni caso il contratto JSON canonico
+con store unico — il fork reale è solo sulla Slice 2. DeepSeek propone S1 = schema
+con contenitori semantici *vuoti* + import; la minoranza propone S1 = schema +
+popolamento manuale della semantica.
+
+**Decisione aperta per il Director** — entrambe le posizioni sono difendibili;
+la differenza pratica è se le prime transizioni reali guidano la semantica
+(import prima) o la semantica guida l'import (semantica prima).
 
 ---
 
