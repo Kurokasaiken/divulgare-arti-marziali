@@ -88,12 +88,48 @@ di compattarsi per accelerare"). Sono livelli diversi di spiegazione.
 - EMG sul pugno: descrive l'attivazione muscolare, non la logica delle
   configurazioni.
 
-## Cosa NON supporta il nostro modello (finora)
+## Cosa NON supporta il nostro modello (finora) — ⚠️ stato della ricerca, non conclusione
 
-- Nessuna fonte trovata descrive la transizione come evento innescato da una
-  "condizione sufficiente" geometrica/funzionale invece che da tempo o da
-  completamento di fase. Potrebbe essere il punto distintivo — **oppure è già
-  coperto da optimal control/switching e non l'abbiamo ancora trovato.**
+- Nessuna fonte *finora esaminata* descrive la transizione come evento innescato
+  da una "condizione sufficiente" geometrica/funzionale invece che da tempo o da
+  completamento di fase. **Questa frase descrive dove è arrivata la ricerca, non
+  un risultato:** il mapping motor-control/optimal-control è appena iniziato e
+  candidati come le *switching conditions* dell'optimal control sono già sul
+  tavolo come possibili parenti. Trattare "non trovato" come "non esiste"
+  sarebbe un errore.
+
+## La questione teorica centrale
+
+> **Il nostro `Cᵢ` (condizione sufficiente) è qualcosa di nuovo, oppure una
+> particolare rappresentazione di qualcosa che la letteratura chiama già in
+> altro modo?**
+
+Questa è adesso la principale questione teorica del progetto. Il mapping va
+esteso oltre la biomeccanica del pugno, in motor control / optimal control:
+
+Bernstein (DOF problem) · Newell (task constraints) · Todorov & Jordan (optimal
+feedback control, minimal intervention) · Latash (motor abundance, uncontrolled
+manifold) · switching / hybrid control · movement primitives · anticipatory
+postural adjustments.
+
+### Spike scientifico proposto: Fuchs 2018 vs il nostro modello
+
+Domanda: *la nostra transizione condizionata è realmente distinta dalla
+simultaneous motion sequencing?*
+
+| Domanda | Fuchs 2018 | Nostro modello |
+|---|---|---|
+| Quando parte il segmento successivo? | simultaneamente | quando C è soddisfatta |
+| Serve completamento del precedente? | no | no |
+| Timing fisso? | parametrico/osservato | dovrebbe essere stato-dipendente |
+| Condizione geometrica esplicita? | ? | centrale |
+| Stato successivo nel modello? | ? | centrale |
+| Adattamento a perturbazioni? | ? | centrale |
+| Formalizzazione come transizione? | ? | centrale |
+
+Se Fuchs copre già tutto → abbiamo trovato la teoria esistente (vittoria). Se
+ne copre solo una parte → definiamo con precisione la differenza (vittoria
+migliore).
 
 ## Fonti raccolte (prime letture)
 
@@ -118,6 +154,11 @@ di compattarsi per accelerare"). Sono livelli diversi di spiegazione.
 
 ## Prossimo passo su questa pagina
 
-Leggere Fuchs 2018 per primo: se la nostra "transizione condizionata" si riduce
-a SSM parametrico, il mapping chiude la questione novità; se no, la differenza
-va enunciata con precisione.
+Due direzioni, in ordine:
+1. **Spike Fuchs 2018** (tabella sopra) — il confronto più vicino e più
+   falsificabile.
+2. **Mapping motor-control profondo** — Bernstein, Newell, Todorov & Jordan,
+   Latash, switching/hybrid control, movement primitives, APA. La domanda non è
+   più "come spieghiamo la tecnica" ma: *quale parte della nostra spiegazione è
+   già conosciuta, quale è combinazione di noti, quale eventualmente introduce
+   una formalizzazione che la letteratura non offre?*

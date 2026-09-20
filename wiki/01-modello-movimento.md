@@ -49,8 +49,24 @@ S₀ ──M₁──▶ C₁ ──▶ S₁ ──M₂──▶ C₂ ──▶ 
 
 **Debito aperto:** "condizione sufficiente raggiunta" non ha ancora una
 definizione operativa misurabile. Finché non la diamo, lo schema è una metafora
-utile, non un modello. La definizione va cercata prima nella letteratura
-(switching conditions in optimal control?) — vedi `08-letteratura-biomeccanica.md`.
+utile, non un modello.
+
+Il salto necessario: `C` vera quando quali **proprietà misurabili** soddisfano
+quali **condizioni**? Forma candidata (esempio, non la formula corretta):
+
+```
+C₁ = posizione_mano ∈ regione X
+     AND errore_traiettoria < ε
+     AND velocità_spalla > soglia
+     AND configurazione_tronco ∈ regione R
+```
+
+E attenzione: `C` potrebbe non essere una soglia singola ma una **frontiera
+nello spazio degli stati** (switching boundary) — una superficie che separa
+"continuare questa transizione è utile" da "passare alla successiva è utile".
+Vale la pena esplorare questa forma prima di cercare una variabile scalare.
+La definizione va confrontata prima con la letteratura (switching conditions in
+optimal control?) — vedi `08-letteratura-biomeccanica.md`.
 
 ## Il principio di lavoro sui gradi di libertà
 
