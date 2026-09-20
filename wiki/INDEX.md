@@ -1,0 +1,20 @@
+---
+title: Wiki Index
+type: reference
+updated: 2026-09-20
+---
+
+# Wiki Index
+
+Una riga per pagina. Formato: `[file](path) — una frase — \`tag\``
+
+---
+
+[00-progetto.md](00-progetto.md) — intenzioni, obiettivo, domanda di ricerca, gerarchia progetto/tool — `visione` `scope`
+[01-modello-movimento.md](01-modello-movimento.md) — stato → movimento → condizione → configurazione/vincolo; sovrapposizione temporale; output utile sotto vincoli — `modello` `principi`
+[02-anatomia-del-pugno.md](02-anatomia-del-pugno.md) — scomposizione del pugno anello per anello, con livelli OSS/INT/IPO — `pugno` `scomposizione`
+[03-registro-ipotesi.md](03-registro-ipotesi.md) — ipotesi H1–H6, metodo osservazione/interpretazione/ipotesi, cosa serve per verificare — `ipotesi` `metodo`
+[04-metodo-e-fasi.md](04-metodo-e-fasi.md) — le 7 fasi del progetto, ruolo del video, cosa misurare, cosa non fare ancora — `roadmap` `metodo`
+[05-glossario.md](05-glossario.md) — terminologia: configurazione, grado di libertà, vincolo funzionale, condizione sufficiente, LOCK, effective mass — `terminologia`
+[06-strumento-visuale.md](06-strumento-visuale.md) — Motion Mechanics Lab: lavagna biomeccanica ausiliaria, requisiti e non-obiettivi — `tool` `visualizzazione`
+[07-fonti-e-limiti.md](07-fonti-e-limiti.md) — cosa il video attuale può e non può mostrare, provenienza del materiale — `video` `limiti` `provenienza`
