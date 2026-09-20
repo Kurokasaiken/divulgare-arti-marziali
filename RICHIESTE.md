@@ -264,3 +264,23 @@ novità residua.
 - Valutazione esterna registrata: ~4/10 oggi come risultato scientifico,
   potenziale 7–8/10 se verificato — il valore è nella formalizzazione
   rigorosa e falsificabile, non nella scoperta già avvenuta.
+
+---
+
+## R-012 — Priorità Director: multi-vista prima (S3 anticipata)
+
+**Richiesta:** alla domanda "cosa preparo per primo — schede testuali / S2
+semantico / S3 multi-vista" il Director ha scelto **S3 multi-vista**
+(2026-09-20): *"dovremmo avere anche un modo di rappresentare scena x scena
+da + punti d vista, dovremmo prepararli."*
+**Data:** 2026-09-20
+**Stato:** `fatta`
+**Cosa è successo:**
+- `tools/biomech-editor.html`: store giunti → 3D `[x,y,z]`; tre viste
+  ortografiche (frontale x-y, laterale z-y, zenitale x-z) sullo stesso store;
+  drag in una vista modifica solo i due assi proiettati; schema → v3 con
+  campo `views`; migrazione v2 (2D→z=0) e legacy.
+- Gate S3 verificato in browser (puppeteer): drag nella vista laterale →
+  tutte le viste aggiornate dalla stessa posa; export = una sola
+  configurazione articolare, nessuna copia per-vista; round-trip
+  export→import→export; migrazioni OK.

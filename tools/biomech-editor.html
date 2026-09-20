@@ -32,6 +32,9 @@ h1{font-size:15px; letter-spacing:.04em; margin:0; text-transform:uppercase;}
 main{flex:1; display:flex; flex-direction:column; gap:10px; padding:6px 18px 18px; max-width:920px; margin:0 auto; width:100%;}
 .panel{background:var(--panel); border:1px solid var(--grid); border-radius:2px;}
 #canvasWrap{padding:8px; overflow-x:auto;}
+.viewsGrid{display:flex; gap:8px;}
+.viewBox{flex:1; min-width:0;}
+.viewLabel{font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.05em; margin-bottom:2px;}
 svg{display:block; width:100%; height:auto;}
 .joint{cursor:grab; fill:var(--panel); stroke:var(--line); stroke-width:2;}
 .joint:active{cursor:grabbing;}
@@ -67,11 +70,11 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
 <body>
 <header>
   <h1>Editor Biomeccanico — Keyframe</h1>
-  <div class="sub">spalla → gomito → polso → mano · proporzioni umane fisse (100 : 90 : 50) · trascina i giunti su un keyframe selezionato</div>
+  <div class="sub">spalla → gomito → polso → mano · proporzioni umane fisse (100 : 90 : 50) · tre viste ortografiche sulla stessa posa 3D · trascina i giunti su un keyframe selezionato</div>
 </header>
 <main>
   <div class="panel" id="canvasWrap">
-    <svg id="canvas" viewBox="0 0 600 340"></svg>
+    <div class="viewsGrid" id="viewsWrap"></div>
   </div>
 
   <div class="panel" id="timelineWrap">
@@ -106,7 +109,7 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
     </div>
   </div>
 </main>
-<footer>proporzioni fisse tipo-umano · rotazioni come annotazioni indipendenti dalla posa (coerente col fatto che un overlay 2D non mostra la rotazione assiale reale)</footer>
+<footer>proporzioni fisse tipo-umano · una sola posa 3D proiettata in tre viste — il JSON contiene un'unica configurazione articolare · rotazioni come annotazioni indipendenti dalla posa</footer>
 
 <script>
 const NS='http://www.w3.org/2000/svg';
@@ -115,13 +118,17 @@ const LABELS={shoulder:'spalla',elbow:'gomito',wrist:'polso',hand:'mano'};
 // proporzioni umane approssimate, relative (braccio : avambraccio : mano)
 const LEN = {shoulderElbow:100, elbowWrist:90, wristHand:50};
 
-// ---------- contratto canonico (PLAN-001, slice 1) ----------
-const SCHEMA_VERSION = 2;
+// ---------- contratto canonico (PLAN-001, slice 3) ----------
+// Una posa e' un insieme di posizioni 3D [x,y,z]; le viste sono proiezioni
+// ortografiche dello STESSO store — non esistono pose per-vista.
+const SCHEMA_VERSION = 3;
+const AXES = ['x','y','z'];
 const _counters = {};
 const uid = p => p + ((_counters[p] = (_counters[p]||0) + 1));
 const SKELETON = {
-  model: 'arm-chain-2d',
-  coordinateSpace: 'canvas-2d',
+  model: 'arm-chain-3d',
+  coordinateSpace: 'model-3d',
+  axes: {x:'laterale', y:'verticale', z:'profondita'},
   units: 'px',
   joints: [...JOINTS],
   segments: [
@@ -131,6 +138,12 @@ const SKELETON = {
   ],
   labels: LABELS
 };
+// viste = proiezioni ortografiche: coppia di indici asse [orizzontale, verticale]
+const VIEWS = [
+  {id:'front', label:'frontale', axes:[0,1]},
+  {id:'side',  label:'laterale', axes:[2,1]},
+  {id:'top',   label:'zenitale', axes:[0,2]}
+];
 function defaultTask(){
   return {id:'', desiredOutput:'', targetInteraction:'', temporalConstraints:{}, postActionState:{}, allowablePerturbation:{}};
 }
@@ -148,9 +161,9 @@ function resyncCounters(){
 let state = {
   task: defaultTask(),
   keyframes: [
-    {id:uid('KF'), time:0,   joints:{shoulder:[130,110], elbow:[228,141], wrist:[314,113], hand:[358,72]}},
-    {id:uid('KF'), time:300, joints:{shoulder:[130,110], elbow:[199,196], wrist:[187,285], hand:[224,326]}},
-    {id:uid('KF'), time:600, joints:{shoulder:[130,110], elbow:[220,155], wrist:[168,90],  hand:[125,50]}}
+    {id:uid('KF'), time:0,   joints:{shoulder:[130,110,100], elbow:[228,141,140], wrist:[314,113,200], hand:[358,72,260]}},
+    {id:uid('KF'), time:300, joints:{shoulder:[130,110,100], elbow:[199,196,130], wrist:[187,285,170], hand:[224,326,220]}},
+    {id:uid('KF'), time:600, joints:{shoulder:[130,110,100], elbow:[220,155,150], wrist:[168,90,220],  hand:[125,50,300]}}
   ],
   rotations: [
     {id:uid('E'), bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}
@@ -167,12 +180,12 @@ function maxScale(){
   return Math.max(700, (ks[ks.length-1]?.time||0)+150, rMax+100);
 }
 
-// ---- vector helpers ----
-const sub=(a,b)=>[a[0]-b[0],a[1]-b[1]];
-const add=(a,b)=>[a[0]+b[0],a[1]+b[1]];
-const scl=(a,s)=>[a[0]*s,a[1]*s];
-const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
-function norm(v){ const d=Math.hypot(v[0],v[1])||1; return [v[0]/d, v[1]/d]; }
+// ---- vector helpers (N-dim: lavorano su [x,y,z]) ----
+const sub=(a,b)=>a.map((v,i)=>v-b[i]);
+const add=(a,b)=>a.map((v,i)=>v+b[i]);
+const scl=(a,s)=>a.map(v=>v*s);
+const dist=(a,b)=>Math.hypot(...sub(a,b));
+function norm(v){ const d=Math.hypot(...v)||1; return v.map(x=>x/d); }
 
 // applica proporzioni fisse ricostruendo la catena a partire dalla spalla
 function enforceProportions(joints){
@@ -196,6 +209,7 @@ function buildCanonical(){
     meta: {tool:'biomech-editor', model:'S->M->C->S', exportedAt:new Date().toISOString()},
     task: state.task || defaultTask(),
     skeleton: SKELETON,
+    views: VIEWS.map(v=>({id:v.id, label:v.label, projection:'orthographic', axes:v.axes.map(i=>AXES[i])})),
     keyframes: sortedKf().map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic||'IPO'})),
     events: state.rotations.map(r=>({id:r.id, type:'axial_rotation', segment:r.bone, label:r.label, start:r.start, end:r.end, epistemic:r.epistemic||'IPO'})),
     states: [],
@@ -208,18 +222,20 @@ function buildCanonical(){
     sources: {}
   };
 }
-// Accetta il formato canonico (schemaVersion 2) o il legacy
-// {keyframes, rotations} / {keyframes, annotations:[rotation]}.
+// Accetta il formato canonico v3 (3D), il v2 (2D → migrazione con z=0) o il
+// legacy {keyframes, rotations} / {keyframes, annotations:[rotation]}.
+const pad3 = p => (p&&p.length>=3) ? p.slice(0,3) : [p[0], p[1], 0];
+const joints3 = j => Object.fromEntries(Object.entries(j||{}).map(([n,p])=>[n,pad3(p)]));
 function importModel(doc){
   if(!doc || typeof doc!=='object') return false;
-  if(doc.schemaVersion===SCHEMA_VERSION){
+  if(doc.schemaVersion===SCHEMA_VERSION || doc.schemaVersion===2){
     state.task = doc.task || defaultTask();
-    state.keyframes = (doc.keyframes||[]).map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic}));
+    state.keyframes = (doc.keyframes||[]).map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), epistemic:k.epistemic}));
     state.rotations = (doc.events||[]).filter(e=>e.type==='axial_rotation')
       .map(e=>({id:e.id, bone:e.segment, label:e.label, start:e.start, end:e.end, epistemic:e.epistemic}));
   } else {
     const kfs = Array.isArray(doc.keyframes) ? doc.keyframes : (Array.isArray(doc) ? doc : []);
-    state.keyframes = kfs.map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic}));
+    state.keyframes = kfs.map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), epistemic:k.epistemic}));
     const rots = doc.rotations || (doc.annotations||[]).filter(a=>a.type==='rotation')
       .map(a=>({bone:a.bone, label:a.name||a.label, start:a.start, end:a.end}));
     state.rotations = rots.map(r=>({id:r.id, bone:r.bone, label:r.label||r.name, start:r.start, end:r.end}));
@@ -241,70 +257,83 @@ function interpJoints(t){
   for(let i=0;i<ks.length-1;i++){ if(t>=ks[i].time && t<=ks[i+1].time){ a=ks[i]; b=ks[i+1]; break; } }
   const span=(b.time-a.time)||1, f=(t-a.time)/span;
   const out={};
-  JOINTS.forEach(j=>{ const p1=a.joints[j], p2=b.joints[j]; out[j]=[p1[0]+(p2[0]-p1[0])*f, p1[1]+(p2[1]-p1[1])*f]; });
+  JOINTS.forEach(j=>{ const p1=a.joints[j], p2=b.joints[j]; out[j]=[0,1,2].map(i=>p1[i]+(p2[i]-p1[i])*f); });
   return out;
 }
 function exactKfAtTime(t){ return state.keyframes.find(k=>k.time===t); }
 const BONE_PAIRS={'shoulder-elbow':['shoulder','elbow'],'elbow-wrist':['elbow','wrist'],'wrist-hand':['wrist','hand']};
 
-// ---------- CANVAS ----------
-const canvas = document.getElementById('canvas');
-let dragJoint=null;
+// ---------- VISTE (proiezioni ortografiche dello stesso store 3D) ----------
+const viewsWrap = document.getElementById('viewsWrap');
+VIEWS.forEach(v=>{
+  const box=document.createElement('div'); box.className='viewBox';
+  const lab=document.createElement('div'); lab.className='viewLabel';
+  lab.textContent=v.label+' ('+AXES[v.axes[0]]+'-'+AXES[v.axes[1]]+')';
+  const svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox','0 0 600 340');
+  box.appendChild(lab); box.appendChild(svg); viewsWrap.appendChild(box);
+  v.svg=svg;
+});
+let dragJoint=null, dragView=null;
+const proj=(p,v)=>[p[v.axes[0]], p[v.axes[1]]];
 
-function renderCanvas(){
-  canvas.innerHTML='';
+function renderViews(){
   const joints = interpJoints(state.currentTime);
   const editable = !!exactKfAtTime(state.currentTime);
-
   const ks = sortedKf();
-  const pts = ks.map(k=>k.joints.elbow);
-  if(pts.length>1){
-    let d='M '+pts[0][0]+' '+pts[0][1];
-    for(let i=1;i<pts.length;i++) d+=' L '+pts[i][0]+' '+pts[i][1];
-    const path=document.createElementNS(NS,'path'); path.setAttribute('d',d); path.setAttribute('class','traj');
-    canvas.appendChild(path);
-  }
-  pts.forEach(p=>{ const c=document.createElementNS(NS,'circle'); c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',2.5); c.setAttribute('class','trajdot'); canvas.appendChild(c); });
 
-  [['shoulder','elbow'],['elbow','wrist'],['wrist','hand']].forEach(([j1,j2])=>{
-    const p1=joints[j1], p2=joints[j2];
-    const l=document.createElementNS(NS,'line');
-    l.setAttribute('x1',p1[0]); l.setAttribute('y1',p1[1]); l.setAttribute('x2',p2[0]); l.setAttribute('y2',p2[1]);
-    l.setAttribute('class','bone'); canvas.appendChild(l);
-  });
+  VIEWS.forEach(v=>{
+    const svg=v.svg; svg.innerHTML='';
 
-  JOINTS.forEach(j=>{
-    const p=joints[j];
-    const c=document.createElementNS(NS,'circle');
-    c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',7); c.setAttribute('class','joint');
-    c.style.opacity = editable?1:0.55; c.dataset.joint=j;
-    c.addEventListener('mousedown', e=>{ if(editable){ dragJoint=j; e.preventDefault(); }});
-    c.addEventListener('touchstart', e=>{ if(editable){ dragJoint=j; }}, {passive:true});
-    canvas.appendChild(c);
-    const t=document.createElementNS(NS,'text'); t.setAttribute('x',p[0]+10); t.setAttribute('y',p[1]-8);
-    t.setAttribute('class','jlabel'); t.textContent=LABELS[j]; canvas.appendChild(t);
-  });
+    const pts = ks.map(k=>proj(k.joints.elbow,v));
+    if(pts.length>1){
+      let d='M '+pts[0][0]+' '+pts[0][1];
+      for(let i=1;i<pts.length;i++) d+=' L '+pts[i][0]+' '+pts[i][1];
+      const path=document.createElementNS(NS,'path'); path.setAttribute('d',d); path.setAttribute('class','traj');
+      svg.appendChild(path);
+    }
+    pts.forEach(p=>{ const c=document.createElementNS(NS,'circle'); c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',2.5); c.setAttribute('class','trajdot'); svg.appendChild(c); });
 
-  // annotazioni di rotazione attive al tempo corrente
-  state.rotations.forEach(r=>{
-    if(state.currentTime < r.start || state.currentTime > r.end) return;
-    const [j1,j2]=BONE_PAIRS[r.bone];
-    const p1=joints[j1], p2=joints[j2];
-    const mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
-    const progress=(state.currentTime-r.start)/((r.end-r.start)||1);
-    const g=document.createElementNS(NS,'g');
-    g.setAttribute('transform', `translate(${mx+18},${my-18}) rotate(${progress*360})`);
-    const path=document.createElementNS(NS,'path');
-    path.setAttribute('d','M 9 0 A 9 9 0 1 1 -6 -6.3');
-    path.setAttribute('class','rotIcon'); g.appendChild(path);
-    const arrow=document.createElementNS(NS,'path');
-    arrow.setAttribute('d','M -6 -6.3 L -10 -3 L -3 -2 Z');
-    arrow.setAttribute('fill','var(--rot)'); g.appendChild(arrow);
-    canvas.appendChild(g);
-    const lab=document.createElementNS(NS,'text');
-    lab.setAttribute('x',mx+18); lab.setAttribute('y',my-30);
-    lab.setAttribute('class','rotLabel'); lab.setAttribute('text-anchor','middle');
-    lab.textContent=r.label; canvas.appendChild(lab);
+    [['shoulder','elbow'],['elbow','wrist'],['wrist','hand']].forEach(([j1,j2])=>{
+      const p1=proj(joints[j1],v), p2=proj(joints[j2],v);
+      const l=document.createElementNS(NS,'line');
+      l.setAttribute('x1',p1[0]); l.setAttribute('y1',p1[1]); l.setAttribute('x2',p2[0]); l.setAttribute('y2',p2[1]);
+      l.setAttribute('class','bone'); svg.appendChild(l);
+    });
+
+    JOINTS.forEach(j=>{
+      const p=proj(joints[j],v);
+      const c=document.createElementNS(NS,'circle');
+      c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',7); c.setAttribute('class','joint');
+      c.style.opacity = editable?1:0.55; c.dataset.joint=j;
+      c.addEventListener('mousedown', e=>{ if(editable){ dragJoint=j; dragView=v; e.preventDefault(); }});
+      c.addEventListener('touchstart', e=>{ if(editable){ dragJoint=j; dragView=v; }}, {passive:true});
+      svg.appendChild(c);
+      const t=document.createElementNS(NS,'text'); t.setAttribute('x',p[0]+10); t.setAttribute('y',p[1]-8);
+      t.setAttribute('class','jlabel'); t.textContent=LABELS[j]; svg.appendChild(t);
+    });
+
+    // annotazioni di rotazione attive al tempo corrente
+    state.rotations.forEach(r=>{
+      if(state.currentTime < r.start || state.currentTime > r.end) return;
+      const [j1,j2]=BONE_PAIRS[r.bone];
+      const p1=proj(joints[j1],v), p2=proj(joints[j2],v);
+      const mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
+      const progress=(state.currentTime-r.start)/((r.end-r.start)||1);
+      const g=document.createElementNS(NS,'g');
+      g.setAttribute('transform', `translate(${mx+18},${my-18}) rotate(${progress*360})`);
+      const path=document.createElementNS(NS,'path');
+      path.setAttribute('d','M 9 0 A 9 9 0 1 1 -6 -6.3');
+      path.setAttribute('class','rotIcon'); g.appendChild(path);
+      const arrow=document.createElementNS(NS,'path');
+      arrow.setAttribute('d','M -6 -6.3 L -10 -3 L -3 -2 Z');
+      arrow.setAttribute('fill','var(--rot)'); g.appendChild(arrow);
+      svg.appendChild(g);
+      const lab=document.createElementNS(NS,'text');
+      lab.setAttribute('x',mx+18); lab.setAttribute('y',my-30);
+      lab.setAttribute('class','rotLabel'); lab.setAttribute('text-anchor','middle');
+      lab.textContent=r.label; svg.appendChild(lab);
+    });
   });
 }
 
@@ -314,15 +343,19 @@ function svgPoint(svg, clientX, clientY){
   return [p.x,p.y];
 }
 
+// il drag avviene nella vista di origine: modifica solo i due assi proiettati,
+// l'asse perpendicolare resta invariato (una posa 3D, viste = proiezioni)
 function dragUpdate(clientX, clientY){
-  const kf=exactKfAtTime(state.currentTime); if(!kf) return;
-  const [x,y]=svgPoint(canvas, clientX, clientY);
+  const kf=exactKfAtTime(state.currentTime); if(!kf || !dragView) return;
+  const [u,w]=svgPoint(dragView.svg, clientX, clientY);
+  const [a0,a1]=dragView.axes;
   const j=kf.joints;
+  const target=p=>{ const q=p.slice(); q[a0]=u; q[a1]=w; return q; };
   if(dragJoint==='shoulder'){
-    const delta=[x-j.shoulder[0], y-j.shoulder[1]];
-    JOINTS.forEach(k=>{ j[k]=[j[k][0]+delta[0], j[k][1]+delta[1]]; });
+    const delta=[u-j.shoulder[a0], w-j.shoulder[a1]];
+    JOINTS.forEach(k=>{ j[k][a0]+=delta[0]; j[k][a1]+=delta[1]; });
   } else if(dragJoint==='elbow'){
-    const dir=norm(sub([x,y], j.shoulder));
+    const dir=norm(sub(target(j.elbow), j.shoulder));
     const newElbow=add(j.shoulder, scl(dir, LEN.shoulderElbow));
     const oldWristDir=norm(sub(j.wrist, j.elbow));
     const oldHandDir=norm(sub(j.hand, j.wrist));
@@ -330,21 +363,21 @@ function dragUpdate(clientX, clientY){
     j.wrist=add(j.elbow, scl(oldWristDir, LEN.elbowWrist));
     j.hand=add(j.wrist, scl(oldHandDir, LEN.wristHand));
   } else if(dragJoint==='wrist'){
-    const dir=norm(sub([x,y], j.elbow));
+    const dir=norm(sub(target(j.wrist), j.elbow));
     const newWrist=add(j.elbow, scl(dir, LEN.elbowWrist));
     const oldHandDir=norm(sub(j.hand, j.wrist));
     j.wrist=newWrist;
     j.hand=add(j.wrist, scl(oldHandDir, LEN.wristHand));
   } else if(dragJoint==='hand'){
-    const dir=norm(sub([x,y], j.wrist));
+    const dir=norm(sub(target(j.hand), j.wrist));
     j.hand=add(j.wrist, scl(dir, LEN.wristHand));
   }
-  renderCanvas(); renderTimeline(); persist();
+  renderViews(); renderTimeline(); persist();
 }
 window.addEventListener('mousemove', e=>{ if(dragJoint) dragUpdate(e.clientX,e.clientY); });
 window.addEventListener('touchmove', e=>{ if(dragJoint && e.touches[0]) dragUpdate(e.touches[0].clientX,e.touches[0].clientY); });
-window.addEventListener('mouseup', ()=>{ dragJoint=null; });
-window.addEventListener('touchend', ()=>{ dragJoint=null; });
+window.addEventListener('mouseup', ()=>{ dragJoint=null; dragView=null; });
+window.addEventListener('touchend', ()=>{ dragJoint=null; dragView=null; });
 
 // ---------- TIMELINE ----------
 const tl=document.getElementById('tl');
@@ -495,9 +528,9 @@ document.getElementById('loadLocal').addEventListener('click', ()=>{
 document.getElementById('resetDefault').addEventListener('click', ()=>{
   state.task=defaultTask();
   state.keyframes=[
-    {id:uid('KF'), time:0,   joints:{shoulder:[130,110], elbow:[228,141], wrist:[314,113], hand:[358,72]}},
-    {id:uid('KF'), time:300, joints:{shoulder:[130,110], elbow:[199,196], wrist:[187,285], hand:[224,326]}},
-    {id:uid('KF'), time:600, joints:{shoulder:[130,110], elbow:[220,155], wrist:[168,90],  hand:[125,50]}}
+    {id:uid('KF'), time:0,   joints:{shoulder:[130,110,100], elbow:[228,141,140], wrist:[314,113,200], hand:[358,72,260]}},
+    {id:uid('KF'), time:300, joints:{shoulder:[130,110,100], elbow:[199,196,130], wrist:[187,285,170], hand:[224,326,220]}},
+    {id:uid('KF'), time:600, joints:{shoulder:[130,110,100], elbow:[220,155,150], wrist:[168,90,220],  hand:[125,50,300]}}
   ];
   state.keyframes.forEach(k=>enforceProportions(k.joints));
   state.rotations=[{id:uid('E'), bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}];
@@ -510,7 +543,7 @@ function tryAutoLoad(){
     if(raw){ const d=JSON.parse(raw); if((d.keyframes||[]).length>=2) importModel(d); }
   }catch(e){}
 }
-function renderAll(){ renderCanvas(); renderTimeline(); }
+function renderAll(){ renderViews(); renderTimeline(); }
 tryAutoLoad();
 renderAll();
 </script>
