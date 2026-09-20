@@ -194,3 +194,21 @@ SPIKE SCIENTIFICO 01 — What exactly is C?"*.
   compilata (abstract) → sovrapposizione parziale, novità non chiusa;
   mappatura preliminare motor-control (priors da verificare); nota Q3 su
   guard condition in sistemi ibridi.
+
+---
+
+## R-009 — Estensione epistemico-causale del modello (input AI esterno)
+
+**Richiesta:** proposta via review esterna (ChatGPT, 2026-09-20): il JSON del
+modello deve comunicare non solo *cosa* succede ma *perché* — campi
+intendedEffect/hypothesis/evidence/status/prediction; tre linguaggi sovrapposti
+(geometrico / temporale / epistemico-causale); canonical data come unica fonte
+con viste umana e AI.
+**Data:** 2026-09-20
+**Stato:** `fatta` (integrazione documentale; implementazione in S2)
+**Cosa è successo:**
+- PLAN-001 S2: schema transizioni esteso con campi epistemico-causali;
+  predizioni collegate al registro ipotesi via ID (`H1`, …).
+- `wiki/06`: diagramma "canonical data → human view + AI view → same model".
+- Spike C-CONDITION-01: aggiunto test di contestabilità (l'AI deve poter
+  obiettare dipendenza causale vs semplice sovrapposizione temporale).

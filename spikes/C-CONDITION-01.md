@@ -121,6 +121,13 @@ controllo motorio umano, e se l'evidenza supporta switch discreti invece di
 feedback continuo (OFC suggerirebbe il secondo per correzioni intra-movimento;
 eventi discreti come il contatto giustificano invece cambi di modo).
 
+**Test di contestabilità (da review esterna):** il formato JSON del modello è
+sufficiente se un'AI che lo legge può obiettare *"C1 è descritta come
+sufficiente per M2, ma dai dati non risulta dipendenza causale — potrebbe
+essere semplice sovrapposizione temporale"*. Se il documento permette solo di
+descrivere e non di contestare, manca lo strato epistemico-causale
+(intended_effect / hypothesis / evidence / status / prediction).
+
 ## Regola dello spike
 
 La risposta a "cosa è C" viene dalla letteratura e dai dati, non dal formato

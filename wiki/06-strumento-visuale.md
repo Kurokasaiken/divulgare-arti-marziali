@@ -13,6 +13,25 @@ Serve poter dire a una persona — o a un'AI — esattamente:
 È una **lavagna biomeccanica interattiva**: rende esplicito il modello, non
 interpreta il movimento.
 
+Il dato canonico (JSON) è l'unica fonte; la UI è una delle sue viste:
+
+```
+              CANONICAL DATA
+                   │
+        ┌──────────┴──────────┐
+        ▼                     ▼
+    HUMAN VIEW             AI VIEW
+     (diagramma)        (JSON/grafo)
+        │                     │
+        └──────────┬──────────┘
+                   ▼
+              SAME MODEL
+```
+
+L'"AI view" non è solo descrizione: il modello porta con sé intenzione,
+evidenza, incertezza e **predizione** — così chi lo legge (umano o AI) può
+contestarlo, non solo rappresentarlo.
+
 ## Cosa deve rappresentare
 
 - punti, segmenti, articolazioni (scheletro semplificato);
