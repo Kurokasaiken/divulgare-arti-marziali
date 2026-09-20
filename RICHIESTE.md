@@ -212,3 +212,27 @@ con viste umana e AI.
 - `wiki/06`: diagramma "canonical data → human view + AI view → same model".
 - Spike C-CONDITION-01: aggiunto test di contestabilità (l'AI deve poter
   obiettare dipendenza causale vs semplice sovrapposizione temporale).
+
+---
+
+## R-010 — Revisione avversariale dello spike C-01 + spike C-02 (continuo vs triggered)
+
+**Richiesta:** revisione esterna del verdetto di C-CONDITION-01 (sessione
+2026-09-20): *"il prossimo spike dovrebbe essere molto piccolo: C-2 Continuous
+vs State-Triggered Transition"*; tre modelli concorrenti indistinguibili dalla
+sola cinematica; regola "decomposizione analitica ≠ architettura discreta";
+`C` possibilmente come frontiera nello spazio delle variabili di task (UCM);
+ipotesi di lavoro riformulata in modo difendibile; editor come strumento di
+confronto tra ipotesi concorrenti sugli stessi dati.
+**Data:** 2026-09-20
+**Stato:** `in corso`
+**Cosa è successo:**
+- `spikes/C-CONDITION-01.md`: sezione "Revisione avversariale" — tre modelli
+  (continuo / continuo+switching / gerarchico), identificabilità, precedenti
+  submovements+intermittency, ipotesi riformulata, `C` nello spazio delle
+  variabili di task, domanda "C aggiunge capacità esplicativa vs continuo?".
+- Creato `spikes/C-02-continuous-vs-triggered.md` (domanda, tabella modelli,
+  regola, test della frontiera predittiva, domande operative, output).
+- `wiki/08`: due righe nuove nel mapping (UCM task-space; discreto apparente).
+- `wiki/09`: NON SAPPIAMO + PROSSIMA DOMANDA aggiornate alla domanda empirica.
+- `PLAN-001` S2: requisito "ipotesi concorrenti sugli stessi OSS" nello schema.
