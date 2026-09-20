@@ -1,3 +1,42 @@
 .DS_Store
 .env
 mw-shutdown-monitor.log
+
+# Mind Weaver runtime proxy
+.mw/venv
+
+# Mind Weaver runtime proxy
+.mw/providers
+
+# Mind Weaver runtime proxy
+.mw/catalog
+
+# Mind Weaver runtime proxy
+.mw/deliberation-config.yaml
+
+# Mind Weaver runtime proxy
+.mw/deliberation-config-explorer.yaml
+
+# Mind Weaver runtime proxy
+.mw/deliberation-config-planner.yaml
+
+# Mind Weaver runtime proxy
+.mw/deliberation-config-test.yaml
+
+# Mind Weaver runtime proxy
+.mw/prompt-enhancers.md
+
+# Mind Weaver runtime proxy
+.mw/critique-definition.md
+
+# Mind Weaver runtime proxy
+.mw/runs/
+
+# Mind Weaver runtime proxy
+.mw/prefect/
+
+# Mind Weaver runtime proxy
+.mw/manual-dispatch/
+
+# Mind Weaver runtime proxy
+.mw/telegram-state/
