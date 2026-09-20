@@ -63,7 +63,16 @@ Cosa fa già:
   indipendente dalla posa;
 - riproduzione della sequenza (Play);
 - traiettorie dei giunti come tratteggio;
-- export/import **JSON**, salvataggio locale (localStorage);
+- export/import **JSON canonico** (schemaVersion 2): il documento esportato è il
+  modello, non un dump della UI — contiene `task`, `skeleton` (segmenti e
+  lunghezze), `keyframes` con ID stabili (`KF1…`) ed `epistemic`, `events`
+  (rotazioni → `E1…` tipo `axial_rotation`), e contenitori vuoti pronti per le
+  slice successive (`states`, `movements`, `conditions`, `transitions`,
+  `constraints`, `vectors`, `annotations`, `sources`). Import accetta anche il
+  formato legacy (`{keyframes, rotations}` / `{keyframes, annotations}`) e lo
+  migra. Round-trip verificato: export → import → export identico (epsilon
+  float sulle posizioni ricalcolate);
+- salvataggio locale (localStorage) nello stesso formato canonico;
 - tema chiaro/scuro.
 
 Cosa manca rispetto al modello (gap noti, non richieste approvate):
@@ -72,7 +81,8 @@ Cosa manca rispetto al modello (gap noti, non richieste approvate):
 - condizioni sufficienti / marker di transizione come oggetti propri;
 - LOCK/vincoli funzionali come eventi;
 - viste multiple e segmenti oltre l'arto superiore (bacino, gambe);
-- etichette OSS/INT/IPO sulle annotazioni.
+- editing delle etichette OSS/INT/IPO (presenti nello schema, non ancora
+  editabili in UI).
 
 ## Cosa NON è
 
