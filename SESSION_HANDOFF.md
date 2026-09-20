@@ -195,3 +195,14 @@ updated: 2026-09-20
   ipotesi non verificata (LOCK→vincolo→rotazione→coppia→trasferimento).
 - Prossimi candidati: schede anelli restanti; P-A2.2 (I stimato, calcolabile
   subito); S4 import mocap (porta provenance:measured); spike C-02.
+
+## Aggiunta (2026-09-20, bozza Anello 2 in S2 — R-014)
+
+- `tools/examples/anello-2-retrazione.json`: primo caso d'uso completo del
+  linguaggio S2 (S1→M1→C1→S2→M2→C2→S3 + LOCK + V1/V2 displacement +
+  supinazione). Bozza autoriale, non formalizzazione scientifica.
+- Aggiunto vector mode 'displacement' (spostamento giunto tra due tempi) —
+  necessario per rappresentare V1 retrazione.
+- Limite noto: stato↔keyframe legati solo per time implicito.
+- Criterio di riuscita dichiarato dal Director: JSON+visualizzazione devono
+  bastare a un lettore esterno — il test umano resta da fare.

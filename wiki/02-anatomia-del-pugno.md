@@ -244,7 +244,25 @@ V₁ ≈ V₂        (relazione geometrica del modello, IPO — non legge biomec
 - Che "poca attività muscolare" sia vera (percepito ≠ EMG).
 - Quale delle funzioni candidate (punto 4) sia quella reale.
 
-## Anello 3 — Bacino
+### Bozza nel tool — primo caso d'uso del linguaggio S2
+
+`tools/examples/anello-2-retrazione.json` (importabile nell'editor via
+pannello JSON). Codifica:
+
+```
+S1 GUARDIA ──M1 retrazione──C1 (unformalized)──> S2 POST-RETRAZIONE
+S2 ──M2 transizione verso rotazione tronco──C2──> S3 CONFIG. SUCCESSIVA
+```
+
+con LOCK funzionale (L1, avambraccio 200–600 ms), vettori di spostamento
+V1 (gomito) e V2 (mano), evento SUPINAZIONE, annotazione sulla chiusura
+rapida della mano. È una **bozza autoriale** (pose e tempi scelti a mano,
+`provenance: authored`), non una formalizzazione scientifica: il test è che
+il JSON da solo basti a ricostruire il modello.
+
+Limite noto del linguaggio emerso dalla bozza: il legame stato↔keyframe è
+solo per `time` (implicito); un riferimento esplicito `state.keyframeId`
+renderebbe la catena meno ambigua.
 
 Quando il braccio sinistro raggiunge la configurazione terminale, nella
 descrizione del Director comincia la parte importante della rotazione

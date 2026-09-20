@@ -308,3 +308,27 @@ stessa ipotesi non verificata.
   fix: keyframe creati da dblclick/+Keyframe ora hanno ID stabile.
 - Gate S2 verificato (puppeteer): catena S1→M1→C1→S2 ricostruibile dal solo
   JSON; round-trip semantico OK; render vettori/LOCK attivi/inattivi OK.
+
+---
+
+## R-014 — Bozza Anello 2 come primo caso d'uso di S2
+
+**Richiesta:** *"preferisco che lo prepari tu come bozza nell'editor [...] non
+consideriamola ancora una 'formalizzazione scientifica' dell'Anello 2. Deve
+essere il primo caso di studio completo del nuovo linguaggio S2."* Struttura
+S1→M1→C1→S2→M2→T1→S3; C1 `unformalized`; vettori solo geometricamente
+descrivibili; hypothesis/prediction/esistemic separati. Criterio di riuscita:
+*"un'altra persona, leggendo soltanto il JSON + visualizzazione, riesce a
+ricostruire esattamente cosa stiamo dicendo?"* (2026-09-20)
+**Data:** 2026-09-20
+**Stato:** `fatta`
+**Cosa è successo:**
+- Aggiunto `mode:'displacement'` ai vettori (V1 = spostamento del gomito nel
+  tempo, non giunto→giunto — necessario per V₁≈V₂).
+- Creato `tools/examples/anello-2-retrazione.json`: 3 keyframe autoriali,
+  S1–S3, M1–M2, C1–C2 unformalized, T1–T2 con intendedEffect/hypothesis/
+  prediction (P-A2.1), L1 LOCK funzionale, V1–V2 displacement, 2 annotazioni.
+- Import verificato in browser: tutti gli oggetti caricati, vettori+LOCK+
+  supinazione renderizzati nelle 3 viste.
+- Limite emerso (registrato in wiki/02): legame stato↔keyframe implicito via
+  `time` — `state.keyframeId` esplicito sarebbe meno ambiguo.
