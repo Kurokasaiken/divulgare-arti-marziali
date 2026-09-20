@@ -40,3 +40,6 @@ mw-shutdown-monitor.log
 
 # Mind Weaver runtime proxy
 .mw/telegram-state/
+
+# MW runs: deliberation artifacts may contain provider responses
+.mw/runs/
