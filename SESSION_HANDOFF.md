@@ -214,3 +214,17 @@ updated: 2026-09-20
   del vincolo, puo' attraversare transizioni). Bozza aggiornata, round-trip OK.
 - S2 FERMATA per direttiva: prossimo test = lettura a freddo del JSON da parte
   di un esterno; dove si rompe, si corregge il modello dati — non il disegno.
+
+## Aggiunta (2026-09-20, cold-read esterno eseguito — R-016)
+
+- Test eseguito con protocollo rigido: solo JSON, niente spiegazioni, tre
+  lettori AI esterni (groq, gemini, openrouter). Risposte verbatim in
+  `.mw/runs/cold-read-s2/`; esiti in `spikes/S2-COLD-READ-01.md`.
+- Risultato: nucleo semantico CORRETTO per la maggioranza dei lettori.
+- Ambiguità reali trovate (candidate a futuri campi, NON ancora
+  implementate): unità px/ms non calibrate; eventi senza
+  representationStatus (E1 supinazione non esprimibile su aste
+  punto-punto); KF2≡KF3 non distingue braccio-fermo da braccio-solidale-
+  al-tronco; legenda OSS/INT/IPO assente nel JSON.
+- S2 resta FERMATA. Prossima decisione del Director: quali ambiguità
+  meritano correzione del linguaggio vs restano aperte per design.

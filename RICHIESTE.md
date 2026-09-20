@@ -351,3 +351,30 @@ teoria; prossimo passo = test esterno a freddo del JSON.
 - `anello-2-retrazione.json` v2: S1→KF1, S2→KF2, S3→KF3; M2 dichiarato fuori
   scope skeleton; L1 con associatedState S2 + role constrain-next-transition.
 - Verificato: campi preservati nel round-trip export→import.
+
+---
+
+## R-016 — Lettura a freddo esterna del JSON (test semantico di S2)
+
+**Richiesta:** protocollo rigido — *"consegnare solo il JSON; non spiegare
+S, M, C, T, LOCK, V; chiedere all'esterno di ricostruire la sequenza
+semantica, osservazioni, interpretazioni, ipotesi, elementi rappresentati
+cinematicamente, elementi fuori scope, significato del LOCK, predizioni;
+confrontare con il significato intenzionale."* Classificazione:
+CORRETTO / AMBIGUO / ERRATO. *"La cosa più importante è non correggere il
+lettore durante il test. Se interpreta male qualcosa, è evidenza che il
+modello semantico non comunica abbastanza."* (2026-09-20)
+**Data:** 2026-09-20
+**Stato:** `fatta`
+**Cosa è successo:**
+- Tre lettori esterni via mw-ask (groq gpt-oss-120b, gemini-3.8-flash,
+  openrouter/free; codex al usage-limit): solo JSON + domande, zero
+  contesto, zero correzioni.
+- Esiti documentati in `spikes/S2-COLD-READ-01.md`: nucleo semantico
+  CORRETTO (sequenza, epistemica, ipotesi, LOCK, fuori-scope, predizioni).
+- 8 ambiguità emerse — 4 sotto-specificazioni reali (unità/calibrazione,
+  E1 supinazione non rappresentabile, KF2≡KF3 statico-vs-solidale, legenda
+  epistemica assente), 2 aperture da mantenere (ruolo logico di C,
+  relazione attesa V1~V2).
+- S2 resta chiusa: nessuna modifica allo schema finché il Director non
+  decide quali ambiguità meritano un campo.
