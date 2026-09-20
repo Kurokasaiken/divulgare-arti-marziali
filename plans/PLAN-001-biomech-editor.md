@@ -66,10 +66,10 @@ singolo — e come supporto all'authoring, non come prerequisito architetturale.
 Sequenza rivista:
 
 ```
-S1  Contratto JSON canonico + store unico (invariato — accordo unanime)
+S1  Contratto JSON canonico + store unico (invariato — accordo unanime)  ✔ FATTA
 S2  Authoring semantico sul movimento singolo: S→M→C→S, vettori, LOCK,
     eventi, OSS/INT/IPO   ← il cuore del lavoro
-S3  Multi-vista ortografica sulla catena singola (store condiviso)
+S3  Multi-vista ortografica sulla catena singola (store condiviso)     ✔ FATTA — anticipata dal Director (2026-09-20)
 S4  Import mocap riscoped: landmark del solo movimento (es. braccio)
     → keyframe OSS, come materiale per INT/IPO
 S5a Spike scientifico: definizione candidata di C   ← GATE, non opzionale

@@ -176,3 +176,12 @@ updated: 2026-09-20
   calcolabile SUBITO** — primo test quantitativo possibile senza strumenti).
 - Per S2: la scheda mostra che il JSON deve sostenere campi `cost`,
   `alternatives`, `predictions` con ID — oltre a forces/moments.
+
+## Aggiunta (2026-09-20, S3 multi-vista — fatta)
+
+- Director ha anticipato S3 su S2/schede. Implementata: giunti 3D, 3 viste
+  ortografiche su store condiviso, schema v3 + campo `views`, migrazione
+  v2/legacy. Verificata in browser (gate S3: stessa posa in tutte le viste,
+  export con una sola configurazione). Schema keyframe ora `[x,y,z]`.
+- Prossimi candidati: S2 authoring semantico / schede anelli restanti /
+  P-A2.2 (stima I da landmark) / S4 import mocap.
