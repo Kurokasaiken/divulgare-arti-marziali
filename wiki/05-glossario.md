@@ -30,7 +30,19 @@ ancora verificati contro la letteratura biomeccanica.
 - **Evento temporale** — qualcosa con inizio/progressione/fine (es. supinazione,
   chiusura della mano), da non ridurre a stato finale.
 - **Anello** — un segmento della catena di configurazioni (distanza, piede,
-  braccio, bacino, tronco, spalla, mano). Termine di lavoro del progetto.
+  braccio, bacino, tronco, spalla, mano). **Unità analitica del modello**, scelta
+  per comodità di studio — NON una categoria anatomica o biomeccanica standard.
+- **Compito (TASK)** — la struttura che definisce cosa si ottimizza: output
+  desiderato, interazione target, vincoli temporali, stato post-azione richiesto,
+  perturbazione ammissibile. Non esiste pugno ottimale in assoluto: esiste
+  ottimo **per un compito**.
+- **Stato post-azione** — la configurazione in cui il sistema si trova dopo
+  l'interazione. Output del modello al pari del risultato: due strategie con lo
+  stesso output immediato possono differire nello stato post-azione.
+- **Principio di lavoro sui gradi di libertà** — la nostra formulazione
+  operativa ("mantieni un DOF finché produce vantaggio"). **Working principle,
+  non principio scientifico**: non promosso finché il mapping su letteratura
+  non è completato.
 
 ## Principi
 
@@ -65,7 +77,15 @@ ancora verificati contro la letteratura biomeccanica.
 ## Concetti vicini in letteratura (da mappare)
 
 kinetic chain · proximal-to-distal sequencing · summation of speed · induced
-acceleration · degrees of freedom · task constraints · motor control
+acceleration · degrees of freedom (Bernstein) · task constraints (Newell) ·
+optimal feedback control (Todorov & Jordan) · motor abundance / uncontrolled
+manifold (Latash) · anticipatory postural adjustments
 
-Nessuno, singolarmente, descrive la logica temporale delle transizioni al centro
-di questo progetto — ma la mappatura precisa è lavoro ancora da fare.
+Il mapping dettagliato vive in `08-letteratura-biomeccanica.md`.
+
+## Le quattro categorie esplicative
+
+Non mescolare i livelli: **meccanica** (fenomeni fisici) ≠ **biomeccanica**
+(organizzazione corporea) ≠ **motor control** (decisione/coordinamento) ≠
+**modello del progetto** (la nostra formalizzazione). Dettaglio in
+`08-letteratura-biomeccanica.md`.

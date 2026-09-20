@@ -31,3 +31,45 @@ discussione sulla formalizzazione biomeccanica del pugno (progetto, modello del
 movimento, scomposizione per anelli, registro ipotesi, metodo/fasi, glossario,
 strumento visuale). "Modalità lean" interpretata come: nessun apparato
 (`plans/`, `execution/`, skill, runtime) finché non serve.
+
+---
+
+## R-002 — Revisione della wiki: mapping scientifico, formalizzazione, stato della ricerca
+
+**Richiesta:** *"Manca ancora la parte scientifica che stavamo iniziando a
+costruire [...] il repository adesso è una buona memoria esterna del progetto, ma
+non è ancora la conclusione della ricerca. È il punto di partenza formalizzato."*
+(critica in 15 punti, sessione 2026-09-20)
+**Data:** 2026-09-20
+**Stato:** `fatta`
+**Cosa è successo:** create `wiki/08-letteratura-biomeccanica.md` (4 categorie,
+mapping, fonti reali) e `wiki/09-stato-della-ricerca.md`; aggiornati
+`01-modello-movimento.md` (working principle, notazione S→M→C, TASK, stato
+post-azione), `02-anatomia-del-pugno.md` (decomposizione di lavoro, formalizzazione
+"ultimo momento utile"), `05-glossario.md`, `INDEX.md`, `SESSION_HANDOFF.md`.
+Pushato su GitHub (pubblico).
+**Punti della richiesta:**
+1. Aggiungere il mapping concetti nostri ↔ letteratura (tabella concetto/relazione/stato).
+2. Il "principio dei gradi di libertà" non va trattato come principio scientifico:
+   rinominato **principio di lavoro** finché il mapping non è fatto.
+3. Dare una definizione minima formale alla sequenza S→M→C→S (stato/movimento/
+   condizione sufficiente) — altrimenti resta metafora.
+4. "Ultimo momento utile" da formalizzare (posizione, velocità, traiettoria
+   desiderata, errore dal target, costi).
+5. La scomposizione del pugno va marcata ancora più chiaramente come *nostra
+   decomposizione di lavoro*, non biomeccanica stabilita.
+6. "Anello": esplicitare che è unità analitica del modello, non categoria
+   anatomica standard.
+7. Nuova pagina letteratura: cosa è noto, controverso, pertinente, adiacente,
+   non-supportante (effective mass, impulso, force-time, boxers, momentum
+   transfer).
+8. Separare 4 categorie: meccanica / biomeccanica / motor control / modello del
+   progetto.
+9. Rendere esplicito il concetto di **compito** (TASK: output desiderato,
+   interazione, vincoli temporali, stato post-azione, perturbazione ammissibile).
+10. Sviluppare lo **stato post-azione** come parte del modello.
+11. Non ripartire da zero con lo strumento visuale: il prototipo esiste.
+12–14. CANON vuoto va bene: non canonizzare per riempire; la conoscenza cresce
+   nella wiki.
+15. Nuova pagina **Stato della ricerca**: conosciamo / osservato / interpretato /
+    ipotizziamo / non sappiamo / dobbiamo verificare / prossima domanda.

@@ -36,10 +36,32 @@ Una nuova transizione può iniziare quando è stata raggiunta la **condizione
 sufficiente** che la rende utile, anche se il movimento precedente è ancora in
 corso. Questo è il cardine del modello.
 
-## Il principio dei gradi di libertà
+### Notazione minima
 
-Formulazione corrente (da verificare contro la letteratura, non ancora un nome
-scientifico stabilito):
+```
+S₀ ──M₁──▶ C₁ ──▶ S₁ ──M₂──▶ C₂ ──▶ S₂ ──M₃──▶ ...
+```
+
+- `Sᵢ` = stato del sistema (postura, configurazione, equilibrio)
+- `Mᵢ` = movimento in corso
+- `Cᵢ` = condizione sufficiente: lo stato minimo che rende utile avviare la
+  transizione successiva
+
+**Debito aperto:** "condizione sufficiente raggiunta" non ha ancora una
+definizione operativa misurabile. Finché non la diamo, lo schema è una metafora
+utile, non un modello. La definizione va cercata prima nella letteratura
+(switching conditions in optimal control?) — vedi `08-letteratura-biomeccanica.md`.
+
+## Il principio di lavoro sui gradi di libertà
+
+> **Stato: working principle, non principio scientifico.** È una nostra
+> formulazione concettuale. Potrebbe essere una buona sintesi di concetti già
+> presenti (Bernstein DOF problem, motor abundance, optimal control, minimal
+> intervention) oppure contenere qualcosa di distintivo — **non lo sappiamo
+> ancora**. Non promuoverlo a "principio" prima del mapping in
+> `08-letteratura-biomeccanica.md`.
+
+Formulazione corrente:
 
 > Ogni configurazione organizza il sistema in modo da massimizzare il contributo
 > utile alla transizione successiva, rispettando i vincoli del compito e
@@ -69,6 +91,23 @@ continuare a usare quel grado di libertà non produce più il vantaggio preceden
 Quella configurazione diventa un **vincolo funzionale** per la transizione
 successiva.
 
+## Il compito (TASK) è parte del modello
+
+Non esiste un pugno ottimale in assoluto: dipende dal compito. Ogni analisi va
+ancorata a una struttura esplicita:
+
+```
+TASK
+ ├── desired output          (es. trasferire impulso, raggiungere posizione)
+ ├── target interaction      (percussione breve / spinta prolungata / ...)
+ ├── temporal constraints    (tempo disponibile, sequenza richiesta dopo)
+ ├── post-action state       (configurazione richiesta dopo l'interazione)
+ └── allowable perturbation  (quanta destabilizzazione è accettabile)
+```
+
+Questo rende rigorosa la definizione "output utile sotto vincoli": i vincoli
+non sono solo meccanici, includono il compito.
+
 ## Il movimento modifica lo stato successivo
 
 Modello ingenuo:
@@ -86,6 +125,20 @@ STATO → MOVIMENTO → NUOVO STATO → VINCOLO → NUOVO MOVIMENTO → NUOVO ST
 Il risultato di un movimento **modifica le condizioni** in cui avverrà il
 movimento successivo. La configurazione finale di una fase è parte del problema,
 non semplicemente la fine della fase.
+
+### Lo stato post-azione è un output del modello
+
+Non `movimento → risultato`, ma:
+
+```
+movimento → interazione → risultato + stato post-azione
+```
+
+Due strategie possono produrre **lo stesso output immediato** lasciando il corpo
+in configurazioni diverse — e quella differenza è parte di ciò che il modello
+deve valutare (es. il caso lastra: "cadere" nel colpo vs conservare la postura).
+Lo stato post-azione è quindi un argomento della funzione obiettivo, non un
+dettaglio.
 
 ## La "catena" ridefinita
 
