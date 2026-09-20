@@ -6,6 +6,19 @@ updated: 2026-09-20
 
 # Session Handoff
 
+## Stato aggiunto 2026-09-20 (desiderata v1 FROZEN + PLAN-001 da deliberazione web)
+
+- **`.mw/desiderata.md` v1 FROZEN** — tool che esprime S→M→C→S, JSON come
+  prodotto, multi-vista condivisa, import mocap, lean.
+- **PLAN-001** (`plans/PLAN-001-biomech-editor.md`, stato `proposta`): prodotto
+  da deliberazione multi-AI web (chatgpt + gemini-web, convergenti). Roadmap:
+  S1 contratto JSON canonico → S2 authoring semantico (vettori/LOCK/OSS-INT-IPO)
+  → S3 multi-vista store condiviso → S4 import msgpack → S5 corpo intero →
+  S6 condizioni C verificabili → S7 diagnostica limite 17fps.
+  Decisione chiave: **schema semantico prima dell'import** (l'importer deve
+  sapere in quale modello scrivere); niente DSL prematura.
+- In attesa: approvazione PLAN-001 prima di implementare S1.
+
 ## Stato aggiunto 2026-09-20 (revisione R-003 + install MW + desiderata candidata)
 
 - **Mind Weaver installato** (`install.sh --with-runtime`): skill, runtime
