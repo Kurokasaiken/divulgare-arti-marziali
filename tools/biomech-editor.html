@@ -354,11 +354,20 @@ function renderViews(){
       l.setAttribute('class','lockseg'); svg.appendChild(l);
     });
 
-    // vettori attivi al tempo corrente: freccia proiettata tra giunti
+    // vettori attivi al tempo corrente: freccia proiettata
+    // mode 'joint-to-joint': da giunto a giunto · 'displacement': spostamento
+    // dello stesso giunto tra startTime ed endTime
     state.sem.vectors.forEach(vec=>{
       if(state.currentTime < vec.startTime || state.currentTime > vec.endTime) return;
-      if(!joints[vec.from] || !joints[vec.to]) return;
-      const p1=proj(joints[vec.from],v), p2=proj(joints[vec.to],v);
+      let p1,p2;
+      if(vec.mode==='displacement'){
+        const j=vec.from; if(!joints[j]) return;
+        p1=proj(interpJoints(vec.startTime)[j],v);
+        p2=proj(interpJoints(vec.endTime)[j],v);
+      } else {
+        if(!joints[vec.from] || !joints[vec.to]) return;
+        p1=proj(joints[vec.from],v); p2=proj(joints[vec.to],v);
+      }
       const dx=p2[0]-p1[0], dy=p2[1]-p1[1], L=Math.hypot(dx,dy)||1;
       const ux=dx/L, uy=dy/L, px=-uy, py=ux;
       const g=document.createElementNS(NS,'g');
@@ -459,7 +468,7 @@ function semNew(kind){
     case 'conditions':  return {...base, status:'unformalized', notes:'', predicates:[]};
     case 'transitions': return {...base, from:'', movement:'', condition:'', to:'', intendedEffect:'', hypothesis:'', prediction:''};
     case 'constraints': return {...base, type:'functional-lock', target:'elbow-wrist', start:t, end:t+200};
-    case 'vectors':     return {...base, from:'shoulder', to:'elbow', startTime:t, endTime:t+200, note:''};
+    case 'vectors':     return {...base, mode:'joint-to-joint', from:'shoulder', to:'elbow', startTime:t, endTime:t+200, note:''};
     case 'annotations': return {...base, text:'', time:t};
   }
 }
@@ -489,7 +498,7 @@ function renderSem(){
     opt(o,'from',sIds,'S da'), opt(o,'movement',mIds,'M'), opt(o,'condition',cIds,'C'), opt(o,'to',sIds,'S a'),
     txt(o,'hypothesis','ipotesi'), txt(o,'prediction','predizione')]));
   state.sem.constraints.forEach(o=>row('constraints',o,[opt(o,'target',Object.keys(BONE_PAIRS)),num(o,'start'),num(o,'end')]));
-  state.sem.vectors.forEach(o=>row('vectors',o,[opt(o,'from',JOINTS),opt(o,'to',JOINTS),num(o,'startTime'),num(o,'endTime')]));
+  state.sem.vectors.forEach(o=>row('vectors',o,[opt(o,'mode',['joint-to-joint','displacement']),opt(o,'from',JOINTS),opt(o,'to',JOINTS),num(o,'startTime'),num(o,'endTime')]));
   state.sem.annotations.forEach(o=>row('annotations',o,[txt(o,'text','testo'),num(o,'time')]));
 }
 

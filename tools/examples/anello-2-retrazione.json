@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 3,
+  "meta": {
+    "tool": "biomech-editor",
+    "model": "S->M->C->S",
+    "exportedAt": "2026-09-20T00:00:00.000Z",
+    "note": "Bozza autoriale dell'Anello 2 (retrazione braccio sinistro -> LOCK). Primo caso d'uso del linguaggio S2 — NON una formalizzazione scientifica: pose e tempi sono scelte autoriali che interpretano osservazioni [video]. Scheda di analisi completa in wiki/02."
+  },
+  "task": {
+    "id": "anello-2-retrazione",
+    "desiredOutput": "configurazione terminale funzionale del braccio sinistro utile alla fase successiva",
+    "targetInteraction": "nessuna (fase preparatoria)",
+    "temporalConstraints": { "retractionWindow": "0-300 ms (autoriale)" },
+    "postActionState": { "description": "rotazione tronco/bacino avviata; lato sinistro vincolato" },
+    "allowablePerturbation": {}
+  },
+  "skeleton": {
+    "model": "arm-chain-3d",
+    "coordinateSpace": "model-3d",
+    "axes": { "x": "laterale", "y": "verticale", "z": "profondita" },
+    "units": "px",
+    "joints": ["shoulder", "elbow", "wrist", "hand"],
+    "segments": [
+      { "id": "shoulder-elbow", "from": "shoulder", "to": "elbow", "length": 100 },
+      { "id": "elbow-wrist", "from": "elbow", "to": "wrist", "length": 90 },
+      { "id": "wrist-hand", "from": "wrist", "to": "hand", "length": 50 }
+    ],
+    "labels": { "shoulder": "spalla", "elbow": "gomito", "wrist": "polso", "hand": "mano" }
+  },
+  "views": [
+    { "id": "front", "label": "frontale", "projection": "orthographic", "axes": ["x", "y"] },
+    { "id": "side", "label": "laterale", "projection": "orthographic", "axes": ["z", "y"] },
+    { "id": "top", "label": "zenitale", "projection": "orthographic", "axes": ["x", "z"] }
+  ],
+  "keyframes": [
+    {
+      "id": "KF1", "time": 0, "epistemic": "INT", "provenance": "authored",
+      "joints": {
+        "shoulder": [150, 130, 150],
+        "elbow": [227, 181, 188],
+        "wrist": [294, 154, 242],
+        "hand": [322, 119, 263]
+      }
+    },
+    {
+      "id": "KF2", "time": 300, "epistemic": "INT", "provenance": "authored",
+      "joints": {
+        "shoulder": [150, 130, 150],
+        "elbow": [55, 157, 136],
+        "wrist": [83, 241, 150],
+        "hand": [115, 273, 171]
+      }
+    },
+    {
+      "id": "KF3", "time": 600, "epistemic": "INT", "provenance": "authored",
+      "joints": {
+        "shoulder": [150, 130, 150],
+        "elbow": [55, 157, 136],
+        "wrist": [83, 241, 150],
+        "hand": [115, 273, 171]
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "E1", "type": "axial_rotation", "segment": "elbow-wrist",
+      "label": "SUPINAZIONE", "start": 60, "end": 260,
+      "epistemic": "OSS", "provenance": "authored",
+      "notes": "retrazione+supinazione come evento combinato, non sequenziale [video]; finestra temporale autoriale a ~17fps"
+    }
+  ],
+  "states": [
+    { "id": "S1", "label": "GUARDIA", "time": 0, "epistemic": "OSS", "provenance": "authored",
+      "notes": "configurazione iniziale osservata [video]; la posa disegnata e' autoriale" },
+    { "id": "S2", "label": "POST-RETRAZIONE", "time": 300, "epistemic": "OSS", "provenance": "authored",
+      "notes": "gomito retratto, pugno chiuso — osservato [video]; la posa disegnata e' autoriale" },
+    { "id": "S3", "label": "CONFIGURAZIONE SUCCESSIVA", "time": 600, "epistemic": "INT", "provenance": "authored",
+      "notes": "stato atteso dopo l'avvio della rotazione del tronco — il tronco non e' nello scheletro corrente" }
+  ],
+  "movements": [
+    { "id": "M1", "label": "retrazione braccio sinistro", "fromTime": 0, "toTime": 300,
+      "epistemic": "INT", "provenance": "authored",
+      "notes": "retrazione + supinazione + chiusura mano come evento combinato e' OSS[video]; la delimitazione in un movimento unitario e' nostra" },
+    { "id": "M2", "label": "transizione verso rotazione del tronco", "fromTime": 300, "toTime": 600,
+      "epistemic": "INT", "provenance": "authored",
+      "notes": "placeholder semantico: la rotazione del tronco non e' rappresentabile sulla catena del solo braccio" }
+  ],
+  "conditions": [
+    { "id": "C1", "status": "unformalized", "epistemic": "IPO", "provenance": "authored",
+      "notes": "configurazione terminale del gomito raggiunta + chiusura mano completata + traiettoria stabilizzata. NESSUNA formalizzazione: variabili e forma della condizione dipendono dallo spike C-CONDITION-01/C-02.",
+      "predicates": [] },
+    { "id": "C2", "status": "unformalized", "epistemic": "IPO", "provenance": "authored",
+      "notes": "rotazione del tronco avviata — non osservabile sulla catena del solo braccio",
+      "predicates": [] }
+  ],
+  "transitions": [
+    { "id": "T1", "from": "S1", "movement": "M1", "condition": "C1", "to": "S2",
+      "intendedEffect": "vincolo del lato sinistro / preparazione della rotazione del tronco",
+      "hypothesis": "la configurazione terminale (LOCK) fornisce un vincolo utile per la rotazione successiva",
+      "prediction": "P-A2.1: ritardare o rimuovere il LOCK dovrebbe alterare timing o velocita' della rotazione del tronco",
+      "epistemic": "IPO", "provenance": "authored" },
+    { "id": "T2", "from": "S2", "movement": "M2", "condition": "C2", "to": "S3",
+      "intendedEffect": "avvio della rotazione tronco/bacino",
+      "hypothesis": "la retrazione completata abilita la rotazione — NON dimostrato che sia causa; possibile semplice sovrapposizione temporale",
+      "prediction": "se C1 non e' soddisfatta, il passaggio alla rotazione dovrebbe risultare diverso (timing o configurazione)",
+      "epistemic": "IPO", "provenance": "authored" }
+  ],
+  "constraints": [
+    { "id": "L1", "type": "functional-lock", "target": "elbow-wrist",
+      "start": 200, "end": 600, "epistemic": "INT", "provenance": "authored",
+      "notes": "configurazione terminale funzionale: il DOF cessa di produrre vantaggio e diventa vincolo. NON 'articolazione bloccata'." }
+  ],
+  "vectors": [
+    { "id": "V1", "mode": "displacement", "from": "elbow",
+      "startTime": 0, "endTime": 300, "epistemic": "INT", "provenance": "authored",
+      "note": "vettore di retrazione del gomito — descrivibile geometricamente sulla posa autoriale" },
+    { "id": "V2", "mode": "displacement", "from": "hand",
+      "startTime": 0, "endTime": 300, "epistemic": "IPO", "provenance": "authored",
+      "note": "vettore della mano durante la retrazione — candidato al confronto V1~V2 (ipotesi del modello, non legge)" }
+  ],
+  "annotations": [
+    { "id": "A1", "text": "mano aperta -> chiusura rapida quando la traiettoria e' stabile [video]", "time": 220,
+      "epistemic": "OSS", "provenance": "authored" },
+    { "id": "A2", "text": "questa bozza e' il primo caso d'uso del linguaggio S2 — test: il JSON da solo deve bastare a ricostruire il modello", "time": 0,
+      "epistemic": "INT", "provenance": "authored" }
+  ],
+  "sources": {}
+}
