@@ -1,0 +1,41 @@
+# Web deliberation profile — 4-model panel (grok escluso: rate-limit/upsell)
+# A=caller+independent plan, B/C/D = critics. Richiede Chrome CDP + sessioni.
+
+models:
+  A:
+    provider: chatgpt
+    model: web-default
+    transport: web
+    session_path: .mw/providers/sessions/chatgpt.yaml
+    max_tokens: 4096
+    timeout_s: 120
+    personal: true
+
+  B:
+    provider: gemini-web
+    model: web-default
+    transport: web
+    session_path: .mw/providers/sessions/gemini.yaml
+    max_tokens: 4096
+    timeout_s: 120
+    personal: true
+
+  C:
+    provider: deepseek
+    model: web-default
+    transport: web
+    session_path: .mw/providers/sessions/deepseek.yaml
+    max_tokens: 4096
+    timeout_s: 120
+    personal: true
+
+  D:
+    provider: claude
+    model: web-default
+    transport: web
+    session_path: .mw/providers/sessions/claude.yaml
+    max_tokens: 4096
+    timeout_s: 120
+    personal: true
+
+fallbacks: []
