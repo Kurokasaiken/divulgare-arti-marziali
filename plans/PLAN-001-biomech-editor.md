@@ -248,6 +248,28 @@ JSON
   ]
 }
 
+**Estensione epistemico-causale (review esterna 2026-09-20):** il modello deve
+comunicare non solo *cosa* succede ma *perché* si propone. Ogni transizione/
+condizione può portare campi opzionali:
+
+```json
+{
+  "id": "T1",
+  "from": "S0", "movement": "M1", "condition": "C1", "to": "S1",
+  "intendedEffect": ["constrain_left_side", "prepare_trunk_rotation"],
+  "hypothesis": "Raggiungere questa configurazione fornisce un vincolo utile per la rotazione del tronco",
+  "evidence": ["practitioner_observation", "video:5rep"],
+  "status": "HYPOTHESIS",
+  "prediction": "Ritardare/rimuovere il LOCK dovrebbe alterare il timing della rotazione del tronco"
+}
+```
+
+Tre linguaggi sovrapposti sullo stesso modello: **geometrico** (traiettorie,
+vettori), **temporale** (eventi, sovrapposizioni), **epistemico-causale**
+(OSS/INT/IPO, ipotesi, evidenza, predizione). La predizione è ciò che rende il
+modello *contestabile* da un'AI — non solo descrivibile. Le predizioni si
+collegano al registro ipotesi (`wiki/03`) tramite ID (`H1`, …).
+
 Per i vettori, inizialmente basta una rappresentazione esplicita:
 
 JSON

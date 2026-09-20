@@ -120,3 +120,8 @@ updated: 2026-09-20
   - Verifica terminologica contro letteratura (motor control, biomeccanica del
     colpo) prima di adottare i termini candidati.
   - Prima sessione su un anello specifico (es. anello 2, il più analizzato).
+
+## Aggiunta (2026-09-20, tarda sessione)
+
+- **R-009**: integrata proposta epistemico-causale (why-layer) in PLAN-001 S2,
+  wiki/06 (doppia vista canonical data) e spike (test di contestabilità).
