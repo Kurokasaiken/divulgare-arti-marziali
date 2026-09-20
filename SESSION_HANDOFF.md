@@ -185,3 +185,13 @@ updated: 2026-09-20
   export con una sola configurazione). Schema keyframe ora `[x,y,z]`.
 - Prossimi candidati: S2 authoring semantico / schede anelli restanti /
   P-A2.2 (stima I da landmark) / S4 import mocap.
+
+## Aggiunta (2026-09-20, S2 semantico minimale — fatta)
+
+- R-013: wiki/06 allineato a S3; S2 implementata (pannello semantico,
+  S/M/C/T/LOCK/V/A con epistemic+provenance, transizioni per ID,
+  C=unformalized di default). Gate: catena ricostruibile da solo JSON.
+- Avvertenza review: attenzione a catene di spiegazioni derivate dalla stessa
+  ipotesi non verificata (LOCK→vincolo→rotazione→coppia→trasferimento).
+- Prossimi candidati: schede anelli restanti; P-A2.2 (I stimato, calcolabile
+  subito); S4 import mocap (porta provenance:measured); spike C-02.
