@@ -125,3 +125,19 @@ updated: 2026-09-20
 
 - **R-009**: integrata proposta epistemico-causale (why-layer) in PLAN-001 S2,
   wiki/06 (doppia vista canonical data) e spike (test di contestabilità).
+
+## Aggiunta (2026-09-20, spike C-CONDITION-01 — primo risultato)
+
+- Spike avanzato su fonti verificate: **la forma di `C` esiste già** —
+  initiation set / termination condition (options framework, Sutton-Precup-
+  Singh 1999, AIJ); guard condition (automata ibridi); entry-state transition
+  conditions (grafi di motion primitives, arXiv:2106.10310, robotica).
+- Nucleo distintivo residuo (ipotetico): applicazione alla coordinazione
+  intra-gesto umano + semantica forward-looking su stato post-azione.
+- OFC (Todorov-Jordan 2002) verificato: minimal intervention copre "preserva
+  DOF finché utile", ma è feedback continuo — non trigger discreto. APA copre
+  il principio t−Δt. Fuchs 2018: sovrapposizione parziale (no innesco da
+  condizione).
+- wiki/08 (mapping aggiornato) e wiki/09 (NON SAPPIAMO + PROSSIMA DOMANDA
+  aggiornate) riflettono il risultato. Restano priors da verificare su fonti
+  primarie (Bernstein, Newell, Latash).

@@ -76,23 +76,26 @@ Candidati da confrontare (in `wiki/08-letteratura-biomeccanica.md`):
 Per ciascuno: il concetto copre l'innesco della transizione? la condizione
 sufficiente? lo stato post-azione nella funzione obiettivo?
 
-**Mappatura preliminare** (priors da verificare contro le fonti primarie —
-non letture complete):
+**Mappatura** (primi due riquadri verificati su fonte; gli altri restano priors
+da leggere nelle fonti primarie):
 
-| Concetto | Copre | Relazione candidata con `C` | Stato |
+| Concetto | Copre | Relazione con `C` | Stato |
 |---|---|---|---|
-| Bernstein (DOF problem) | strategia di gestione dei gradi di libertà | parente del working principle (freeze/free DOF), non dell'innesco | da verificare |
-| Newell (constraints) | vincoli organismo/task/ambiente | inquadra il nostro TASK, non `C` | da verificare |
-| Todorov & Jordan (OFC) | correzioni solo quando task-rilevanti | feedback continuo su costo — `C` potrebbe mappare sulla legge di feedback, non su condizione discreta | da verificare |
-| Latash (UCM/motor abundance) | variabilità nelle direzioni non rilevanti | spiega "preservare DOF utili", non l'innesco di transizione | da verificare |
-| Movement primitives | transizioni spesso basate su tempo/fase | alcuni modelli ammettono trigger di fase — vicino a `C` | da verificare |
-| APA | preparazione anticipata dello stato | copre il nostro principio `t−Δt` (preparazione della configurazione successiva), più che `C` | da verificare |
+| **Options framework** — Sutton, Precup, Singh 1999 (*"Between MDPs and semi-MDPs"*, AIJ; anche Sutton et al. 1998 *"Improved Switching among Temporally Abstract Actions"*) | azioni temporalmente estese con `⟨I, π, β⟩`: initiation set `I ⊆ S`, policy π, termination condition β(s) | **`C` mappa quasi esattamente**: l'opzione successiva è disponibile quando `s ∈ I`; il movimento corrente termina quando `β(s)` scatta. `S→M→C→S` ≈ catena di opzioni | **verificato su fonte** |
+| **Transition conditions tra motion primitives** — arXiv:2106.10310 (*dynamic-state-aware transitions*, robotica) | formalizza transizioni A→B tra primitive dinamiche: la transizione è disponibile quando il flusso di A raggiunge l'insieme d'ingresso `S_B` di B; Class 1 (sempre) vs Class 2 (solo in certi tempi/stati) | la "Class 2 transition" è quasi letteralmente la nostra `C`: transitabile solo quando lo stato entra nella regione giusta | **verificato su fonte** |
+| Todorov & Jordan 2002 — OFC, minimal intervention (Nature Neurosci.) | feedback continuo `u=L(x)`; correzioni solo quando rilevanti al task; "discrete coordination modes emerge naturally" | OFC **non** usa condizioni discrete: il controllo è una legge continua sullo stato. `C` come trigger discreto non è il formalismo OFC — ma il minimal-intervention copre bene il nostro "preserva DOF finché utile" | **verificato su fonte** |
+| Bernstein (DOF problem) | strategia di gestione dei gradi di libertà (freeze/free) | parente del working principle, non dell'innesco | prior |
+| Newell (constraints) | vincoli organismo/task/ambiente | inquadra TASK, non `C` | prior |
+| Latash (UCM/motor abundance) | variabilità nelle direzioni non rilevanti al task | spiega "preserva DOF utili", non l'innesco | prior |
+| APA (Belen'kii 1967; Latash; ASAs) | preparazione feedforward dello stato posturale prima dell'azione | copre il nostro principio `t−Δt` (la configurazione successiva si prepara prima), non `C` come trigger | **verificato su fonte** (concetto; applicazione al pugno da verificare) |
 
-Osservazione preliminare: **nessun candidato noto combina da solo** "innesco
-stato-dipendente" + "condizione geometrica sufficiente" + "stato post-azione
-nell'obiettivo". Ma ogni componente ha un parente — `C` potrebbe risultare una
-*combinazione* di concetti noti, che è già una risposta utile alla domanda
-centrale.
+**Risultato Q2:** la *forma* di `C` **esiste già con nomi precisi**:
+*initiation set* / *termination condition* (options framework), *guard
+condition* (automata ibridi), *entry-state/transition conditions* (grafi di
+motion primitives). Quello che non risulta dalla prima mappatura è una fonte
+che applichi questa forma **alla coordinazione intra-movimento nel gesto
+umano** (i lavori su transizioni tra primitive sono in robotica/controllo, non
+in motor control sperimentale dello striking).
 
 ### Q3 — Optimal / hybrid control
 
@@ -111,15 +114,28 @@ La seconda è più vicina a controllo/ottimizzazione, ma non abbiamo ancora
 dimostrato che il sistema motorio umano funzioni così. È una struttura
 ipotetica.
 
-**Nota preliminare Q3:** in letteratura di controllo ibrido esiste già il
-formalismo della **guard condition** (automata ibridi: una transizione di modo
-scatta quando lo stato entra in un insieme guardia). `C` mapperebbe quasi
-esattamente su quel concetto — il che risponderebbe parzialmente a Q2: `C` come
-*forma* esiste già (guardia di modo in sistemi ibridi). La questione aperta non
-è la forma ma il **contenuto**: quali variabili/stati definiscono la guardia nel
-controllo motorio umano, e se l'evidenza supporta switch discreti invece di
-feedback continuo (OFC suggerirebbe il secondo per correzioni intra-movimento;
-eventi discreti come il contatto giustificano invece cambi di modo).
+**Risultato Q3 (preliminare ma fondato):** la switching boundary **non è una
+metafora importata a caso** — è la forma standard con cui la letteratura
+formalizza esattamente questo tipo di condizione:
+
+- automata ibridi → *guard set*;
+- options framework → *initiation set* `I ⊆ S` e *termination condition* `β(s)`;
+- grafi di motion primitives → *entry-state conditions* (transizione Class 2).
+
+Quindi `C` va rappresentata come **regione/frontiera nello spazio degli stati**
+(la forma B della sezione precedente), coerente con tutti i formalismi
+esistenti. La questione che resta scientificamente aperta non è la forma ma il
+**contenuto e l'evidenza**:
+
+1. quali variabili misurabili definiscono la regione in un gesto reale;
+2. se le transizioni intra-gesto nel sistema motorio umano siano davvero
+   guard-triggered (switch discreti) o emergano da feedback continuo (OFC
+   suggerirebbe il secondo; la letteratura su sequencing/chunking il primo);
+3. se il nostro "utile per la transizione successiva" (forward-looking, include
+   lo stato post-azione) sia coperto da `I`/`β` standard o richieda qualcosa di
+   più (i formalismi esistenti definiscono *quando* si può transitare, non
+   *perché è utile farlo* — la funzione obiettivo con post-action state resta
+   il candidato distintivo).
 
 **Test di contestabilità (da review esterna):** il formato JSON del modello è
 sufficiente se un'AI che lo legge può obiettare *"C1 è descritta come
@@ -136,10 +152,36 @@ JSON dell'editor. L'output di questo spike è una **definizione candidata** di
 provenienza epistemica di ogni componente, e confronto esplicito con i nomi
 esistenti in letteratura.
 
+## Verdetto provvisorio (2026-09-20)
+
+> **`C` come forma è già coperto dalla letteratura** — initiation set /
+> termination condition (options framework), guard condition (sistemi ibridi),
+> entry-state condition (grafi di motion primitives). Dichiararlo "nuovo" sarebbe
+> sbagliato.
+>
+> **Cosa resta potenzialmente distintivo** (da verificare, non da rivendicare):
+>
+> 1. l'applicazione di questa forma alla **coordinazione intra-gesto nel
+>    movimento umano** — le formalizzazioni trovate sono in RL/robotica, non in
+>    motor control sperimentale sullo striking;
+> 2. la semantica **forward-looking**: `C` non è solo "quando posso passare" ma
+>    "quando passare è utile *in funzione dello stato successivo e dello stato
+>    post-azione*". I formalismi esistenti definiscono disponibilità, non
+>    utilità rispetto al seguito — questo potrebbe essere il contributo del
+>    modello, se regge.
+>
+> La risposta onesta alla domanda centrale è quindi: **combinazione di concetti
+> noti, con un possibile nucleo distintivo piccolo e ancora da dimostrare** —
+> esattamente l'esito che il progetto cercava di verificare.
+
 ## Output
 
 - [x] tabella Fuchs compilata con citazioni (abstract; full-text può raffinare)
-- [ ] mapping `C` ↔ concetti motor-control (stato per ciascuno)
-- [ ] giudizio su predicato vs switching boundary
-- [ ] definizione candidata di `C` (se emerge) → aggiorna `wiki/01`, `wiki/09`
-- [ ] esito: `C` nuovo / combinazione di noti / già coperto → aggiorna `wiki/08`
+- [x] mapping `C` ↔ concetti motor-control (stato per ciascuno) — vedi tabella
+- [x] giudizio su predicato vs switching boundary → **regione/frontiera nello
+  spazio degli stati** (forma standard: guard set / initiation set)
+- [ ] definizione candidata di `C` (forma ora chiara; mancano le **variabili**
+  — contenuto della regione) → da aggiornare `wiki/01`, `wiki/09`
+- [x] esito: `C` nuovo / combinazione di noti / già coperto → **combinazione di
+  noti + nucleo distintivo ipotetico** (semantica forward-looking su
+  post-action state) → aggiornare `wiki/08`
