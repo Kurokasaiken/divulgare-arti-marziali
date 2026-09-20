@@ -82,26 +82,41 @@ Cosa fa già:
   indipendente dalla posa;
 - riproduzione della sequenza (Play);
 - traiettorie dei giunti come tratteggio;
-- export/import **JSON canonico** (schemaVersion 2): il documento esportato è il
+- export/import **JSON canonico** (schemaVersion 3): il documento esportato è il
   modello, non un dump della UI — contiene `task`, `skeleton` (segmenti e
-  lunghezze), `keyframes` con ID stabili (`KF1…`) ed `epistemic`, `events`
-  (rotazioni → `E1…` tipo `axial_rotation`), e contenitori vuoti pronti per le
-  slice successive (`states`, `movements`, `conditions`, `transitions`,
-  `constraints`, `vectors`, `annotations`, `sources`). Import accetta anche il
-  formato legacy (`{keyframes, rotations}` / `{keyframes, annotations}`) e lo
-  migra. Round-trip verificato: export → import → export identico (epsilon
-  float sulle posizioni ricalcolate);
+  lunghezze), `views` (le tre proiezioni ortografiche dichiarate), `keyframes`
+  con ID stabili (`KF1…`), coordinate `[x,y,z]` ed `epistemic`, `events`
+  (rotazioni → `E1…` tipo `axial_rotation`), e contenitori pronti per le slice
+  successive (`states`, `movements`, `conditions`, `transitions`,
+  `constraints`, `vectors`, `annotations`, `sources`). Import accetta v2 (2D →
+  migrazione con z=0) e il formato legacy (`{keyframes, rotations}` /
+  `{keyframes, annotations}`). Round-trip verificato: export → import → export
+  identico (epsilon float sulle posizioni ricalcolate);
+- **store 3D + multi-vista ortografica**: una sola posa `[x,y,z]` proiettata in
+  tre viste (frontale x-y, laterale z-y, zenitale x-z). Il drag in una vista
+  modifica solo i due assi proiettati; tutte le viste restano coerenti perché
+  leggono lo stesso store. Gate verificato: nessuna vista può divergere, l'
+  export contiene un'unica configurazione articolare;
+- **authoring semantico** (pannello S→M→C→S): stati, movimenti, condizioni
+  (nascono `unformalized` — niente DSL, formalizzazione solo dopo il gate
+  scientifico S5a), transizioni con collegamento per ID e campi
+  `intendedEffect`/`hypothesis`/`prediction`, vincoli funzionali (LOCK —
+  segmento evidenziato quando attivo), vettori tra giunti (freccia proiettata
+  in tutte le viste), annotazioni;
+- ogni oggetto semantico porta `epistemic` (OSS/INT/IPO, editabile) e
+  `provenance` (`authored` — `measured` arriverà con l'import mocap);
 - salvataggio locale (localStorage) nello stesso formato canonico;
 - tema chiaro/scuro.
 
+> **Limite epistemico dichiarato:** le coordinate 3D sono **autoriali** — `z`
+  scritta a mano è IPO/INT, non misura. Coordinate autoriali ≠ misura
+  biomeccanica. La z reale arriva solo con l'import mocap (S4).
+
 Cosa manca rispetto al modello (gap noti, non richieste approvate):
 
-- vettori espliciti tra configurazioni (V₁ gomito ≈ V₂ pugno);
-- condizioni sufficienti / marker di transizione come oggetti propri;
-- LOCK/vincoli funzionali come eventi;
-- viste multiple e segmenti oltre l'arto superiore (bacino, gambe);
-- editing delle etichette OSS/INT/IPO (presenti nello schema, non ancora
-  editabili in UI).
+- condizioni formalizzate come predicati misurabili (bloccato dal gate S5a);
+- import mocap come `provenance: measured` (S4);
+- segmenti oltre l'arto superiore (bacino, gambe).
 
 ## Cosa NON è
 

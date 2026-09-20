@@ -62,6 +62,15 @@ svg#tl{width:100%; height:96px; touch-action:none;}
 .rotbar.sel{stroke:var(--rot-sel); opacity:1;}
 .rothandle{fill:var(--rot); stroke:var(--panel); stroke-width:1.5; cursor:ew-resize;}
 .rotbarlabel{font-size:9px; fill:var(--rot); font-weight:bold;}
+.vec{stroke:var(--accent2); stroke-width:2; fill:none;}
+.lockseg{stroke:var(--rot); stroke-width:6; fill:none; stroke-linecap:round; opacity:.45;}
+.semrow{display:flex; gap:6px; align-items:center; flex-wrap:wrap; padding:5px 0; border-top:1px solid var(--grid); font-size:10.5px;}
+.semrow .semid{font-weight:bold; min-width:30px; color:var(--sub);}
+.semrow input{font-family:inherit; font-size:10.5px; background:var(--bg); color:var(--ink); border:1px solid var(--grid); padding:3px 5px; border-radius:2px;}
+.semrow input[type=number]{width:64px;}
+.semrow input[type=text]{min-width:80px; flex:0 1 auto;}
+.semrow select{font-size:10px; padding:3px 4px;}
+.semrow .del{margin-left:auto; padding:3px 7px;}
 .hint{font-size:10.5px; color:var(--sub); line-height:1.5; padding:0 2px;}
 textarea{width:100%; font-family:inherit; font-size:10.5px; background:var(--bg); color:var(--ink); border:1px solid var(--grid); padding:8px; border-radius:2px; height:130px;}
 footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
@@ -96,6 +105,24 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
     </div>
     <svg id="tl" viewBox="0 0 860 96" preserveAspectRatio="none"></svg>
     <div class="hint">Riga superiore = keyframe di posa (clic = seleziona/sblocca drag giunti · trascina = sposta nel tempo · doppio clic sulla linea = nuovo keyframe). Riga inferiore viola = rotazioni assiali (clic sulla barra = seleziona · trascina le maniglie alle estremità = cambia inizio/fine). "+ Rotazione" crea una rotazione sul segmento scelto, da t attuale a t+200ms.</div>
+  </div>
+
+  <div class="panel" id="semPanel" style="padding:12px 16px;">
+    <div class="tl-row">
+      <span style="font-size:11px; color:var(--sub); letter-spacing:.04em;">SEMANTICA S→M→C→S</span>
+      <select id="semType">
+        <option value="states">stato S</option>
+        <option value="movements">movimento M</option>
+        <option value="conditions">condizione C</option>
+        <option value="transitions">transizione T</option>
+        <option value="constraints">vincolo / LOCK</option>
+        <option value="vectors">vettore V</option>
+        <option value="annotations">annotazione</option>
+      </select>
+      <button id="semAdd">+ Aggiungi</button>
+    </div>
+    <div id="semList"></div>
+    <div class="hint">Ogni oggetto porta livello epistemico (OSS/INT/IPO) e provenance <i>authored</i>. Le condizioni nascono <b>unformalized</b>: la formalizzazione arriva solo dopo lo spike su C (gate S5a). Transizioni: collega S→M→C→S per ID.</div>
   </div>
 
   <div class="panel" id="jsonPanel" style="display:none; padding:10px;">
@@ -147,12 +174,20 @@ const VIEWS = [
 function defaultTask(){
   return {id:'', desiredOutput:'', targetInteraction:'', temporalConstraints:{}, postActionState:{}, allowablePerturbation:{}};
 }
+// ---------- oggetti semantici (PLAN-001, slice 2) ----------
+const SEM_TYPES = {states:'S',movements:'M',conditions:'C',transitions:'T',constraints:'L',vectors:'V',annotations:'A'};
+function defaultSem(){ return {states:[],movements:[],conditions:[],transitions:[],constraints:[],vectors:[],annotations:[]}; }
+
 function ensureIds(){
   state.keyframes.forEach(k=>{ if(typeof k.id!=='string') k.id = uid('KF'); });
   state.rotations.forEach(r=>{ if(typeof r.id!=='string') r.id = uid('E'); });
+  if(state.sem) Object.entries(state.sem).forEach(([kind,arr])=>
+    arr.forEach(o=>{ if(typeof o.id!=='string') o.id = uid(SEM_TYPES[kind]||'X'); }));
 }
 function resyncCounters(){
-  state.keyframes.concat(state.rotations).forEach(o=>{
+  const all = state.keyframes.concat(state.rotations);
+  if(state.sem) Object.values(state.sem).forEach(arr=>all.push(...arr));
+  all.forEach(o=>{
     const m = /^([A-Z]+)(\d+)$/.exec(String(o.id||''));
     if(m) _counters[m[1]] = Math.max(_counters[m[1]]||0, +m[2]);
   });
@@ -168,6 +203,7 @@ let state = {
   rotations: [
     {id:uid('E'), bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}
   ],
+  sem: defaultSem(),
   currentTime: 0,
   selectedRotId: null,
   playing: false
@@ -210,15 +246,15 @@ function buildCanonical(){
     task: state.task || defaultTask(),
     skeleton: SKELETON,
     views: VIEWS.map(v=>({id:v.id, label:v.label, projection:'orthographic', axes:v.axes.map(i=>AXES[i])})),
-    keyframes: sortedKf().map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic||'IPO'})),
-    events: state.rotations.map(r=>({id:r.id, type:'axial_rotation', segment:r.bone, label:r.label, start:r.start, end:r.end, epistemic:r.epistemic||'IPO'})),
-    states: [],
-    movements: [],
-    conditions: [],
-    transitions: [],
-    constraints: [],
-    vectors: [],
-    annotations: [],
+    keyframes: sortedKf().map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic||'IPO', provenance:k.provenance||'authored'})),
+    events: state.rotations.map(r=>({id:r.id, type:'axial_rotation', segment:r.bone, label:r.label, start:r.start, end:r.end, epistemic:r.epistemic||'IPO', provenance:r.provenance||'authored'})),
+    states: state.sem.states,
+    movements: state.sem.movements,
+    conditions: state.sem.conditions,
+    transitions: state.sem.transitions,
+    constraints: state.sem.constraints,
+    vectors: state.sem.vectors,
+    annotations: state.sem.annotations,
     sources: {}
   };
 }
@@ -230,9 +266,15 @@ function importModel(doc){
   if(!doc || typeof doc!=='object') return false;
   if(doc.schemaVersion===SCHEMA_VERSION || doc.schemaVersion===2){
     state.task = doc.task || defaultTask();
-    state.keyframes = (doc.keyframes||[]).map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), epistemic:k.epistemic}));
+    state.keyframes = (doc.keyframes||[]).map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), epistemic:k.epistemic, provenance:k.provenance}));
     state.rotations = (doc.events||[]).filter(e=>e.type==='axial_rotation')
-      .map(e=>({id:e.id, bone:e.segment, label:e.label, start:e.start, end:e.end, epistemic:e.epistemic}));
+      .map(e=>({id:e.id, bone:e.segment, label:e.label, start:e.start, end:e.end, epistemic:e.epistemic, provenance:e.provenance}));
+    const s=doc;
+    state.sem = {
+      states:s.states||[], movements:s.movements||[], conditions:s.conditions||[],
+      transitions:s.transitions||[], constraints:s.constraints||[],
+      vectors:s.vectors||[], annotations:s.annotations||[]
+    };
   } else {
     const kfs = Array.isArray(doc.keyframes) ? doc.keyframes : (Array.isArray(doc) ? doc : []);
     state.keyframes = kfs.map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), epistemic:k.epistemic}));
@@ -240,6 +282,7 @@ function importModel(doc){
       .map(a=>({bone:a.bone, label:a.name||a.label, start:a.start, end:a.end}));
     state.rotations = rots.map(r=>({id:r.id, bone:r.bone, label:r.label||r.name, start:r.start, end:r.end}));
     state.task = defaultTask();
+    state.sem = defaultSem();
   }
   ensureIds(); resyncCounters();
   state.keyframes.forEach(k=>enforceProportions(k.joints));
@@ -299,6 +342,33 @@ function renderViews(){
       const l=document.createElementNS(NS,'line');
       l.setAttribute('x1',p1[0]); l.setAttribute('y1',p1[1]); l.setAttribute('x2',p2[0]); l.setAttribute('y2',p2[1]);
       l.setAttribute('class','bone'); svg.appendChild(l);
+    });
+
+    // vincoli funzionali (LOCK) attivi al tempo corrente: evidenzia il segmento
+    state.sem.constraints.forEach(c=>{
+      if(state.currentTime < c.start || state.currentTime > c.end) return;
+      const pair=BONE_PAIRS[c.target]; if(!pair) return;
+      const p1=proj(joints[pair[0]],v), p2=proj(joints[pair[1]],v);
+      const l=document.createElementNS(NS,'line');
+      l.setAttribute('x1',p1[0]); l.setAttribute('y1',p1[1]); l.setAttribute('x2',p2[0]); l.setAttribute('y2',p2[1]);
+      l.setAttribute('class','lockseg'); svg.appendChild(l);
+    });
+
+    // vettori attivi al tempo corrente: freccia proiettata tra giunti
+    state.sem.vectors.forEach(vec=>{
+      if(state.currentTime < vec.startTime || state.currentTime > vec.endTime) return;
+      if(!joints[vec.from] || !joints[vec.to]) return;
+      const p1=proj(joints[vec.from],v), p2=proj(joints[vec.to],v);
+      const dx=p2[0]-p1[0], dy=p2[1]-p1[1], L=Math.hypot(dx,dy)||1;
+      const ux=dx/L, uy=dy/L, px=-uy, py=ux;
+      const g=document.createElementNS(NS,'g');
+      const l=document.createElementNS(NS,'line');
+      l.setAttribute('x1',p1[0]); l.setAttribute('y1',p1[1]); l.setAttribute('x2',p2[0]); l.setAttribute('y2',p2[1]);
+      l.setAttribute('class','vec'); g.appendChild(l);
+      const h=document.createElementNS(NS,'path');
+      h.setAttribute('d',`M ${p2[0]-ux*9+px*4} ${p2[1]-uy*9+py*4} L ${p2[0]} ${p2[1]} L ${p2[0]-ux*9-px*4} ${p2[1]-uy*9-py*4}`);
+      h.setAttribute('class','vec'); g.appendChild(h);
+      svg.appendChild(g);
     });
 
     JOINTS.forEach(j=>{
@@ -379,6 +449,56 @@ window.addEventListener('touchmove', e=>{ if(dragJoint && e.touches[0]) dragUpda
 window.addEventListener('mouseup', ()=>{ dragJoint=null; dragView=null; });
 window.addEventListener('touchend', ()=>{ dragJoint=null; dragView=null; });
 
+// ---------- SEMANTICA UI (S2) ----------
+function semNew(kind){
+  const t=Math.round(state.currentTime), id=uid(SEM_TYPES[kind]);
+  const base={id, epistemic:'IPO', provenance:'authored'};
+  switch(kind){
+    case 'states':      return {...base, label:'stato', time:t};
+    case 'movements':   return {...base, label:'movimento', fromTime:t, toTime:t+200};
+    case 'conditions':  return {...base, status:'unformalized', notes:'', predicates:[]};
+    case 'transitions': return {...base, from:'', movement:'', condition:'', to:'', intendedEffect:'', hypothesis:'', prediction:''};
+    case 'constraints': return {...base, type:'functional-lock', target:'elbow-wrist', start:t, end:t+200};
+    case 'vectors':     return {...base, from:'shoulder', to:'elbow', startTime:t, endTime:t+200, note:''};
+    case 'annotations': return {...base, text:'', time:t};
+  }
+}
+
+function renderSem(){
+  const list=document.getElementById('semList'); list.innerHTML='';
+  const mk=(tag)=>document.createElement(tag);
+  const num=(o,k)=>{ const i=mk('input'); i.type='number'; i.value=o[k]??0; i.title=k;
+    i.onchange=()=>{ o[k]=+i.value; renderAll(); persist(); }; return i; };
+  const txt=(o,k,ph)=>{ const i=mk('input'); i.type='text'; i.value=o[k]||''; i.placeholder=ph||k;
+    i.onchange=()=>{ o[k]=i.value; persist(); }; return i; };
+  const opt=(o,k,items,ph)=>{ const s=mk('select'); s.innerHTML=(ph?'<option value="">'+ph+'</option>':'')
+      +items.map(i=>'<option'+(o[k]===i?' selected':'')+'>'+i+'</option>').join('');
+    s.onchange=()=>{ o[k]=s.value; renderAll(); persist(); }; return s; };
+  const epi=(o)=>opt(o,'epistemic',['OSS','INT','IPO']);
+  const del=(kind,o)=>{ const b=mk('button'); b.textContent='✕'; b.className='del';
+    b.onclick=()=>{ state.sem[kind]=state.sem[kind].filter(x=>x!==o); renderAll(); persist(); }; return b; };
+  const row=(kind,o,els)=>{ const r=mk('div'); r.className='semrow';
+    const idEl=mk('span'); idEl.className='semid'; idEl.textContent=o.id; r.appendChild(idEl);
+    els.forEach(e=>r.appendChild(e)); r.appendChild(epi(o)); r.appendChild(del(kind,o)); list.appendChild(r); };
+
+  const sIds=state.sem.states.map(s=>s.id), mIds=state.sem.movements.map(m=>m.id), cIds=state.sem.conditions.map(c=>c.id);
+  state.sem.states.forEach(o=>row('states',o,[txt(o,'label','nome stato'),num(o,'time')]));
+  state.sem.movements.forEach(o=>row('movements',o,[txt(o,'label','nome movimento'),num(o,'fromTime'),num(o,'toTime')]));
+  state.sem.conditions.forEach(o=>row('conditions',o,[opt(o,'status',['unformalized','formalized']),txt(o,'notes','descrizione condizione')]));
+  state.sem.transitions.forEach(o=>row('transitions',o,[
+    opt(o,'from',sIds,'S da'), opt(o,'movement',mIds,'M'), opt(o,'condition',cIds,'C'), opt(o,'to',sIds,'S a'),
+    txt(o,'hypothesis','ipotesi'), txt(o,'prediction','predizione')]));
+  state.sem.constraints.forEach(o=>row('constraints',o,[opt(o,'target',Object.keys(BONE_PAIRS)),num(o,'start'),num(o,'end')]));
+  state.sem.vectors.forEach(o=>row('vectors',o,[opt(o,'from',JOINTS),opt(o,'to',JOINTS),num(o,'startTime'),num(o,'endTime')]));
+  state.sem.annotations.forEach(o=>row('annotations',o,[txt(o,'text','testo'),num(o,'time')]));
+}
+
+document.getElementById('semAdd').addEventListener('click', ()=>{
+  const kind=document.getElementById('semType').value;
+  state.sem[kind].push(semNew(kind));
+  renderAll(); persist();
+});
+
 // ---------- TIMELINE ----------
 const tl=document.getElementById('tl');
 let dragKf=null, dragRot=null;
@@ -394,7 +514,7 @@ function renderTimeline(){
   track.setAttribute('class','tltrack');
   track.addEventListener('dblclick', e=>{
     const [x]=svgPoint(tl,e.clientX,e.clientY); const t=xToTime(x);
-    if(!exactKfAtTime(t)){ state.keyframes.push({time:t, joints:JSON.parse(JSON.stringify(interpJoints(t)))}); state.currentTime=t; renderAll(); persist(); }
+    if(!exactKfAtTime(t)){ state.keyframes.push({id:uid('KF'), time:t, joints:JSON.parse(JSON.stringify(interpJoints(t)))}); state.currentTime=t; renderAll(); persist(); }
   });
   tl.appendChild(track);
 
@@ -460,7 +580,7 @@ window.addEventListener('touchend', ()=>{ dragKf=null; dragRot=null; });
 // ---------- CONTROLS ----------
 document.getElementById('addKf').addEventListener('click', ()=>{
   const t=state.currentTime;
-  if(!exactKfAtTime(t)){ state.keyframes.push({time:t, joints:JSON.parse(JSON.stringify(interpJoints(t)))}); renderAll(); persist(); }
+  if(!exactKfAtTime(t)){ state.keyframes.push({id:uid('KF'), time:t, joints:JSON.parse(JSON.stringify(interpJoints(t)))}); renderAll(); persist(); }
 });
 document.getElementById('delKf').addEventListener('click', ()=>{
   const kf=exactKfAtTime(state.currentTime);
@@ -534,6 +654,7 @@ document.getElementById('resetDefault').addEventListener('click', ()=>{
   ];
   state.keyframes.forEach(k=>enforceProportions(k.joints));
   state.rotations=[{id:uid('E'), bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}];
+  state.sem=defaultSem();
   state.currentTime=0; state.selectedRotId=null; renderAll(); persist();
 });
 
@@ -543,7 +664,7 @@ function tryAutoLoad(){
     if(raw){ const d=JSON.parse(raw); if((d.keyframes||[]).length>=2) importModel(d); }
   }catch(e){}
 }
-function renderAll(){ renderViews(); renderTimeline(); }
+function renderAll(){ renderViews(); renderTimeline(); renderSem(); }
 tryAutoLoad();
 renderAll();
 </script>

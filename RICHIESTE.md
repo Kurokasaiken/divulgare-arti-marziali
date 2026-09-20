@@ -284,3 +284,27 @@ da + punti d vista, dovremmo prepararli."*
   tutte le viste aggiornate dalla stessa posa; export = una sola
   configurazione articolare, nessuna copia per-vista; round-trip
   export→import→export; migrazioni OK.
+
+---
+
+## R-013 — Quarta revisione: allinea wiki/06 a S3, poi S2 semantico minimale
+
+**Richiesta:** revisione esterna post-S3 (sessione 2026-09-20): wiki/06 ancora
+indietro rispetto al codice (v2, multi-vista come "manca"); raccomandazione
+*"a questo punto io farei S2"* come authoring semantico minimale — `C` non
+matematico subito (`unformalized` + predicati opzionali dopo); provenance
+authored/measured; attenzione a catene di spiegazioni tutte derivate dalla
+stessa ipotesi non verificata.
+**Data:** 2026-09-20
+**Stato:** `fatta`
+**Cosa è successo:**
+- `wiki/06` allineato: store 3D + tre proiezioni + schema v3 spostati in
+  "implementato"; limite "coordinate autoriali ≠ misura" dichiarato.
+- `tools/biomech-editor.html` S2 minimale: pannello semantico con oggetti
+  S/M/C/T/LOCK/vettori/annotazioni — epistemic editabile, provenance
+  `authored`, transizioni collegate per ID con campi
+  intendedEffect/hypothesis/prediction; condizioni `unformalized` di default;
+  LOCK evidenzia il segmento, vettori disegnati come frecce nelle tre viste;
+  fix: keyframe creati da dblclick/+Keyframe ora hanno ID stabile.
+- Gate S2 verificato (puppeteer): catena S1→M1→C1→S2 ricostruibile dal solo
+  JSON; round-trip semantico OK; render vettori/LOCK attivi/inattivi OK.
