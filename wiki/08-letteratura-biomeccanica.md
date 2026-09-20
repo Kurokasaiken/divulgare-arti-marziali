@@ -31,6 +31,8 @@ di compattarsi per accelerare"). Sono livelli diversi di spiegazione.
 | Sovrapposizione temporale | simultaneous vs consecutive motion sequencing (Fuchs 2018) | relazione diretta | **mappato parzialmente** |
 | Anticipazione `t − Δt` | anticipatory postural adjustments / feedforward | probabile parente | da verificare |
 | Stato post-azione | task-dependent terminal state / recovery posture | da mappare | aperto |
+| `C` come frontiera nello spazio delle **variabili di task** (non articolare) | UCM / motor abundance (Latash): conta se una variazione modifica una variabile di performance rilevante | riformulazione promettente | **aperto** |
+| Transizioni intra-gesto come eventi discreti | submovements (reaching); movement intermittency: discreto apparente può emergere da feedback continuo + ritardi | **attenzione**: decomposizione analitica ≠ architettura discreta | **aperto** → spike C-02 |
 
 ## Cosa è già noto
 

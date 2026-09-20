@@ -72,8 +72,14 @@ misurato).
 - Quali variabili devono assumere quali valori perché `C` sia vera — `C` resta
   "quando è pronto" finché non diventa un predicato su quantità misurabili.
 - Quale variabile determina il cambio di strategia ("ultimo momento utile") —
-  potrebbe non essere una singola variabile ma una **frontiera nello spazio
-  degli stati** (switching boundary), non una soglia.
+  potrebbe non essere una singola variabile ma una **frontiera**, e forse non
+  nello spazio articolare ma nello **spazio delle variabili di task**
+  (ipotesi UCM — `spikes/C-CONDITION-01.md`, rev. avversariale §4).
+- **Se le transizioni intra-gesto siano eventi discreti o emergano da
+  controllo continuo** — problema di identificabilità: continuo / continuo+
+  switching / gerarchico possono produrre la stessa cinematica. Discreto
+  apparente ≠ discreto nel controller (submovements, intermittency).
+  → `spikes/C-02-continuous-vs-triggered.md`
 - Quanto il braccio compatto contribuisca causalmente alla velocità di rotazione
   (momento d'inerzia ridotto ≠ rotazione accelerata dimostrata).
 - Se la forza del force couple contralaterale esiste e quanto contribuisce.
@@ -90,15 +96,20 @@ misurato).
 
 ## PROSSIMA DOMANDA
 
-> **La forma di `C` è nota (initiation set / guard condition). La domanda
-> operativa ora è: quali variabili misurabili definiscono la regione di
-> commutazione nel gesto reale — e la semantica forward-looking (utilità
-> rispetto allo stato post-azione) aggiunge qualcosa che `I`/`β` standard non
-> coprono?**
+> **La forma di `C` è nota (initiation set / guard condition). Le domande
+> aperte ora sono due: (a) quali variabili misurabili definiscono la regione
+> di commutazione — e in quale spazio (articolare o variabili di task)?;
+> (b) il modello `C` aggiunge capacità esplicativa rispetto a un modello
+> continuo equivalente — esiste una frontiera predittiva nel gesto reale?**
 
-Spike attivo: `spikes/C-CONDITION-01.md`. Restano da verificare le priors
-motor-control sulle fonti primarie (Bernstein, Newell, Latash) e decidere se
-"utile per il successivo" richiede più dei formalismi esistenti.
+Ipotesi di lavoro (formulazione difendibile, da rev. avversariale): *una
+rappresentazione tramite transizioni condizionate dallo stato può essere
+utile come livello descrittivo; resta da determinare se corrispondano a
+meccanismi discreti o emergano da controllo continuo.*
+
+Spike: `C-CONDITION-01` (verdetto in) → `C-02` (continuo vs triggered,
+**aperto** — la domanda empirica centrale). Restano da verificare le priors
+motor-control sulle fonti primarie (Bernstein, Newell, Latash).
 
 **Il collo di bottiglia ora è scientifico, non software.** Non aggiungere pagine
-o feature: la prossima attività è completare lo spike C-CONDITION-01.
+o feature: la prossima attività è lo spike C-02.

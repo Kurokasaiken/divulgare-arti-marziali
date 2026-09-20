@@ -270,6 +270,12 @@ vettori), **temporale** (eventi, sovrapposizioni), **epistemico-causale**
 modello *contestabile* da un'AI — non solo descrivibile. Le predizioni si
 collegano al registro ipotesi (`wiki/03`) tramite ID (`H1`, …).
 
+**Requisito emerso da spike C-CONDITION-01 (rev. avversariale):** lo schema
+deve permettere **ipotesi concorrenti sullo stesso sottoinsieme di OSS** —
+es. "modello continuo" vs "modello a transizioni" sullo stesso movimento,
+ciascuna con le proprie predizioni. La funzione scientifica dell'editor è il
+confronto predizione→misura, non la dimostrazione di una teoria unica.
+
 Per i vettori, inizialmente basta una rappresentazione esplicita:
 
 JSON
