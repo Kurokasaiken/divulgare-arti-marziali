@@ -48,6 +48,32 @@ popolamento manuale della semantica.
 la differenza pratica è se le prime transizioni reali guidano la semantica
 (import prima) o la semantica guida l'import (semantica prima).
 
+### Risoluzione del fork (2026-09-20, desiderata v2)
+
+Il Director ha riprioritizzato: *"Mi interessa prima di tutto fare slice dei
+movimenti singoli, senza mostrare tutto il corpo e lavorare su quelli, il
+movimento intero sarà alla fine."*
+
+Con il corpo intero deprioritizzato, l'argomento portante di "import prima"
+(lo store 3D full-body come prerequisito della multi-vista) perde forza:
+l'import non serve più a forzare il modello 3D. Il fork si risolve verso
+**semantica prima**, con import **riscoped** ai soli landmark del movimento
+singolo — e come supporto all'authoring, non come prerequisito architetturale.
+
+Sequenza rivista:
+
+```
+S1  Contratto JSON canonico + store unico (invariato — accordo unanime)
+S2  Authoring semantico sul movimento singolo: S→M→C→S, vettori, LOCK,
+    eventi, OSS/INT/IPO   ← il cuore del lavoro
+S3  Multi-vista ortografica sulla catena singola (store condiviso)
+S4  Import mocap riscoped: landmark del solo movimento (es. braccio)
+    → keyframe OSS, come materiale per INT/IPO
+S5  Condizioni C verificabili sui dati OSS
+S6  Diagnostica limite 17fps / eventuale cattura più densa
+S7  Corpo intero — ultimo passo
+```
+
 ---
 
 1. Ordine delle capability

@@ -122,6 +122,22 @@ per questo plan"* (sessione 2026-09-20)
 
 ---
 
+## R-005 — Riprioritizzazione: movimenti singoli prima, corpo intero alla fine
+
+**Richiesta:** *"assolutamente è più che secondario. Mi interessa prima di
+tutto fare slice dei movimenti singoli, senza mostrare tutto il corpo e
+lavorare su quelli, il movimento intero sarà alla fine"* (2026-09-20)
+**Data:** 2026-09-20
+**Stato:** `fatta`
+**Cosa è successo:**
+- Drift vs desiderata v1 registrato in `.mw/runs/2026-09-20-drift/`.
+- Desiderata **v2 FROZEN** in `.mw/desiderata.md`: movimenti singoli prima,
+  corpo intero alla fine, import mocap riscoped ai landmark del movimento.
+- PLAN-001 aggiornato: fork "import vs semantica" risolto → semantica prima;
+  sequenza rivista S1–S7 con corpo intero ultimo.
+
+---
+
 ## R-003 — Evolvere biomech-editor verso la lavagna del modello
 
 **Richiesta:** *"Intanto per studiare la teoria biomeccanica dobbiamo fare un

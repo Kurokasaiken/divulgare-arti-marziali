@@ -17,6 +17,12 @@ updated: 2026-09-20
   S6 condizioni C verificabili → S7 diagnostica limite 17fps.
   Decisione chiave: **schema semantico prima dell'import** (l'importer deve
   sapere in quale modello scrivere); niente DSL prematura.
+- **Desiderata v2 FROZEN** (riprioritizzazione Director): movimenti singoli
+  prima, senza corpo intero; corpo intero = ultimo passo; import mocap riscoped
+  ai landmark del singolo movimento. Drift log in `.mw/runs/2026-09-20-drift/`.
+- PLAN-001 aggiornato: il fork multi-AI "import vs semantica" si risolve verso
+  semantica prima (lo store 3D full-body non è più prerequisito); sequenza
+  rivista con corpo intero in S7.
 - In attesa: approvazione PLAN-001 prima di implementare S1.
 
 ## Stato aggiunto 2026-09-20 (revisione R-003 + install MW + desiderata candidata)
