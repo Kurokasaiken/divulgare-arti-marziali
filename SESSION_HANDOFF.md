@@ -164,3 +164,15 @@ updated: 2026-09-20
 - `wiki/00` (gerarchia obiettivi), `wiki/04` (scheda analisi per fase/anello),
   `wiki/09` (nota direzione) aggiornati. Spike C-02 resta aperto ma
   subordinato: serve per scrivere affermazioni causali corrette.
+
+## Aggiunta (2026-09-20, scheda Anello 2 compilata)
+
+- Prima applicazione della scheda di analisi (FASE 3): Anello 2, retrazione +
+  LOCK braccio sinistro, in `wiki/02`. Risultato utile: separa nettamente OSS
+  (4 items con provenienza), INT/IPO meccaniche (5 candidati funzione, nessuno
+  scelto a priori), e 4 cose "non dimostrate".
+- Due predizioni registrate in `wiki/03`: P-A2.1 (LOCK → timing rotazione,
+  serve cattura densa) e **P-A2.2 (I stimato da landmark+antropometria —
+  calcolabile SUBITO** — primo test quantitativo possibile senza strumenti).
+- Per S2: la scheda mostra che il JSON deve sostenere campi `cost`,
+  `alternatives`, `predictions` con ID — oltre a forces/moments.

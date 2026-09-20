@@ -34,6 +34,14 @@ diventerebbe una razionalizzazione della tecnica già conosciuta.
 - **Configurazione strutturale finale** — trasmissione del carico con poca
   attività muscolare, verificata finora solo empiricamente (spinta contro parete).
 
+### Predizioni dalla scheda Anello 2 (`02`, scheda compilata)
+
+- **P-A2.1** — ritardare/eliminare il LOCK dovrebbe alterare timing o velocità
+  della rotazione del tronco. Verifica: confronto varianti a cattura densa.
+- **P-A2.2** — `I_tronco+braccio` stimato (landmark + tabelle antropometriche)
+  più basso con retrazione completa. **Calcolabile subito**, senza nuova
+  strumentazione — primo candidato di verifica quantitativa.
+
 ## Errori già corretti nella discussione
 
 - ~~"il braccio compatto aumenta il momento angolare"~~ → improprio se il sistema
