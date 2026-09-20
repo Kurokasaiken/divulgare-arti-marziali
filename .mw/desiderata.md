@@ -64,3 +64,47 @@ keyframe OSS, con annotazioni INT/IPO sopra.<!-- REQ:v1-lean --> Una capability
 alla volta; niente animazione né estetica divulgativa in questo tool.<!--
 REQ:v1-corpo-fasi --> Modello corpo intero fase per fase, riusando il pipeline
 mocap esistente.
+
+---
+
+## v2
+
+**Status:** FROZEN
+**Date:** 2026-09-20
+**Authorized by:** Fausto
+**Reason:** riprioritizzazione esplicita in sessione — "assolutamente è più che
+secondario. Mi interessa prima di tutto fare slice dei movimenti singoli, senza
+mostrare tutto il corpo e lavorare su quelli, il movimento intero sarà alla
+fine." Drift log: `.mw/runs/2026-09-20-drift/desiderata-drift.md`.
+**Sostituisce:** v1 resta valida su tutto tranne l'ordine: il corpo intero
+passa da capability in roadmap a obiettivo finale.
+
+**Intento del Director:**
+Lavorare prima sui **movimenti singoli** (slice di movimento, es. la catena del
+pugno) senza mostrare tutto il corpo; il movimento intero/corpo completo arriva
+alla fine.
+
+*User-stated:*
+"assolutamente è più che secondario. Mi interessa prima di tutto fare slice dei
+movimenti singoli, senza mostrare tutto il corpo e lavorare su quelli, il
+movimento intero sarà alla fine."
+
+*AI inference:*
+- Il lavoro primario è sul modello semantico `S→M→C→S` applicato a movimenti
+  singoli (la catena già presente nell'editor), non sul corpo intero.
+- L'import mocap resta rilevante ma riscoped: si possono importare solo i
+  landmark del movimento singolo (es. braccio) dai captures esistenti.
+- La multi-vista resta utile ma applicata alla catena singola, con store
+  condiviso.
+- Full body = ultimo passo.
+
+*Still unresolved:*
+- Import dei soli landmark del movimento singolo: utile subito o dopo
+  l'authoring semantico?
+
+**Formulazione approvata (FROZEN):**
+|<!-- REQ:v2-movimenti-singoli --> Prima i movimenti singoli: slice semantiche
+S→M→C→S su catene parziali (es. braccio del pugno), senza mostrare il corpo
+intero.<!-- REQ:v2-corpo-alla-fine --> Il modello corpo intero è l'ultimo
+passo, non un prerequisito.<!-- REQ:v2-import-riscoped --> L'import mocap, se
+fatto, è riscoped ai landmark del movimento singolo.
