@@ -15,6 +15,13 @@
 Struttura di lavoro (gli "anelli" non sono rigidamente sequenziali — vedi
 `01-modello-movimento.md`):
 
+> **Nota di rappresentazione:** la lista 0–6 rischia di essere *letta* come
+> sequenza anatomica anche se non lo è. Alla prossima revisione valutare di
+> trasformare la rappresentazione principale da "anelli del pugno" a **rete di
+> transizioni del pugno** (nodi = configurazioni, archi = movimenti condizionati
+> che possono sovrapporsi), con gli anelli come viste analitiche sulla rete.
+> Non urgente — è il passo concettuale successivo già segnato.
+
 ```
 0. regolazione distanza / spostamento del baricentro
 1. ancoraggio piede sinistro
@@ -172,9 +179,12 @@ Transizione **geometrica + temporale**, non una semplice "fase del pugno". (INT/
 Candidati per la variabile che determina il cambio di strategia: posizione e
 velocità della mano, traiettoria desiderata, errore dalla configurazione target,
 costo temporale, costo energetico, stato post-azione richiesto. Non
-necessariamente tutti — prima bisogna capire **quale** variabile commuta.
-Possibile parente in letteratura: switching condition in optimal control —
-da mappare (`08-letteratura-biomeccanica.md`).
+necessariamente tutti — e **potrebbe non essere una singola variabile**: la
+commutazione potrebbe vivere su una **frontiera nello spazio degli stati**
+(switching boundary), una superficie che separa "continuare è utile" da
+"transitare è utile". Esplorare questa forma prima di cercare una soglia
+scalare. Possibile parente in letteratura: switching condition in optimal
+control — da mappare (`08-letteratura-biomeccanica.md`).
 
 ### Traiettoria della mano
 

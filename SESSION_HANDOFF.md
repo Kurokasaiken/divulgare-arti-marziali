@@ -6,6 +6,29 @@ updated: 2026-09-20
 
 # Session Handoff
 
+## Stato aggiunto 2026-09-20 (revisione R-003 + install MW + desiderata candidata)
+
+- **Mind Weaver installato** (`install.sh --with-runtime`): skill, runtime
+  proxy, pointer IDE. `.env`/providers/sessions gitignored; repo pubblico pulito.
+- **R-003 applicata** (seconda revisione Director, 15 punti):
+  - `08` — "nessuna fonte" → stato ricerca non conclusione; **questione teorica
+    centrale** (Cᵢ nuovo vs rappresentazione di noti); corpus motor-control da
+    mappare; **spike Fuchs 2018** come tabella confronto.
+  - `09` — CONOSCIAMO con una fonte per claim; effective mass come costrutto
+    dibattuto; OSS diviso `[video]`/`[empirico]`; prossima domanda = "cosa è
+    noto / combinazione / nuovo"; collo di bottiglia = scientifico.
+  - `01` — `C` come congiunzione di predicati misurabili o switching boundary.
+  - `02` — anelli → rete di transizioni (direzione futura); ultimo momento
+    utile come frontiera possibile.
+- **Dati mocap verificati** in camera-fighter: `mac/captures/pugno_destro/`,
+  5 rep msgpack, 33 landmark MediaPipe, ~17fps misurato, ~4s/rep — importabile
+  come keyframe OSS (`07` aggiornato).
+- **Desiderata v3 candidata** (tool + modello corpo intero via mocap): in attesa
+  di approvazione Director → poi freeze in `.mw/desiderata.md` e R-XXX.
+- **Direzione corrente:** il progetto è entrato nella fase "confronto
+  dell'intuizione con la letteratura". Prossimo passo = spike Fuchs 2018 +
+  mapping motor-control, NON altro software.
+
 ## Stato aggiunto 2026-09-20 (revisione R-002: mapping scientifico + formalizzazione)
 
 - Applicata la critica in 15 punti del Director:
