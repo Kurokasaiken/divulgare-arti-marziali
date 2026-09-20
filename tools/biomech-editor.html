@@ -463,8 +463,8 @@ function semNew(kind){
   const t=Math.round(state.currentTime), id=uid(SEM_TYPES[kind]);
   const base={id, epistemic:'IPO', provenance:'authored'};
   switch(kind){
-    case 'states':      return {...base, label:'stato', time:t};
-    case 'movements':   return {...base, label:'movimento', fromTime:t, toTime:t+200};
+    case 'states':      return {...base, label:'stato', time:t, keyframeId:''};
+    case 'movements':   return {...base, label:'movimento', fromTime:t, toTime:t+200, representationStatus:'represented'};
     case 'conditions':  return {...base, status:'unformalized', notes:'', predicates:[]};
     case 'transitions': return {...base, from:'', movement:'', condition:'', to:'', intendedEffect:'', hypothesis:'', prediction:''};
     case 'constraints': return {...base, type:'functional-lock', target:'elbow-wrist', start:t, end:t+200};
@@ -491,13 +491,16 @@ function renderSem(){
     els.forEach(e=>r.appendChild(e)); r.appendChild(epi(o)); r.appendChild(del(kind,o)); list.appendChild(r); };
 
   const sIds=state.sem.states.map(s=>s.id), mIds=state.sem.movements.map(m=>m.id), cIds=state.sem.conditions.map(c=>c.id);
-  state.sem.states.forEach(o=>row('states',o,[txt(o,'label','nome stato'),num(o,'time')]));
-  state.sem.movements.forEach(o=>row('movements',o,[txt(o,'label','nome movimento'),num(o,'fromTime'),num(o,'toTime')]));
+  const kfIds=sortedKf().map(k=>k.id);
+  state.sem.states.forEach(o=>row('states',o,[txt(o,'label','nome stato'),num(o,'time'),opt(o,'keyframeId',kfIds,'keyframe')]));
+  state.sem.movements.forEach(o=>row('movements',o,[txt(o,'label','nome movimento'),num(o,'fromTime'),num(o,'toTime'),
+    opt(o,'representationStatus',['represented','not_available'],'repr.')]));
   state.sem.conditions.forEach(o=>row('conditions',o,[opt(o,'status',['unformalized','formalized']),txt(o,'notes','descrizione condizione')]));
   state.sem.transitions.forEach(o=>row('transitions',o,[
     opt(o,'from',sIds,'S da'), opt(o,'movement',mIds,'M'), opt(o,'condition',cIds,'C'), opt(o,'to',sIds,'S a'),
     txt(o,'hypothesis','ipotesi'), txt(o,'prediction','predizione')]));
-  state.sem.constraints.forEach(o=>row('constraints',o,[opt(o,'target',Object.keys(BONE_PAIRS)),num(o,'start'),num(o,'end')]));
+  state.sem.constraints.forEach(o=>row('constraints',o,[opt(o,'target',Object.keys(BONE_PAIRS)),num(o,'start'),num(o,'end'),
+    opt(o,'associatedState',sIds,'stato'),txt(o,'role','ruolo')]));
   state.sem.vectors.forEach(o=>row('vectors',o,[opt(o,'mode',['joint-to-joint','displacement']),opt(o,'from',JOINTS),opt(o,'to',JOINTS),num(o,'startTime'),num(o,'endTime')]));
   state.sem.annotations.forEach(o=>row('annotations',o,[txt(o,'text','testo'),num(o,'time')]));
 }

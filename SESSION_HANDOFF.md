@@ -206,3 +206,11 @@ updated: 2026-09-20
 - Limite noto: stato↔keyframe legati solo per time implicito.
 - Criterio di riuscita dichiarato dal Director: JSON+visualizzazione devono
   bastare a un lettore esterno — il test umano resta da fare.
+
+## Aggiunta (2026-09-20, fix S2 post-lettura a freddo — R-015)
+
+- Tre correzioni: state.keyframeId esplicito; movement.representationStatus
+  (not_available + reason); LOCK associatedState/role (start/end = validita'
+  del vincolo, puo' attraversare transizioni). Bozza aggiornata, round-trip OK.
+- S2 FERMATA per direttiva: prossimo test = lettura a freddo del JSON da parte
+  di un esterno; dove si rompe, si corregge il modello dati — non il disegno.

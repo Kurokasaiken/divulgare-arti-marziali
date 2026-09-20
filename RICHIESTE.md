@@ -332,3 +332,22 @@ ricostruire esattamente cosa stiamo dicendo?"* (2026-09-20)
   supinazione renderizzati nelle 3 viste.
 - Limite emerso (registrato in wiki/02): legame stato↔keyframe implicito via
   `time` — `state.keyframeId` esplicito sarebbe meno ambiguo.
+
+---
+
+## R-015 — Correzioni S2 dalla lettura a freddo (3 fix, poi stop)
+
+**Richiesta:** revisione esterna della bozza Anello 2 (sessione 2026-09-20):
+tre ambiguità strutturali da correggere — (A) `state.keyframeId` esplicito;
+(B) `M2.representationStatus: not_available` + reason (non inventare il
+tronco); (C) LOCK: start/end = validità del vincolo + `associatedState`/`role`.
+Poi: *"fermerei S2"* — il test ha trovato ambiguità reali senza inventare
+teoria; prossimo passo = test esterno a freddo del JSON.
+**Data:** 2026-09-20
+**Stato:** `fatta`
+**Cosa è successo:**
+- Editor: select `keyframeId` sugli stati, `representationStatus` sui
+  movimenti, `associatedState`/`role` sui vincoli — tutto passa nel canonico.
+- `anello-2-retrazione.json` v2: S1→KF1, S2→KF2, S3→KF3; M2 dichiarato fuori
+  scope skeleton; L1 con associatedState S2 + role constrain-next-transition.
+- Verificato: campi preservati nel round-trip export→import.
