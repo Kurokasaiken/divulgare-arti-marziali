@@ -126,6 +126,124 @@ mano    ←──── V₂
 V₁ ≈ V₂        (relazione geometrica del modello, IPO — non legge biomeccanica)
 ```
 
+### Scheda di analisi compilata — Anello 2 (prima applicazione del formato `04`)
+
+> Prima compilazione della scheda di analisi per fase/anello (FASE 3, `04`).
+> Serve a verificare quali campi il modello/JSON deve sostenere — e a separare
+> ciò che sappiamo da ciò che la spiegazione pretende.
+
+**1. COSA SUCCEDE? (OSS, con provenienza)**
+
+- `[video]` il gomito percorre una traiettoria posteriore approssimativamente
+  arcuata, da guardia a configurazione terminale.
+- `[video]` retrazione e supinazione avvengono nella stessa finestra
+  temporale (evento combinato, non sequenziale).
+- `[video]` la mano resta aperta, poi si chiude rapidamente quando la
+  traiettoria è stabile.
+- `[empirico]` la configurazione finale trasmette carico con poca attività
+  muscolare *percepita* (prova contro parete — sensazione, non EMG).
+
+**2. CINEMATICA**
+
+- Posizioni: gomito da avanti → posteriore; polso segue il gomito; mano
+  aperta → pugno chiuso.
+- Traiettoria del gomito: arcuata (forma esatta da verificare sui dati).
+- Relazione temporale: la fine della retrazione è ~contemporanea all'inizio
+  della rotazione tronco/bacino (sovrapposizione da quantificare).
+- **Limite dichiarato:** a ~17 fps (Δt ≈ 59 ms) la chiusura rapida della mano
+  e la transizione retrazione→rotazione sono *temporalmente ambigue* —
+  velocità e ω di quegli eventi non sono misurabili sui dati attuali.
+
+**3. FORZE/MOMENTI COINVOLTI** — *interamente INT/IPO: nessuna misura di forza.*
+
+- τ = r × F rispetto all'asse verticale di rotazione tronco/bacino: la
+  retrazione del braccio possiede momento angolare proprio attorno a
+  quell'asse.
+- Domande fisiche aperte: la retrazione **trasferisce** momento angolare al
+  tronco (conservazione/trasferimento di L in catena)? Serve un modello
+  segmentale con masse e inertie — i soli landmark non bastano.
+- Compattezza: braccio retratto vicino all'asse → può ridurre il momento
+  d'inerzia `I` del sistema tronco+braccio → a parità di τ, ω potenzialmente
+  maggiore (IPO — dipende dalla dinamica complessiva, non dalla sola I).
+- A fine corsa la configurazione diventa parte della struttura che trasmette
+  carico (vincolo, non più generatore di moto).
+
+**4. FUNZIONE MECCANICA — candidati (non scelta a priori)**
+
+- produrre momento angolare controrotatorio sul tronco;
+- limitare un DOF → configurazione-vincolo per la rotazione successiva;
+- ridurre `I` rispetto all'asse di rotazione;
+- stabilizzare il lato sinistro mentre il destro accelera;
+- preparare la configurazione strutturale finale (Anello 6).
+
+**5. COSTO**
+
+- Tempo dedicato alla retrazione vs anticipazione del pugno (costo temporale).
+- Energia muscolare per retrazione + tenuta della configurazione.
+- Il LOCK consuma un DOF: quel grado non contribuisce più al moto.
+- Eventuale perturbazione posturale se la retrazione sbilancia il sistema.
+
+**6. PERCHÉ QUESTA CONFIGURAZIONE?**
+
+- Perché arcuata e non rettilinea? (INT: l'arco forse combina retrazione e
+  rotazione — da verificare).
+- Perché mano aperta fino a traiettoria stabile? (INT del progetto: la
+  chiusura come evento rapido differito).
+- Perché il LOCK coincide ~con l'inizio della rotazione, non dopo?
+
+**7. EFFETTO SULLA FASE SUCCESSIVA**
+
+- Configura il lato sinistro come riferimento/vincolo durante la rotazione
+  del bacino (INT).
+- Alimenta l'ipotesi della coppia contralaterale sul bacino (piede sx
+  posteriore + piede dx anteriore — IPO, serve GRF).
+- V₁ ≈ V₂: la direzione della retrazione anticipa quella finale del pugno
+  (relazione geometrica, IPO).
+
+**8. ALTERNATIVE**
+
+- Retratta poi ruota (seriale, ~CSM) vs sovrapposta (~SSM) — Fuchs 2018:
+  entrambe documentate, nessuna universalmente superiore.
+- Rotazione con braccio non retratto → `I` più alto (previsione calcolabile).
+- Mano sempre chiusa o sempre aperta vs chiusura differita.
+- Nessuna retrazione (pugno "singolo").
+
+**9. COSA SA LA LETTERATURA?**
+
+- Fuchs 2018: in CSM esiste il *backswing* di spalla/gomito — la nostra
+  "retrazione" ha un parente documentato in letteratura sullo striking.
+- Martins et al. (choku-zuki): *bracing* dell'estremità prossimale — affine
+  al nostro LOCK funzionale.
+- APA/feedforward: la retrazione potrebbe essere preparazione posturale
+  anticipata alla rotazione.
+- Trasferimento di momento angolare nella catena cinetica: concetto noto in
+  biomeccanica dello striking (mapping da completare in `08`).
+
+**10. COSA STIAMO IPOTIZZANDO? (IPO + predizioni)**
+
+- H1, H3 + "il LOCK facilita la rotazione del tronco" (registro `03`).
+- **Predizione P-A2.1:** ritardare o eliminare il LOCK/retrazione dovrebbe
+  alterare il timing o la velocità della rotazione del tronco — falsificabile
+  con confronto di varianti a cattura densa.
+- **Predizione P-A2.2:** un modello segmentale con tabelle antropometriche +
+  posizioni landmark dovrebbe stimare `I_tronco+braccio` più basso con
+  retrazione completa — **calcolabile subito**, senza nuova strumentazione.
+
+**11. COME POTREMMO MISURARLO?**
+
+- Subito: stima di `I` da landmark + tabelle antropometriche (P-A2.2).
+- Serve: cattura ≥100–240 fps per chiusura mano e transizione LOCK→rotazione;
+  cinematica 3D; GRF per la coppia contralaterale; EMG per "poca attività
+  muscolare".
+
+**12. COSA NON DIMOSTRIAMO ANCORA**
+
+- Che il LOCK sia *causalmente* necessario alla rotazione (vs semplice
+  sovrapposizione temporale).
+- Che la retrazione trasferisca momento utile al tronco.
+- Che "poca attività muscolare" sia vera (percepito ≠ EMG).
+- Quale delle funzioni candidate (punto 4) sia quella reale.
+
 ## Anello 3 — Bacino
 
 Quando il braccio sinistro raggiunge la configurazione terminale, nella
