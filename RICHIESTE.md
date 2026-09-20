@@ -157,7 +157,10 @@ lavorare su quelli, il movimento intero sarà alla fine"* (2026-09-20)
 
 ---
 
-## R-003 — Evolvere biomech-editor verso la lavagna del modello
+## R-007 — Evolvere biomech-editor verso la lavagna del modello
+
+*(originariamente registrata come secondo "R-003" — rinumerata R-007 il
+2026-09-20 perché l'ID collidevano con R-003 "Seconda revisione")*
 
 **Richiesta:** *"Intanto per studiare la teoria biomeccanica dobbiamo fare un
 tool che indichi precisamente le cose e che possa anche dare informazioni precise
@@ -166,7 +169,28 @@ contemporaneamente è interessante. [...] poco alla volta dovremo fare un modell
 di tutto il corpo, separatamente (fase per fase), ma per quello completo
 potremmo partire dal mio progetto con motion capture."*
 **Data:** 2026-09-20
-**Stato:** `aperta`
-**Desiderata:** v1 FROZEN — `.mw/desiderata.md`
-**Cosa manca:** scelta della prima slice (import-dati vs authoring-semantico) e
-piano di implementazione.
+**Stato:** `in corso` (PLAN-001 approvato, S1 fatta)
+**Desiderata:** v1+v2 FROZEN — `.mw/desiderata.md` (v2 riprioritizza: movimenti
+singoli prima, corpo intero alla fine)
+
+---
+
+## R-008 — Terza revisione: fix governance + spike scientifico C-CONDITION-01
+
+**Richiesta:** revisione esterna del repository (sessione 2026-09-20): duplicato
+R-003, desiderata v1→v2 in PLAN-001, gate scientifico prima di S5, regola "la UI
+non determina la teoria", formulazioni INT troppo assertive in `02`, supinazione
+come rappresentazione non ontologia, e *"il prossimo lavoro dovrebbe essere
+SPIKE SCIENTIFICO 01 — What exactly is C?"*.
+**Data:** 2026-09-20
+**Stato:** `in corso`
+**Cosa è successo:**
+- Fix: R-003 duplicato rinumerato R-007; PLAN-001 dichiara desiderata v1+v2;
+  S5 spezzata in S5a (spike) / S5b (schema) / S5c (verifica) con gate esplicito.
+- Regola "la UI non determina la teoria" aggiunta ad `AGENTS.md`.
+- `02`: supinazione = scelta di rappresentazione; piede e tronco riformulati
+  come INT del progetto con funzioni candidate esplicite.
+- Spike `spikes/C-CONDITION-01.md` creato e avviato: tabella Fuchs 2018
+  compilata (abstract) → sovrapposizione parziale, novità non chiusa;
+  mappatura preliminare motor-control (priors da verificare); nota Q3 su
+  guard condition in sistemi ibridi.

@@ -2,7 +2,10 @@
 
 **Stato:** `approvato` (Director, 2026-09-20 — "approvo il plan")
 **Data:** 2026-09-20
-**Desiderata:** `.mw/desiderata.md` v1 FROZEN
+**Desiderata:**
+- `.mw/desiderata.md` **v1 FROZEN** — capability complessive del tool
+- `.mw/desiderata.md` **v2 FROZEN** — ordine/priorità aggiornato (movimenti
+  singoli prima; corpo intero alla fine; import riscoped)
 **Provenienza:** deliberazione multi-AI web (`mw-iterative-deliberate --phase plan`,
 transport web via sessioni personali Chrome CDP). Run 1 (`plan-v1-tool/`): panel
 A=chatgpt + B=gemini-web — il testo sotto è `final.md` di quella run.
@@ -69,10 +72,23 @@ S2  Authoring semantico sul movimento singolo: S→M→C→S, vettori, LOCK,
 S3  Multi-vista ortografica sulla catena singola (store condiviso)
 S4  Import mocap riscoped: landmark del solo movimento (es. braccio)
     → keyframe OSS, come materiale per INT/IPO
-S5  Condizioni C verificabili sui dati OSS
+S5a Spike scientifico: definizione candidata di C   ← GATE, non opzionale
+S5b Formalizzazione implementabile (schema predicati)
+S5c Verifica sui dati OSS
 S6  Diagnostica limite 17fps / eventuale cattura più densa
 S7  Corpo intero — ultimo passo
 ```
+
+**Gate esplicito su S5:** S5b non inizia prima che lo spike `C-CONDITION-01`
+(`spikes/C-CONDITION-01.md`) abbia prodotto una definizione candidata di `C`
+confrontata con la letteratura. Altrimenti si rischia di implementare
+`C = threshold(...)` prima di sapere se `C` è rappresentabile come predicato —
+cioè di trasformare una questione scientifica aperta in una feature software.
+
+**Regola trasversale (livello ricerca vs livello rappresentazione):** la UI non
+deve determinare la teoria. Se una condizione reale non è rappresentabile bene
+nel JSON attuale, si cambia il modello dati — non si semplifica la teoria per
+adattarla all'editor.
 
 ---
 

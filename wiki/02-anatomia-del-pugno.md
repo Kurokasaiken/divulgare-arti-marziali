@@ -66,12 +66,13 @@ parte anteriore del corpo. (INT)
 piede sinistro → gamba → bacino → tronco → arto superiore
 ```
 
-Il piede non è semplicemente "appoggiato": diventa parte del sistema che permette
-di generare forze, vincolare il corpo, controllare il movimento del bacino e
-fornire una base alla transizione successiva. (INT)
+Il progetto interpreta il piede come parte del sistema che *può* contribuire a
+generare forze, vincolare il corpo, controllare il movimento del bacino e
+preparare la transizione successiva. (INT)
 
-La quantificazione del contributo alla rotazione richiede GRF e cinematica 3D.
-(IPO, non verificata con i dati attuali)
+Quale di queste funzioni sia effettivamente necessaria — e in che misura — è
+IPO. La quantificazione del contributo alla rotazione richiede GRF e cinematica
+3D. (IPO, non verificata con i dati attuali)
 
 ## Anello 2 — Braccio sinistro
 
@@ -84,7 +85,9 @@ punto-iniziale → punto-finale; la funzione esatta dell'arco è INT).
 ### Retrazione + supinazione: evento combinato
 
 Non `retraggo → poi supino`, ma **retrarre + supinare nella stessa finestra
-temporale** (OSS). La supinazione è un **evento temporale**, non uno stato finale:
+temporale** (OSS). *Nel nostro modello* la supinazione viene rappresentata come
+**evento temporale**, anziché come proprietà della configurazione finale —
+questa è una scelta di rappresentazione, non una proprietà biomeccanica:
 
 ```
 inizio supinazione → progressione → fine supinazione
@@ -146,11 +149,12 @@ rotazione" è IPO, non conclusione.
 
 ## Anello 4 — Tronco
 
-Né completamente rigido né completamente rilassato: **struttura dinamicamente
-organizzata** che consente trasferimento e coordinamento tra parte inferiore e
-superiore (INT). Deve simultaneamente: consentire la rotazione, trasferire
-movimento/forze, mantenere una configurazione utile, non produrre perturbazione
-posturale inutile.
+Il progetto interpreta il tronco come **struttura dinamicamente organizzata** —
+né completamente rigida né completamente rilassata — che consentirebbe
+trasferimento e coordinamento tra parte inferiore e superiore (INT del
+progetto, non operazionalizzata). Funzioni candidate da verificare: consentire
+la rotazione, trasferire movimento/forze, mantenere una configurazione utile,
+non produrre perturbazione posturale inutile.
 
 ## Anello 5 — Spalla destra e mano destra
 

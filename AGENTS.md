@@ -35,6 +35,11 @@ Il progetto è la **ricerca/formalizzazione del movimento**. Lo strumento visual
 ("Motion Mechanics Lab") è ausiliario: serve a rendere il modello leggibile, non è
 il progetto. Vedi [`wiki/06-strumento-visuale.md`](wiki/06-strumento-visuale.md).
 
+**La UI non determina la teoria.** Se una condizione o relazione reale non è
+rappresentabile bene nel formato dati attuale, si cambia il modello dati — non si
+semplifica la teoria per adattarla all'editor. Livello ricerca (cosa è `C`) e
+livello rappresentazione (come serializziamo `C`) non si invertono.
+
 ## Modalità lean
 
 Struttura minima: niente `plans/`, `execution/`, skill o runtime finché un'esigenza

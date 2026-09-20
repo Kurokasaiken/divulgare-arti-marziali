@@ -114,6 +114,11 @@ postural adjustments.
 
 ### Spike scientifico proposto: Fuchs 2018 vs il nostro modello
 
+→ **Spike aperto: [`spikes/C-CONDITION-01.md`](../spikes/C-CONDITION-01.md)**.
+Primo risultato (abstract): sovrapposizione reale ma parziale — SSM copre
+"inizio non seriale", non "innesco condizionato da condizione sufficiente". La
+questione novità non è chiusa.
+
 Domanda: *la nostra transizione condizionata è realmente distinta dalla
 simultaneous motion sequencing?*
 
