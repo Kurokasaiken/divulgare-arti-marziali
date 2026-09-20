@@ -6,6 +6,32 @@ updated: 2026-09-20
 
 # Session Handoff
 
+## Stato aggiunto 2026-09-20 (revisione R-002: mapping scientifico + formalizzazione)
+
+- Applicata la critica in 15 punti del Director:
+  - **Nuova `wiki/08-letteratura-biomeccanica.md`**: le 4 categorie esplicative
+    (meccanica/biomeccanica/motor control/modello), tabella di mapping concetti
+    nostri ↔ esistenti, fonti reali raccolte (Fuchs 2018 CSM/SSM come riferimento
+    più vicino alla sovrapposizione; studi effective mass MDPI 2024/2025;
+    Walilko 2005; Turner 2015 controverso; Bernstein/Newell/Todorov-Jordan/
+    Latash da mappare).
+  - **Nuova `wiki/09-stato-della-ricerca.md`**: conosciamo / osservato /
+    interpretato / ipotizziamo / non sappiamo / da verificare / prossima domanda.
+  - `01-modello-movimento.md`: "principio dei gradi di libertà" declassato a
+    **working principle** finché il mapping non è completo; aggiunta notazione
+    minima S→M→C→S con debito esplicito sulla definizione operativa di
+    "condizione sufficiente"; nuove sezioni **TASK** (struttura del compito) e
+    **stato post-azione** come output del modello.
+  - `02-anatomia-del-pugno.md`: disclaimer rafforzato (decomposizione di lavoro,
+    non biomeccanica stabilita; anello = unità analitica); "ultimo momento
+    utile" con debito di formalizzazione e variabili candidate.
+  - `05-glossario.md`: compito, stato post-azione, principio di lavoro, anello
+    come unità analitica, 4 categorie.
+- **Prossima attività indicata dal Director:** portare il progetto dalla
+  formulazione concettuale alla mappatura rigorosa con biomeccanica e motor
+  control — capire cosa è già noto con altro nome, cosa è combinazione di
+  noti, cosa è eventualmente nuovo. Primo passo concreto: leggere Fuchs 2018.
+
 ## Stato aggiunto 2026-09-20 (strumento visuale v0)
 
 - **`tools/biomech-editor.html`** importato (prototipo fatto da Claude, da

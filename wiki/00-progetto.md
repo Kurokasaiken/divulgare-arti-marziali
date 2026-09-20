@@ -79,3 +79,8 @@ freedom*, *task constraints*, *motor control* — ma nessuno, preso singolarment
 descrive la **logica temporale** delle transizioni che questo progetto cerca di
 formalizzare. La terminologia candidata va verificata contro la letteratura prima
 di essere adottata: non inventare termini che la letteratura già copre.
+
+Il mapping concetto-per-concetto e le fonti raccolte sono in
+`08-letteratura-biomeccanica.md`. Lì sono separate anche le **quattro categorie
+esplicative** — meccanica, biomeccanica, motor control, modello del progetto —
+che non vanno confuse tra loro.

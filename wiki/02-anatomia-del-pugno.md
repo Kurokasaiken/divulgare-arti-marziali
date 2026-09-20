@@ -1,8 +1,15 @@
 # 02 — Anatomia del pugno: scomposizione per anelli
 
-> **Attenzione epistemica.** Questa è l'*ipotesi corrente di organizzazione del
-> movimento*, da verificare — non una verità biomeccanica stabilita. Ogni
-> affermazione porta il suo livello: **OSS** osservazione, **INT**
+> **Attenzione epistemica.** Questa è **la decomposizione proposta dal progetto
+> per poter studiare il pugno** — non "la biomeccanica del pugno". È la nostra
+> ipotesi corrente di organizzazione del movimento, da verificare. Un lettore
+> esterno non deve interpretarla come descrizione biomeccanica stabilita.
+>
+> "Anello" è la **nostra unità analitica** — un segmento della catena di
+> configurazioni scelto per comodità di studio. Non è una categoria anatomica o
+> biomeccanica riconosciuta.
+>
+> Ogni affermazione porta il suo livello: **OSS** osservazione, **INT**
 > interpretazione, **IPO** ipotesi.
 
 Struttura di lavoro (gli "anelli" non sono rigidamente sequenziali — vedi
@@ -160,6 +167,14 @@ spalla continua → raggiunge condizione utile → mano accelera → traiettoria
 ```
 
 Transizione **geometrica + temporale**, non una semplice "fase del pugno". (INT/IPO)
+
+**Debito di formalizzazione:** la condizione di cambio va resa operativa.
+Candidati per la variabile che determina il cambio di strategia: posizione e
+velocità della mano, traiettoria desiderata, errore dalla configurazione target,
+costo temporale, costo energetico, stato post-azione richiesto. Non
+necessariamente tutti — prima bisogna capire **quale** variabile commuta.
+Possibile parente in letteratura: switching condition in optimal control —
+da mappare (`08-letteratura-biomeccanica.md`).
 
 ### Traiettoria della mano
 
