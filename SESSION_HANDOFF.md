@@ -141,3 +141,17 @@ updated: 2026-09-20
 - wiki/08 (mapping aggiornato) e wiki/09 (NON SAPPIAMO + PROSSIMA DOMANDA
   aggiornate) riflettono il risultato. Restano priors da verificare su fonti
   primarie (Bernstein, Newell, Latash).
+
+## Aggiunta (2026-09-20, revisione avversariale → spike C-02)
+
+- Review esterna sul verdetto di C-01: regge, ma il problema vero è
+  l'**identificabilità** — continuo / continuo+switching / gerarchico
+  producono la stessa cinematica. Regola: decomposizione analitica ≠
+  architettura discreta (submovements, intermittency).
+- Nuova direzione: `C` forse frontiera nello **spazio delle variabili di
+  task** (UCM/Latash), non articolare. Domanda chiave: "il modello C aggiunge
+  capacità esplicativa rispetto a un continuo equivalente?" → test della
+  frontiera predittiva.
+- Creato `spikes/C-02-continuous-vs-triggered.md` (aperto). Aggiornati
+  wiki/08, wiki/09, PLAN-001 (ipotesi concorrenti sugli stessi OSS).
+- Prossimo passo: eseguire lo spike C-02 (rassegna evidenza sperimentale).

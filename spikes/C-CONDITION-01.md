@@ -185,3 +185,80 @@ esistenti in letteratura.
 - [x] esito: `C` nuovo / combinazione di noti / già coperto → **combinazione di
   noti + nucleo distintivo ipotetico** (semantica forward-looking su
   post-action state) → aggiornare `wiki/08`
+
+## Revisione avversariale (esterna, 2026-09-20)
+
+Il verdetto regge ma va raffinato su cinque punti.
+
+### 1. Tre modelli concorrenti, stessa cinematica
+
+```
+MODELLO A — controllo continuo
+───────────────────────────────>   la "fase" emerge; non esiste switch
+
+MODELLO B — controllo continuo + switching
+─────────────────────┐
+                     └──────────>   C(s) innesca il cambio di politica
+
+MODELLO C — politica gerarchica (options)
+─── option A ─── C ─── option B ───
+```
+
+**Dal solo video cinematico A, B e C possono apparire identici.** Questo è il
+problema di identificabilità — probabilmente la difficoltà scientifica
+centrale del progetto in questa fase.
+
+### 2. Discreto apparente ≠ discreto nel controller
+
+- Letteratura sui **submovements** nel reaching: il movimento come somma di
+  componenti sovrapposte, con nuove componenti innescate da informazioni
+  cinematiche del movimento in corso — vicino alla nostra osservazione
+  "A continua + B inizia". Ma gli stessi autori sottolineano che la
+  decomposizione è un modello *analitico*, non la prova che il sistema
+  nervoso rappresenti il movimento come submovements.
+- Letteratura sulla **movement intermittency**: fenomeni apparentemente
+  discreti possono emergere da feedback continuo con ritardi, senza eventi
+  discreti nel controller.
+
+**Regola (da mantenere):** non assumere che una decomposizione analitica del
+movimento dimostri un'architettura discreta del controllo motorio.
+
+### 3. Formulazione difendibile dell'ipotesi
+
+Non: *"il movimento umano è composto da transizioni guard-triggered"*
+(troppo forte). Ma:
+
+> Una rappresentazione del movimento umano tramite transizioni condizionate
+> dallo stato può essere utile come livello descrittivo; resta da determinare
+> se tali transizioni corrispondano a meccanismi discreti di controllo oppure
+> emergano da dinamiche di controllo continuo.
+
+Questo rende il progetto **testabile**, non più debole.
+
+### 4. `C` nello spazio delle variabili di task (UCM / Latash)
+
+`C` potrebbe non essere una frontiera nello spazio degli stati corporei, ma
+nello **spazio delle variabili rilevanti per il compito**:
+
+```
+spazio articolare → spazio configurazioni → spazio variabili di task → C?
+```
+
+Si collega a UCM / motor abundance: conta non la configurazione articolare
+specifica, ma se una variazione modifica una variabile di performance
+rilevante. Direzione potenzialmente più promettente della soglia geometrica
+— da includere nel mapping Latash.
+
+### 5. La domanda scientifica principale emersa
+
+> **Il modello `C` aggiunge capacità esplicativa rispetto a un modello
+> continuo equivalente?**
+
+Test sperimentale candidato: su molte esecuzioni con condizioni iniziali
+diverse (`s₁→t₁`, `s₂→t₂`, …), esiste una **frontiera predittiva** — la
+posizione della transizione è predetta da variabili di stato *prima* che B
+inizi? Se il tempo di transizione è solo una funzione continua dello stato
+senza separazione significativa, la guardia è una discretizzazione utile, non
+un meccanismo. **Entrambi gli esiti sarebbero scientificamente interessanti.**
+
+→ Spike successivo: `spikes/C-02-continuous-vs-triggered.md`.
