@@ -6,6 +6,18 @@ updated: 2026-09-20
 
 # Session Handoff
 
+## Stato aggiunto 2026-09-20 (terza revisione + spike C-CONDITION-01)
+
+- **R-008 applicata**: R-003 duplicato → R-007; PLAN-001 desiderata v1+v2 e
+  gate S5a (spike prima dei predicati); regola "UI non determina la teoria" in
+  AGENTS; `02` — supinazione come rappresentazione, piede/tronco come INT.
+- **`spikes/C-CONDITION-01.md` aperto e avviato**: Fuchs 2018 (abstract)
+  compilato → SSM copre "inizio non seriale", NON "innesco da condizione
+  sufficiente" → novità non chiusa; mappatura preliminare motor-control
+  (priors); nota: `C` ≈ guard condition in sistemi ibridi (forma esiste, il
+  contenuto è la questione aperta).
+- Direzione: completare lo spike (letture fonti primarie Q2/Q3) prima di S2/S5b.
+
 ## Stato aggiunto 2026-09-20 (desiderata v1 FROZEN + PLAN-001 da deliberazione web)
 
 - **`.mw/desiderata.md` v1 FROZEN** — tool che esprime S→M→C→S, JSON come
