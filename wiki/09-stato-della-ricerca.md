@@ -113,3 +113,9 @@ motor-control sulle fonti primarie (Bernstein, Newell, Latash).
 
 **Il collo di bottiglia ora è scientifico, non software.** Non aggiungere pagine
 o feature: la prossima attività è lo spike C-02.
+
+> Nota di direzione (R-011, 2026-09-20): l'obiettivo primario è la
+> **spiegazione rigorosa della tecnica** (scheda di analisi in `04`), non la
+> novità di `C`. La questione discreto/continuo resta aperta ma subordinata:
+> serve a scrivere correttamente le affermazioni causali, non a rivendicare
+> una teoria.
