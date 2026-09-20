@@ -14,6 +14,7 @@ condizioni sono misurabili.
 | File/dir | Ruolo |
 |---|---|
 | `wiki/` | La conoscenza del progetto. Partire da `wiki/INDEX.md`. |
+| `tools/` | Strumenti di supporto. `biomech-editor.html` = lavagna biomeccanica v0 (aprire nel browser). |
 | `CANON.md` | Decisioni accettate. Solo con approvazione esplicita. |
 | `RICHIESTE.md` | Richieste esplicite del Director, con le sue parole. |
 | `SESSION_HANDOFF.md` | Stato del lavoro tra una sessione e l'altra. |

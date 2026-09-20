@@ -6,6 +6,15 @@ updated: 2026-09-20
 
 # Session Handoff
 
+## Stato aggiunto 2026-09-20 (strumento visuale v0)
+
+- **`tools/biomech-editor.html`** importato (prototipo fatto da Claude, da
+  `~/Downloads`). Editor keyframe self-contained: catena spalla→gomito→polso→
+  mano, proporzioni fisse, rotazioni assiali come annotazioni timeline, export
+  JSON, localStorage. Gap rispetto al modello annotati in
+  `wiki/06-strumento-visuale.md` (vettori, condizioni sufficienti, LOCK, viste,
+  segmenti oltre l'arto superiore).
+
 ## Stato aggiunto 2026-09-20 (bootstrap del progetto)
 
 - **Progetto creato** (R-001): struttura lean — README, AGENTS.md, CLAUDE.md,
