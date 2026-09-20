@@ -45,6 +45,35 @@ VECTOR PUGNO     ←────────
 scheletro semplificato + SVG + keyframe + timeline + vettori + archi +
 annotazioni + viste. Nient'altro per la prima versione.
 
+## Prototipo v0 — `tools/biomech-editor.html`
+
+Esiste già un primo prototipo: [`tools/biomech-editor.html`](../tools/biomech-editor.html)
+(file HTML singolo, zero dipendenze, prodotto da Claude e importato il
+2026-09-20). Si apre direttamente nel browser.
+
+Cosa fa già:
+
+- catena **spalla → gomito → polso → mano** con proporzioni umane fisse
+  (100 : 90 : 50);
+- **keyframe di posa** su timeline: giunti trascinabili, keyframe spostabili nel
+  tempo, doppio clic per aggiungerne;
+- **rotazioni assiali** come annotazioni sulla timeline (barra viola con
+  inizio/fine modificabili) — es. SUPINAZIONE 120→360 ms; scelta deliberata:
+  un overlay 2D non mostra la rotazione assiale reale, quindi è annotazione
+  indipendente dalla posa;
+- riproduzione della sequenza (Play);
+- traiettorie dei giunti come tratteggio;
+- export/import **JSON**, salvataggio locale (localStorage);
+- tema chiaro/scuro.
+
+Cosa manca rispetto al modello (gap noti, non richieste approvate):
+
+- vettori espliciti tra configurazioni (V₁ gomito ≈ V₂ pugno);
+- condizioni sufficienti / marker di transizione come oggetti propri;
+- LOCK/vincoli funzionali come eventi;
+- viste multiple e segmenti oltre l'arto superiore (bacino, gambe);
+- etichette OSS/INT/IPO sulle annotazioni.
+
 ## Cosa NON è
 
 - Non è il progetto: è subordinato alla ricerca.

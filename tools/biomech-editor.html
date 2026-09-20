@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Editor Biomeccanico — Keyframe</title>
+<style>
+:root{
+  --bg:#f4f3ef; --panel:#ffffff; --ink:#1c1c1c; --sub:#6b6b6b;
+  --line:#2b2b2b; --accent:#c65d3b; --accent2:#3b7dc6; --grid:#e2e0d8;
+  --kf:#2b2b2b; --kf-sel:#c65d3b; --track:#d8d5cb; --rot:#7a5fb0; --rot-sel:#5b3f91;
+  font-family:'Courier New',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#181715; --panel:#211f1c; --ink:#eee9e2; --sub:#9a9488;
+    --line:#eee9e2; --accent:#e08561; --accent2:#7db0e8; --grid:#302d28;
+    --kf:#eee9e2; --kf-sel:#e08561; --track:#3a362f; --rot:#a98ddb; --rot-sel:#c7aef0;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#181715; --panel:#211f1c; --ink:#eee9e2; --sub:#9a9488;
+  --line:#eee9e2; --accent:#e08561; --accent2:#7db0e8; --grid:#302d28;
+  --kf:#eee9e2; --kf-sel:#e08561; --track:#3a362f; --rot:#a98ddb; --rot-sel:#c7aef0;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);}
+body{padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); display:flex; flex-direction:column; min-height:100%;}
+header{padding:14px 18px 6px;}
+h1{font-size:15px; letter-spacing:.04em; margin:0; text-transform:uppercase;}
+.sub{font-size:11px; color:var(--sub); margin-top:3px;}
+main{flex:1; display:flex; flex-direction:column; gap:10px; padding:6px 18px 18px; max-width:920px; margin:0 auto; width:100%;}
+.panel{background:var(--panel); border:1px solid var(--grid); border-radius:2px;}
+#canvasWrap{padding:8px; overflow-x:auto;}
+svg{display:block; width:100%; height:auto;}
+.joint{cursor:grab; fill:var(--panel); stroke:var(--line); stroke-width:2;}
+.joint:active{cursor:grabbing;}
+.jlabel{font-size:11px; fill:var(--sub); font-family:inherit;}
+.bone{stroke:var(--line); stroke-width:3; fill:none; stroke-linecap:round;}
+.traj{stroke:var(--accent2); stroke-width:1.4; fill:none; stroke-dasharray:4 3; opacity:.85;}
+.trajdot{fill:var(--accent2); opacity:.6;}
+.rotIcon{fill:none; stroke:var(--rot); stroke-width:2;}
+.rotLabel{font-size:10px; fill:var(--rot); font-weight:bold; letter-spacing:.03em;}
+#timelineWrap{padding:12px 16px 14px;}
+.tl-row{display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;}
+select{font-family:inherit; font-size:11px; background:var(--panel); color:var(--ink); border:1px solid var(--line); padding:5px 6px; border-radius:2px;}
+button{font-family:inherit; font-size:11px; letter-spacing:.03em; text-transform:uppercase; background:var(--panel); color:var(--ink); border:1px solid var(--line); padding:6px 10px; border-radius:2px; cursor:pointer;}
+button:hover{background:var(--accent); border-color:var(--accent); color:#fff;}
+button.active{background:var(--accent); color:#fff; border-color:var(--accent);}
+button:disabled{opacity:.35; cursor:default; background:var(--panel); color:var(--ink);}
+#timeLabel{font-size:11px; color:var(--sub); margin-left:auto;}
+svg#tl{width:100%; height:96px; touch-action:none;}
+.tltrack{stroke:var(--track); stroke-width:3;}
+.kfdot{stroke:var(--kf); stroke-width:2; fill:var(--panel); cursor:pointer;}
+.kfdot.sel{fill:var(--kf-sel); stroke:var(--kf-sel);}
+.playhead{stroke:var(--accent); stroke-width:2;}
+.kftime{font-size:9px; fill:var(--sub);}
+.rotbar{stroke:var(--rot); stroke-width:7; stroke-linecap:round; cursor:pointer; opacity:.85;}
+.rotbar.sel{stroke:var(--rot-sel); opacity:1;}
+.rothandle{fill:var(--rot); stroke:var(--panel); stroke-width:1.5; cursor:ew-resize;}
+.rotbarlabel{font-size:9px; fill:var(--rot); font-weight:bold;}
+.hint{font-size:10.5px; color:var(--sub); line-height:1.5; padding:0 2px;}
+textarea{width:100%; font-family:inherit; font-size:10.5px; background:var(--bg); color:var(--ink); border:1px solid var(--grid); padding:8px; border-radius:2px; height:130px;}
+footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Editor Biomeccanico — Keyframe</h1>
+  <div class="sub">spalla → gomito → polso → mano · proporzioni umane fisse (100 : 90 : 50) · trascina i giunti su un keyframe selezionato</div>
+</header>
+<main>
+  <div class="panel" id="canvasWrap">
+    <svg id="canvas" viewBox="0 0 600 340"></svg>
+  </div>
+
+  <div class="panel" id="timelineWrap">
+    <div class="tl-row">
+      <button id="playBtn">▶ Play</button>
+      <button id="addKf">+ Keyframe</button>
+      <button id="delKf">✕ Elimina keyframe</button>
+      <span style="width:1px;height:18px;background:var(--grid);"></span>
+      <select id="boneSelect">
+        <option value="shoulder-elbow">Braccio (spalla–gomito)</option>
+        <option value="elbow-wrist" selected>Avambraccio (gomito–polso)</option>
+        <option value="wrist-hand">Mano (polso–mano)</option>
+      </select>
+      <button id="addRot">↻ + Rotazione</button>
+      <button id="delRot">✕ Elimina rotazione</button>
+      <span style="width:1px;height:18px;background:var(--grid);"></span>
+      <button id="jsonBtn">{ } JSON</button>
+      <span id="timeLabel">t = 0 ms</span>
+    </div>
+    <svg id="tl" viewBox="0 0 860 96" preserveAspectRatio="none"></svg>
+    <div class="hint">Riga superiore = keyframe di posa (clic = seleziona/sblocca drag giunti · trascina = sposta nel tempo · doppio clic sulla linea = nuovo keyframe). Riga inferiore viola = rotazioni assiali (clic sulla barra = seleziona · trascina le maniglie alle estremità = cambia inizio/fine). "+ Rotazione" crea una rotazione sul segmento scelto, da t attuale a t+200ms.</div>
+  </div>
+
+  <div class="panel" id="jsonPanel" style="display:none; padding:10px;">
+    <textarea id="jsonArea" readonly></textarea>
+    <div class="tl-row" style="margin-top:8px;">
+      <button id="copyJson">Copia</button>
+      <button id="saveLocal">Salva (locale)</button>
+      <button id="loadLocal">Carica (locale)</button>
+      <button id="resetDefault">Reset esempio</button>
+    </div>
+  </div>
+</main>
+<footer>proporzioni fisse tipo-umano · rotazioni come annotazioni indipendenti dalla posa (coerente col fatto che un overlay 2D non mostra la rotazione assiale reale)</footer>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const JOINTS=['shoulder','elbow','wrist','hand'];
+const LABELS={shoulder:'spalla',elbow:'gomito',wrist:'polso',hand:'mano'};
+// proporzioni umane approssimate, relative (braccio : avambraccio : mano)
+const LEN = {shoulderElbow:100, elbowWrist:90, wristHand:50};
+
+let state = {
+  keyframes: [
+    {time:0,   joints:{shoulder:[130,110], elbow:[228,141], wrist:[314,113], hand:[358,72]}},
+    {time:300, joints:{shoulder:[130,110], elbow:[199,196], wrist:[187,285], hand:[224,326]}},
+    {time:600, joints:{shoulder:[130,110], elbow:[220,155], wrist:[168,90],  hand:[125,50]}}
+  ],
+  rotations: [
+    {id:1, bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}
+  ],
+  currentTime: 0,
+  selectedRotId: null,
+  playing: false
+};
+
+function sortedKf(){ return [...state.keyframes].sort((a,b)=>a.time-b.time); }
+function maxScale(){
+  const ks=sortedKf();
+  const rMax = state.rotations.reduce((m,r)=>Math.max(m,r.end),0);
+  return Math.max(700, (ks[ks.length-1]?.time||0)+150, rMax+100);
+}
+
+// ---- vector helpers ----
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1]];
+const add=(a,b)=>[a[0]+b[0],a[1]+b[1]];
+const scl=(a,s)=>[a[0]*s,a[1]*s];
+const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+function norm(v){ const d=Math.hypot(v[0],v[1])||1; return [v[0]/d, v[1]/d]; }
+
+// applica proporzioni fisse ricostruendo la catena a partire dalla spalla
+function enforceProportions(joints){
+  const dEW = norm(sub(joints.elbow, joints.shoulder));
+  joints.elbow = add(joints.shoulder, scl(dEW, LEN.shoulderElbow));
+  const dWH = norm(sub(joints.wrist, joints.elbow));
+  joints.wrist = add(joints.elbow, scl(dWH, LEN.elbowWrist));
+  const dHH = norm(sub(joints.hand, joints.wrist));
+  joints.hand = add(joints.wrist, scl(dHH, LEN.wristHand));
+}
+// normalizza tutti i keyframe iniziali/importati alle proporzioni fisse
+state.keyframes.forEach(k=>enforceProportions(k.joints));
+
+function interpJoints(t){
+  const ks = sortedKf();
+  if(ks.length===0) return {};
+  if(t<=ks[0].time) return ks[0].joints;
+  if(t>=ks[ks.length-1].time) return ks[ks.length-1].joints;
+  let a=ks[0], b=ks[ks.length-1];
+  for(let i=0;i<ks.length-1;i++){ if(t>=ks[i].time && t<=ks[i+1].time){ a=ks[i]; b=ks[i+1]; break; } }
+  const span=(b.time-a.time)||1, f=(t-a.time)/span;
+  const out={};
+  JOINTS.forEach(j=>{ const p1=a.joints[j], p2=b.joints[j]; out[j]=[p1[0]+(p2[0]-p1[0])*f, p1[1]+(p2[1]-p1[1])*f]; });
+  return out;
+}
+function exactKfAtTime(t){ return state.keyframes.find(k=>k.time===t); }
+const BONE_PAIRS={'shoulder-elbow':['shoulder','elbow'],'elbow-wrist':['elbow','wrist'],'wrist-hand':['wrist','hand']};
+
+// ---------- CANVAS ----------
+const canvas = document.getElementById('canvas');
+let dragJoint=null;
+
+function renderCanvas(){
+  canvas.innerHTML='';
+  const joints = interpJoints(state.currentTime);
+  const editable = !!exactKfAtTime(state.currentTime);
+
+  const ks = sortedKf();
+  const pts = ks.map(k=>k.joints.elbow);
+  if(pts.length>1){
+    let d='M '+pts[0][0]+' '+pts[0][1];
+    for(let i=1;i<pts.length;i++) d+=' L '+pts[i][0]+' '+pts[i][1];
+    const path=document.createElementNS(NS,'path'); path.setAttribute('d',d); path.setAttribute('class','traj');
+    canvas.appendChild(path);
+  }
+  pts.forEach(p=>{ const c=document.createElementNS(NS,'circle'); c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',2.5); c.setAttribute('class','trajdot'); canvas.appendChild(c); });
+
+  [['shoulder','elbow'],['elbow','wrist'],['wrist','hand']].forEach(([j1,j2])=>{
+    const p1=joints[j1], p2=joints[j2];
+    const l=document.createElementNS(NS,'line');
+    l.setAttribute('x1',p1[0]); l.setAttribute('y1',p1[1]); l.setAttribute('x2',p2[0]); l.setAttribute('y2',p2[1]);
+    l.setAttribute('class','bone'); canvas.appendChild(l);
+  });
+
+  JOINTS.forEach(j=>{
+    const p=joints[j];
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',7); c.setAttribute('class','joint');
+    c.style.opacity = editable?1:0.55; c.dataset.joint=j;
+    c.addEventListener('mousedown', e=>{ if(editable){ dragJoint=j; e.preventDefault(); }});
+    c.addEventListener('touchstart', e=>{ if(editable){ dragJoint=j; }}, {passive:true});
+    canvas.appendChild(c);
+    const t=document.createElementNS(NS,'text'); t.setAttribute('x',p[0]+10); t.setAttribute('y',p[1]-8);
+    t.setAttribute('class','jlabel'); t.textContent=LABELS[j]; canvas.appendChild(t);
+  });
+
+  // annotazioni di rotazione attive al tempo corrente
+  state.rotations.forEach(r=>{
+    if(state.currentTime < r.start || state.currentTime > r.end) return;
+    const [j1,j2]=BONE_PAIRS[r.bone];
+    const p1=joints[j1], p2=joints[j2];
+    const mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
+    const progress=(state.currentTime-r.start)/((r.end-r.start)||1);
+    const g=document.createElementNS(NS,'g');
+    g.setAttribute('transform', `translate(${mx+18},${my-18}) rotate(${progress*360})`);
+    const path=document.createElementNS(NS,'path');
+    path.setAttribute('d','M 9 0 A 9 9 0 1 1 -6 -6.3');
+    path.setAttribute('class','rotIcon'); g.appendChild(path);
+    const arrow=document.createElementNS(NS,'path');
+    arrow.setAttribute('d','M -6 -6.3 L -10 -3 L -3 -2 Z');
+    arrow.setAttribute('fill','var(--rot)'); g.appendChild(arrow);
+    canvas.appendChild(g);
+    const lab=document.createElementNS(NS,'text');
+    lab.setAttribute('x',mx+18); lab.setAttribute('y',my-30);
+    lab.setAttribute('class','rotLabel'); lab.setAttribute('text-anchor','middle');
+    lab.textContent=r.label; canvas.appendChild(lab);
+  });
+}
+
+function svgPoint(svg, clientX, clientY){
+  const pt=svg.createSVGPoint(); pt.x=clientX; pt.y=clientY;
+  const p=pt.matrixTransform(svg.getScreenCTM().inverse());
+  return [p.x,p.y];
+}
+
+function dragUpdate(clientX, clientY){
+  const kf=exactKfAtTime(state.currentTime); if(!kf) return;
+  const [x,y]=svgPoint(canvas, clientX, clientY);
+  const j=kf.joints;
+  if(dragJoint==='shoulder'){
+    const delta=[x-j.shoulder[0], y-j.shoulder[1]];
+    JOINTS.forEach(k=>{ j[k]=[j[k][0]+delta[0], j[k][1]+delta[1]]; });
+  } else if(dragJoint==='elbow'){
+    const dir=norm(sub([x,y], j.shoulder));
+    const newElbow=add(j.shoulder, scl(dir, LEN.shoulderElbow));
+    const oldWristDir=norm(sub(j.wrist, j.elbow));
+    const oldHandDir=norm(sub(j.hand, j.wrist));
+    j.elbow=newElbow;
+    j.wrist=add(j.elbow, scl(oldWristDir, LEN.elbowWrist));
+    j.hand=add(j.wrist, scl(oldHandDir, LEN.wristHand));
+  } else if(dragJoint==='wrist'){
+    const dir=norm(sub([x,y], j.elbow));
+    const newWrist=add(j.elbow, scl(dir, LEN.elbowWrist));
+    const oldHandDir=norm(sub(j.hand, j.wrist));
+    j.wrist=newWrist;
+    j.hand=add(j.wrist, scl(oldHandDir, LEN.wristHand));
+  } else if(dragJoint==='hand'){
+    const dir=norm(sub([x,y], j.wrist));
+    j.hand=add(j.wrist, scl(dir, LEN.wristHand));
+  }
+  renderCanvas(); renderTimeline(); persist();
+}
+window.addEventListener('mousemove', e=>{ if(dragJoint) dragUpdate(e.clientX,e.clientY); });
+window.addEventListener('touchmove', e=>{ if(dragJoint && e.touches[0]) dragUpdate(e.touches[0].clientX,e.touches[0].clientY); });
+window.addEventListener('mouseup', ()=>{ dragJoint=null; });
+window.addEventListener('touchend', ()=>{ dragJoint=null; });
+
+// ---------- TIMELINE ----------
+const tl=document.getElementById('tl');
+let dragKf=null, dragRot=null;
+const TL_PAD=20, TL_W=820, KF_Y=22, ROT_Y=64;
+
+function timeToX(t){ return TL_PAD+(t/maxScale())*TL_W; }
+function xToTime(x){ return Math.max(0, Math.round(((x-TL_PAD)/TL_W)*maxScale()/10)*10); }
+
+function renderTimeline(){
+  tl.innerHTML='';
+  const track=document.createElementNS(NS,'line');
+  track.setAttribute('x1',TL_PAD); track.setAttribute('y1',KF_Y); track.setAttribute('x2',TL_PAD+TL_W); track.setAttribute('y2',KF_Y);
+  track.setAttribute('class','tltrack');
+  track.addEventListener('dblclick', e=>{
+    const [x]=svgPoint(tl,e.clientX,e.clientY); const t=xToTime(x);
+    if(!exactKfAtTime(t)){ state.keyframes.push({time:t, joints:JSON.parse(JSON.stringify(interpJoints(t)))}); state.currentTime=t; renderAll(); persist(); }
+  });
+  tl.appendChild(track);
+
+  const rtrack=document.createElementNS(NS,'line');
+  rtrack.setAttribute('x1',TL_PAD); rtrack.setAttribute('y1',ROT_Y); rtrack.setAttribute('x2',TL_PAD+TL_W); rtrack.setAttribute('y2',ROT_Y);
+  rtrack.setAttribute('class','tltrack'); tl.appendChild(rtrack);
+
+  sortedKf().forEach(k=>{
+    const x=timeToX(k.time);
+    const c=document.createElementNS(NS,'circle');
+    c.setAttribute('cx',x); c.setAttribute('cy',KF_Y); c.setAttribute('r',8);
+    c.setAttribute('class','kfdot'+(k.time===state.currentTime?' sel':''));
+    c.addEventListener('mousedown', e=>{ dragKf=k; state.currentTime=k.time; renderAll(); e.stopPropagation(); });
+    c.addEventListener('touchstart', e=>{ dragKf=k; state.currentTime=k.time; renderAll(); }, {passive:true});
+    tl.appendChild(c);
+    const lbl=document.createElementNS(NS,'text'); lbl.setAttribute('x',x); lbl.setAttribute('y',KF_Y+16);
+    lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('class','kftime'); lbl.textContent=k.time+' ms'; tl.appendChild(lbl);
+  });
+
+  state.rotations.forEach(r=>{
+    const x1=timeToX(r.start), x2=timeToX(r.end);
+    const bar=document.createElementNS(NS,'line');
+    bar.setAttribute('x1',x1); bar.setAttribute('y1',ROT_Y); bar.setAttribute('x2',x2); bar.setAttribute('y2',ROT_Y);
+    bar.setAttribute('class','rotbar'+(state.selectedRotId===r.id?' sel':''));
+    bar.addEventListener('mousedown', ()=>{ state.selectedRotId=r.id; renderTimeline(); });
+    tl.appendChild(bar);
+    [['start',x1],['end',x2]].forEach(([edge,x])=>{
+      const h=document.createElementNS(NS,'circle');
+      h.setAttribute('cx',x); h.setAttribute('cy',ROT_Y); h.setAttribute('r',6); h.setAttribute('class','rothandle');
+      h.addEventListener('mousedown', e=>{ dragRot={r,edge}; state.selectedRotId=r.id; renderTimeline(); e.stopPropagation(); });
+      h.addEventListener('touchstart', e=>{ dragRot={r,edge}; state.selectedRotId=r.id; renderTimeline(); }, {passive:true});
+      tl.appendChild(h);
+    });
+    const lbl=document.createElementNS(NS,'text'); lbl.setAttribute('x',(x1+x2)/2); lbl.setAttribute('y',ROT_Y+16);
+    lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('class','rotbarlabel'); lbl.textContent=r.label; tl.appendChild(lbl);
+  });
+
+  const px=timeToX(state.currentTime);
+  const ph=document.createElementNS(NS,'line'); ph.setAttribute('x1',px); ph.setAttribute('y1',6); ph.setAttribute('x2',px); ph.setAttribute('y2',80);
+  ph.setAttribute('class','playhead'); tl.appendChild(ph);
+
+  document.getElementById('timeLabel').textContent='t = '+Math.round(state.currentTime)+' ms'+(exactKfAtTime(state.currentTime)?' (keyframe · editabile)':' (interpolato)');
+  document.getElementById('delKf').disabled = state.keyframes.length<=2 || !exactKfAtTime(state.currentTime);
+  document.getElementById('delRot').disabled = state.selectedRotId===null;
+}
+
+tl.addEventListener('mousemove', e=>{
+  if(dragKf){ const [x]=svgPoint(tl,e.clientX,e.clientY); dragKf.time=xToTime(x); state.currentTime=dragKf.time; renderAll(); persist(); }
+  if(dragRot){ const [x]=svgPoint(tl,e.clientX,e.clientY); const t=xToTime(x); const r=dragRot.r;
+    if(dragRot.edge==='start') r.start=Math.min(t, r.end-10); else r.end=Math.max(t, r.start+10);
+    renderAll(); persist(); }
+});
+tl.addEventListener('touchmove', e=>{
+  if(!e.touches[0]) return;
+  if(dragKf){ const [x]=svgPoint(tl,e.touches[0].clientX,e.touches[0].clientY); dragKf.time=xToTime(x); state.currentTime=dragKf.time; renderAll(); persist(); }
+  if(dragRot){ const [x]=svgPoint(tl,e.touches[0].clientX,e.touches[0].clientY); const t=xToTime(x); const r=dragRot.r;
+    if(dragRot.edge==='start') r.start=Math.min(t, r.end-10); else r.end=Math.max(t, r.start+10);
+    renderAll(); persist(); }
+});
+window.addEventListener('mouseup', ()=>{ dragKf=null; dragRot=null; });
+window.addEventListener('touchend', ()=>{ dragKf=null; dragRot=null; });
+
+// ---------- CONTROLS ----------
+document.getElementById('addKf').addEventListener('click', ()=>{
+  const t=state.currentTime;
+  if(!exactKfAtTime(t)){ state.keyframes.push({time:t, joints:JSON.parse(JSON.stringify(interpJoints(t)))}); renderAll(); persist(); }
+});
+document.getElementById('delKf').addEventListener('click', ()=>{
+  const kf=exactKfAtTime(state.currentTime);
+  if(kf && state.keyframes.length>2){ state.keyframes=state.keyframes.filter(k=>k!==kf); state.currentTime=sortedKf()[0].time; renderAll(); persist(); }
+});
+document.getElementById('addRot').addEventListener('click', ()=>{
+  const label = prompt('Nome della rotazione (es. supinazione, pronazione, rotazione interna):','ROTAZIONE');
+  if(label===null) return;
+  const bone=document.getElementById('boneSelect').value;
+  const start=state.currentTime, end=start+200;
+  const id=Date.now();
+  state.rotations.push({id, bone, label: label.toUpperCase(), start, end});
+  state.selectedRotId=id; renderAll(); persist();
+});
+document.getElementById('delRot').addEventListener('click', ()=>{
+  if(state.selectedRotId!==null){ state.rotations=state.rotations.filter(r=>r.id!==state.selectedRotId); state.selectedRotId=null; renderAll(); persist(); }
+});
+
+let playStart=null, playFromTime=0;
+const playBtn=document.getElementById('playBtn');
+playBtn.addEventListener('click', ()=>{
+  state.playing=!state.playing;
+  if(state.playing){ playBtn.textContent='⏸ Pausa'; playBtn.classList.add('active');
+    playFromTime = state.currentTime>=maxScaleTop() ? 0 : state.currentTime; playStart=null; requestAnimationFrame(step);
+  } else { playBtn.textContent='▶ Play'; playBtn.classList.remove('active'); }
+});
+function maxScaleTop(){ const ks=sortedKf(); return ks[ks.length-1]?.time||0; }
+function step(ts){
+  if(!state.playing) return;
+  if(playStart===null) playStart=ts;
+  const elapsed=ts-playStart, top=maxScaleTop();
+  state.currentTime=Math.min(top, playFromTime+elapsed);
+  renderAll();
+  if(state.currentTime>=top){ state.playing=false; playBtn.textContent='▶ Play'; playBtn.classList.remove('active'); return; }
+  requestAnimationFrame(step);
+}
+
+document.getElementById('jsonBtn').addEventListener('click', ()=>{
+  const p=document.getElementById('jsonPanel');
+  p.style.display=p.style.display==='none'?'block':'none';
+  document.getElementById('jsonArea').value=JSON.stringify({
+    keyframes: sortedKf(),
+    annotations: state.rotations.map(r=>({type:'rotation', bone:r.bone, name:r.label, start:r.start, end:r.end}))
+  }, null, 2);
+});
+document.getElementById('copyJson').addEventListener('click', ()=>{
+  const ta=document.getElementById('jsonArea'); ta.select();
+  try{ navigator.clipboard.writeText(ta.value); }catch(e){ try{ document.execCommand('copy'); }catch(e2){} }
+});
+document.getElementById('saveLocal').addEventListener('click', ()=>{
+  try{ localStorage.setItem('biomech-kf', JSON.stringify({keyframes:state.keyframes, rotations:state.rotations})); alert('Salvato in locale su questo browser.'); }
+  catch(e){ alert('Salvataggio non riuscito.'); }
+});
+document.getElementById('loadLocal').addEventListener('click', ()=>{
+  try{ const raw=localStorage.getItem('biomech-kf');
+    if(raw){ const d=JSON.parse(raw); state.keyframes=d.keyframes||d; state.rotations=d.rotations||[]; state.currentTime=sortedKf()[0].time; renderAll(); }
+    else alert('Nessun salvataggio trovato.'); }
+  catch(e){ alert('Caricamento non riuscito.'); }
+});
+document.getElementById('resetDefault').addEventListener('click', ()=>{
+  state.keyframes=[
+    {time:0,   joints:{shoulder:[130,110], elbow:[228,141], wrist:[314,113], hand:[358,72]}},
+    {time:300, joints:{shoulder:[130,110], elbow:[199,196], wrist:[187,285], hand:[224,326]}},
+    {time:600, joints:{shoulder:[130,110], elbow:[220,155], wrist:[168,90],  hand:[125,50]}}
+  ];
+  state.keyframes.forEach(k=>enforceProportions(k.joints));
+  state.rotations=[{id:1, bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}];
+  state.currentTime=0; state.selectedRotId=null; renderAll(); persist();
+});
+
+function persist(){ try{ localStorage.setItem('biomech-kf-auto', JSON.stringify({keyframes:state.keyframes, rotations:state.rotations})); }catch(e){} }
+function tryAutoLoad(){
+  try{ const raw=localStorage.getItem('biomech-kf-auto');
+    if(raw){ const d=JSON.parse(raw); if(d.keyframes&&d.keyframes.length>=2){ state.keyframes=d.keyframes; state.rotations=d.rotations||[]; } }
+  }catch(e){}
+}
+function renderAll(){ renderCanvas(); renderTimeline(); }
+tryAutoLoad();
+renderAll();
+</script>
+</body>
+</html>
