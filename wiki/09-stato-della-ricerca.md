@@ -63,9 +63,12 @@ misurato).
 ## NON SAPPIAMO
 
 - **Se `Cᵢ` è nuovo o una rappresentazione di qualcosa che la letteratura chiama
-  già in altro modo** — questione teorica centrale (`08`). Candidati da
-  confrontare: switching/hybrid control, optimal feedback control, movement
-  primitives, uncontrolled manifold.
+  già in altro modo** — *risposta preliminare dello spike `C-CONDITION-01`:*
+  la **forma** esiste già (initiation set / termination condition, Sutton et
+  al. 1999; guard condition; entry-state conditions nei grafi di motion
+  primitives). Resta aperto il **contenuto** (quali variabili misurabili
+  definiscono la regione nel gesto umano) e la semantica forward-looking
+  (utilità rispetto allo stato post-azione).
 - Quali variabili devono assumere quali valori perché `C` sia vera — `C` resta
   "quando è pronto" finché non diventa un predicato su quantità misurabili.
 - Quale variabile determina il cambio di strategia ("ultimo momento utile") —
@@ -87,17 +90,15 @@ misurato).
 
 ## PROSSIMA DOMANDA
 
-> **Quale parte della nostra spiegazione è già conosciuta, quale è combinazione
-> di concetti conosciuti, e quale — eventualmente — introduce una formalizzazione
-> che la letteratura non offre?**
+> **La forma di `C` è nota (initiation set / guard condition). La domanda
+> operativa ora è: quali variabili misurabili definiscono la regione di
+> commutazione nel gesto reale — e la semantica forward-looking (utilità
+> rispetto allo stato post-azione) aggiunge qualcosa che `I`/`β` standard non
+> coprono?**
 
-Sotto-domanda operativa (spike): la nostra transizione condizionata è realmente
-distinta dalla *simultaneous motion sequencing* di Fuchs 2018? (tabella di
-confronto in `08-letteratura-biomeccanica.md`)
-
-E il passo successivo del modello: `C` vera quando quali proprietà misurabili
-soddisfano quali condizioni? Finché `C` è "quando è pronto", `S→M→C→S` è una
-metafora utile, non un modello.
+Spike attivo: `spikes/C-CONDITION-01.md`. Restano da verificare le priors
+motor-control sulle fonti primarie (Bernstein, Newell, Latash) e decidere se
+"utile per il successivo" richiede più dei formalismi esistenti.
 
 **Il collo di bottiglia ora è scientifico, non software.** Non aggiungere pagine
-o feature: la prossima attività è il mapping letteratura + lo spike Fuchs.
+o feature: la prossima attività è completare lo spike C-CONDITION-01.

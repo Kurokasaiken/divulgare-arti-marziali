@@ -22,10 +22,10 @@ di compattarsi per accelerare"). Sono livelli diversi di spiegazione.
 
 | Concetto nostro | Concetto esistente | Relazione | Stato |
 |---|---|---|---|
-| Transizione condizionata | — (non trovato equivalente diretto) | possibile contributo distintivo | **da verificare** |
+| Transizione condizionata (`C`) | initiation set / termination condition (options framework, Sutton-Precup-Singh 1999); guard condition (automata ibridi); entry-state transition conditions (grafi di motion primitives, robotica) | **forma già coperta** — resta aperto il contenuto (quali variabili definiscono la regione nel gesto umano) e la semantica forward-looking | **mappato** |
 | Configurazione terminale funzionale ("LOCK") | constraint / endpoint configuration | parziale / sovrapposta | da verificare |
-| Preservazione dei DOF | Bernstein's degrees-of-freedom problem; motor abundance | possibile relazione forte | da studiare |
-| Ultimo momento utile | ? — forse descritto in optimal control / switching | possibile equivalenza con switching condition | **aperto** |
+| Preservazione dei DOF | Bernstein's degrees-of-freedom problem; motor abundance; minimal intervention (Todorov & Jordan 2002) | relazione forte | da studiare |
+| Ultimo momento utile | switching boundary / guard set nello spazio degli stati | la *forma* è standard in hybrid control; la *sostanza* (frontiera empirica nel gesto umano) resta aperta | **forma mappata** |
 | Output utile sotto vincoli | task constraints (Newell); optimal feedback control | forte relazione | da formalizzare |
 | Stabilità vs output | postural control / whole-body dynamics | da mappare | aperto |
 | Sovrapposizione temporale | simultaneous vs consecutive motion sequencing (Fuchs 2018) | relazione diretta | **mappato parzialmente** |
@@ -71,7 +71,18 @@ di compattarsi per accelerare"). Sono livelli diversi di spiegazione.
 - Fuchs 2018 (CSM/SSM): la sovrapposizione temporale esiste in letteratura come
   *simultaneous initiation* — il nostro modello potrebbe essere una
   generalizzazione parametrica (non solo "tutto insieme" o "tutto in fila", ma
-  condizioni sufficienti che innescano transizioni parziali). **Da verificare.**
+  condizioni sufficienti che innescano transizioni parziali). **Verificato
+  (abstract): SSM copre "inizio non seriale", NON "innesco da condizione
+  sufficiente" — sovrapposizione parziale** (vedi `spikes/C-CONDITION-01.md`).
+- **Options framework** (Sutton, Precup & Singh 1999, *"Between MDPs and
+  semi-MDPs"*, AIJ): un'opzione è `⟨I, π, β⟩` — initiation set `I ⊆ S`,
+  policy π, termination condition β(s). `S→M→C→S` mappa quasi esattamente:
+  il movimento successivo è disponibile quando lo stato entra in `I` / il
+  corrente termina quando `β` scatta. **Forma di `C` già esistente.**
+- **Transition conditions tra motion primitives** (arXiv:2106.10310, robotica):
+  formalizzano quando una transizione A→B è disponibile — il flusso di A deve
+  raggiungere l'insieme d'ingresso di B; "Class 2" = solo in certi stati/tempi.
+  Quasi letteralmente la nostra `C` — ma in robotica, non motor control umano.
 - Task constraints (Newell 1986) e optimal feedback control (Todorov & Jordan
   2002): il nostro "output utile sotto vincoli + stato post-azione" è affine a
   *task-dependent optimization*. Il *minimal intervention principle* potrebbe
@@ -104,8 +115,15 @@ di compattarsi per accelerare"). Sono livelli diversi di spiegazione.
 > particolare rappresentazione di qualcosa che la letteratura chiama già in
 > altro modo?**
 
-Questa è adesso la principale questione teorica del progetto. Il mapping va
-esteso oltre la biomeccanica del pugno, in motor control / optimal control:
+Questa è adesso la principale questione teorica del progetto. **Risposta
+preliminare dello spike `C-CONDITION-01`:** la *forma* di `C` è già coperta
+(initiation set / termination condition / guard condition / entry-state
+conditions). Il possibile nucleo distintivo è ristretto: applicazione alla
+coordinazione intra-gesto umano + semantica forward-looking (utilità rispetto
+allo stato post-azione, non solo disponibilità della transizione).
+
+Il mapping va esteso oltre la biomeccanica del pugno, in motor control /
+optimal control:
 
 Bernstein (DOF problem) · Newell (task constraints) · Todorov & Jordan (optimal
 feedback control, minimal intervention) · Latash (motor abundance, uncontrolled
