@@ -46,6 +46,29 @@ La formulazione più generale del modello (vedi `01-modello-movimento.md`):
 > successiva, minimizzando il movimento non utile e rispettando i vincoli
 > meccanici, posturali e temporali del compito.
 
+## Gerarchia degli obiettivi (direzione del Director, 2026-09-20)
+
+L'obiettivo primario **non** è scoprire una nuova teoria del controllo motorio.
+È costruire una **descrizione scientificamente rigorosa della tecnica**, fase
+per fase, usando fisica e biomeccanica con la terminologia corretta (momento,
+momento torcente `τ = r × F`, impulso, quantità di moto) — non da maestro di
+arti marziali, ma "da scienziato": chiunque pratichi uno sport da combattimento
+deve poterne capire la teoria del movimento, con i dubbi già sviscerati.
+
+Ordine:
+
+1. **Spiegare rigorosamente la tecnica** — ogni scelta definita fisicamente,
+   descritta biomeccanicamente, motivata rispetto all'obiettivo, distinta
+   dalle alternative, falsificabile quando è causale.
+2. Identificare ciò che la letteratura già sa (usare i termini esistenti
+   invece di inventarne).
+3. Identificare le lacune della spiegazione.
+4. Solo alla fine: valutare se resta qualcosa di realmente nuovo.
+
+Conseguenza: scoprire che `C` ha precedenti in letteratura **non danneggia**
+il progetto — è il funzionamento previsto. La novità è un possibile
+sottoprodotto, non il motore.
+
 ## Definizione di "ottimale"
 
 Non: massima forza, massima velocità, massima massa efficace, massima stabilità

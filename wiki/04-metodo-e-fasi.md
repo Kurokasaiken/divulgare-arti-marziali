@@ -47,6 +47,37 @@ Anello per anello (vedi `02-anatomia-del-pugno.md`): per ciascuno, stato
 iniziale, movimento, traiettoria, gradi di libertà, evento di transizione,
 configurazione finale, vincolo prodotto, relazione con l'anello successivo.
 
+#### Scheda di analisi per fase/anello (2026-09-20, R-011)
+
+Ogni fase deve poter essere compilata secondo questa catena — è la forma
+operativa della "spiegazione da scienziato":
+
+```
+FASE
+ ↓ COSA SUCCEDE?                    (OSS, con provenienza)
+ ↓ CINEMATICA                       posizioni, velocità, accelerazioni,
+                                   angoli articolari, ω, relazioni temporali
+ ↓ FORZE/MOMENTI COINVOLTI          τ = r×F (asse, braccio di momento),
+                                   L (momento angolare), trasferimenti,
+                                   vincoli imposti dalla configurazione
+ ↓ FUNZIONE MECCANICA               (INT) produrre momento / limitare DOF /
+                                   modificare trasmissione forze /
+                                   stabilizzare variabile rilevante /
+                                   preparare configurazione successiva —
+                                   non scegliere la risposta a priori
+ ↓ COSTO                            cosa si paga (stabilità, tempo, energia)
+ ↓ PERCHÉ QUESTA CONFIGURAZIONE?    motivazione rispetto al task
+ ↓ EFFETTO SULLA FASE SUCCESSIVA    cosa abilita/vincola dopo
+ ↓ QUALI ALTERNATIVE ESISTONO?      confronto esplicito
+ ↓ COSA SA LA LETTERATURA?          termini e risultati esistenti
+ ↓ COSA STIAMO IPOTIZZANDO?         (IPO) + predizione falsificabile
+ ↓ COME POTREMMO MISURARLO?
+```
+
+E per ogni affermazione causale: *"questa parte non è ancora dimostrata"* è
+una risposta legittima e va scritta — se una misura futura contraddice una
+parte della tecnica, quella parte va modificata.
+
 ### FASE 4 — Separazione dei livelli
 
 Per ogni affermazione: OSS / INT / IPO. È il filtro che impedisce al progetto di

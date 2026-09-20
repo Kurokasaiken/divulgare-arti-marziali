@@ -236,3 +236,31 @@ confronto tra ipotesi concorrenti sugli stessi dati.
 - `wiki/08`: due righe nuove nel mapping (UCM task-space; discreto apparente).
 - `wiki/09`: NON SAPPIAMO + PROSSIMA DOMANDA aggiornate alla domanda empirica.
 - `PLAN-001` S2: requisito "ipotesi concorrenti sugli stessi OSS" nello schema.
+
+---
+
+## R-011 — Chiarimento dell'obiettivo primario: spiegazione rigorosa, non nuova teoria
+
+**Richiesta:** *"Il mio obiettivo principale è poter spiegare, punto per punto,
+fase x fase, cosa intendo x 'ottimale' e spiegare la mia tecnica nel modo +
+preciso, scientifico, usando fisica e biomeccanica. nn da maestro di arti
+marziali, ma da 'scenziato'. Parlare di momento, le definizioni corrette,
+momento torcente, ecc. Voglio che chiunque faccia uno sport da combattimento
+possa capirne la teoria 'del movimento' e se ha dubbi sia già stato
+esplicitato e sviscerato in modo esaustivo."* (2026-09-20) — con revisione
+esterna che propone la gerarchia: spiegare → identificare il noto → lacune →
+novità residua.
+**Data:** 2026-09-20
+**Stato:** `fatta` (integrazione documentale)
+**Cosa è successo:**
+- `wiki/00`: nuova sezione "Gerarchia degli obiettivi" — spiegazione rigorosa
+  prima; novità di `C` come possibile sottoprodotto, non motore; i precedenti
+  in letteratura sono il funzionamento previsto, non un danno.
+- `wiki/04`: "Scheda di analisi per fase/anello" — catena OSS → cinematica →
+  forze/momenti (τ = r×F) → funzione meccanica → costo → perché → effetto
+  sulla fase successiva → alternative → letteratura → ipotesi → misura.
+- `wiki/09`: nota di direzione — C-02 subordinato alla correttezza delle
+  affermazioni causali, non a una rivendicazione di teoria.
+- Valutazione esterna registrata: ~4/10 oggi come risultato scientifico,
+  potenziale 7–8/10 se verificato — il valore è nella formalizzazione
+  rigorosa e falsificabile, non nella scoperta già avvenuta.

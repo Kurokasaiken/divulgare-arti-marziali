@@ -155,3 +155,12 @@ updated: 2026-09-20
 - Creato `spikes/C-02-continuous-vs-triggered.md` (aperto). Aggiornati
   wiki/08, wiki/09, PLAN-001 (ipotesi concorrenti sugli stessi OSS).
 - Prossimo passo: eseguire lo spike C-02 (rassegna evidenza sperimentale).
+
+## Aggiunta (2026-09-20, chiarimento obiettivo — R-011)
+
+- Il Director ha chiarito: obiettivo = **spiegazione scientifica rigorosa
+  della tecnica**, fase per fase (τ = r×F, impulso, DOF...), non nuova
+  teoria. Gerarchia: spiegare → noto → lacune → novità residua.
+- `wiki/00` (gerarchia obiettivi), `wiki/04` (scheda analisi per fase/anello),
+  `wiki/09` (nota direzione) aggiornati. Spike C-02 resta aperto ma
+  subordinato: serve per scrivere affermazioni causali corrette.
