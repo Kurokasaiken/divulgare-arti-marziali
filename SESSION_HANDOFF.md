@@ -23,7 +23,11 @@ updated: 2026-09-20
 - PLAN-001 aggiornato: il fork multi-AI "import vs semantica" si risolve verso
   semantica prima (lo store 3D full-body non è più prerequisito); sequenza
   rivista con corpo intero in S7.
-- In attesa: approvazione PLAN-001 prima di implementare S1.
+- PLAN-001 **approvato** dal Director → **S1 implementata** (JSON canonico
+  schemaVersion 2 in biomech-editor: task, skeleton, keyframes con ID stabili +
+  epistemic, events, contenitori S/M/C/transizioni/vincoli/vettori vuoti;
+  migrazione legacy; round-trip verificato in browser). Prossima slice: S2
+  authoring semantico (S→M→C→S, vettori, LOCK, editing OSS/INT/IPO).
 
 ## Stato aggiunto 2026-09-20 (revisione R-003 + install MW + desiderata candidata)
 

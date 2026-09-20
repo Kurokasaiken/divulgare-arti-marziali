@@ -138,6 +138,25 @@ lavorare su quelli, il movimento intero sarà alla fine"* (2026-09-20)
 
 ---
 
+## R-006 — Approvazione PLAN-001 + implementazione Slice 1
+
+**Richiesta:** *"approvo il plan […] dobbiamo passare all'implementazione"*
+(2026-09-20)
+**Data:** 2026-09-20
+**Stato:** `fatta` (S1), `in corso` (roadmap)
+**Cosa è successo:**
+- PLAN-001 marcato `approvato`.
+- **S1 implementata** in `tools/biomech-editor.html`: export/import JSON
+  canonico `schemaVersion: 2` (task, skeleton, keyframes con ID stabili +
+  epistemic, events, contenitori semantici vuoti), migrazione legacy,
+  textarea editabile + pulsante Importa, save/load/auto-persist in formato
+  canonico.
+- Verificato in browser (puppeteer): round-trip export→import→export
+  semanticamente identico; migrazione legacy OK; UI integra (3 ossa, 4 giunti,
+  3 kf, 1 rotazione).
+
+---
+
 ## R-003 — Evolvere biomech-editor verso la lavagna del modello
 
 **Richiesta:** *"Intanto per studiare la teoria biomeccanica dobbiamo fare un

@@ -1,6 +1,6 @@
 # PLAN-001 — Evoluzione biomech-editor verso il modello S→M→C→S
 
-**Stato:** `proposta` (candidate — non approvato, non canon)
+**Stato:** `approvato` (Director, 2026-09-20 — "approvo il plan")
 **Data:** 2026-09-20
 **Desiderata:** `.mw/desiderata.md` v1 FROZEN
 **Provenienza:** deliberazione multi-AI web (`mw-iterative-deliberate --phase plan`,

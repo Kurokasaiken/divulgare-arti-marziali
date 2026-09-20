@@ -96,9 +96,10 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
   </div>
 
   <div class="panel" id="jsonPanel" style="display:none; padding:10px;">
-    <textarea id="jsonArea" readonly></textarea>
+    <textarea id="jsonArea"></textarea>
     <div class="tl-row" style="margin-top:8px;">
       <button id="copyJson">Copia</button>
+      <button id="importJson">Importa</button>
       <button id="saveLocal">Salva (locale)</button>
       <button id="loadLocal">Carica (locale)</button>
       <button id="resetDefault">Reset esempio</button>
@@ -114,14 +115,45 @@ const LABELS={shoulder:'spalla',elbow:'gomito',wrist:'polso',hand:'mano'};
 // proporzioni umane approssimate, relative (braccio : avambraccio : mano)
 const LEN = {shoulderElbow:100, elbowWrist:90, wristHand:50};
 
+// ---------- contratto canonico (PLAN-001, slice 1) ----------
+const SCHEMA_VERSION = 2;
+const _counters = {};
+const uid = p => p + ((_counters[p] = (_counters[p]||0) + 1));
+const SKELETON = {
+  model: 'arm-chain-2d',
+  coordinateSpace: 'canvas-2d',
+  units: 'px',
+  joints: [...JOINTS],
+  segments: [
+    {id:'shoulder-elbow', from:'shoulder', to:'elbow', length:LEN.shoulderElbow},
+    {id:'elbow-wrist',    from:'elbow',    to:'wrist',   length:LEN.elbowWrist},
+    {id:'wrist-hand',     from:'wrist',    to:'hand',    length:LEN.wristHand}
+  ],
+  labels: LABELS
+};
+function defaultTask(){
+  return {id:'', desiredOutput:'', targetInteraction:'', temporalConstraints:{}, postActionState:{}, allowablePerturbation:{}};
+}
+function ensureIds(){
+  state.keyframes.forEach(k=>{ if(typeof k.id!=='string') k.id = uid('KF'); });
+  state.rotations.forEach(r=>{ if(typeof r.id!=='string') r.id = uid('E'); });
+}
+function resyncCounters(){
+  state.keyframes.concat(state.rotations).forEach(o=>{
+    const m = /^([A-Z]+)(\d+)$/.exec(String(o.id||''));
+    if(m) _counters[m[1]] = Math.max(_counters[m[1]]||0, +m[2]);
+  });
+}
+
 let state = {
+  task: defaultTask(),
   keyframes: [
-    {time:0,   joints:{shoulder:[130,110], elbow:[228,141], wrist:[314,113], hand:[358,72]}},
-    {time:300, joints:{shoulder:[130,110], elbow:[199,196], wrist:[187,285], hand:[224,326]}},
-    {time:600, joints:{shoulder:[130,110], elbow:[220,155], wrist:[168,90],  hand:[125,50]}}
+    {id:uid('KF'), time:0,   joints:{shoulder:[130,110], elbow:[228,141], wrist:[314,113], hand:[358,72]}},
+    {id:uid('KF'), time:300, joints:{shoulder:[130,110], elbow:[199,196], wrist:[187,285], hand:[224,326]}},
+    {id:uid('KF'), time:600, joints:{shoulder:[130,110], elbow:[220,155], wrist:[168,90],  hand:[125,50]}}
   ],
   rotations: [
-    {id:1, bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}
+    {id:uid('E'), bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}
   ],
   currentTime: 0,
   selectedRotId: null,
@@ -153,6 +185,52 @@ function enforceProportions(joints){
 }
 // normalizza tutti i keyframe iniziali/importati alle proporzioni fisse
 state.keyframes.forEach(k=>enforceProportions(k.joints));
+
+// ---------- export/import canonico ----------
+// Il JSON canonico e' il prodotto primario: deve bastare a un'AI per ragionare
+// sul modello senza vedere l'immagine. Le collezioni semantiche vuote
+// (states, movements, conditions, ...) sono i contenitori pronti per le slice 2+.
+function buildCanonical(){
+  return {
+    schemaVersion: SCHEMA_VERSION,
+    meta: {tool:'biomech-editor', model:'S->M->C->S', exportedAt:new Date().toISOString()},
+    task: state.task || defaultTask(),
+    skeleton: SKELETON,
+    keyframes: sortedKf().map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic||'IPO'})),
+    events: state.rotations.map(r=>({id:r.id, type:'axial_rotation', segment:r.bone, label:r.label, start:r.start, end:r.end, epistemic:r.epistemic||'IPO'})),
+    states: [],
+    movements: [],
+    conditions: [],
+    transitions: [],
+    constraints: [],
+    vectors: [],
+    annotations: [],
+    sources: {}
+  };
+}
+// Accetta il formato canonico (schemaVersion 2) o il legacy
+// {keyframes, rotations} / {keyframes, annotations:[rotation]}.
+function importModel(doc){
+  if(!doc || typeof doc!=='object') return false;
+  if(doc.schemaVersion===SCHEMA_VERSION){
+    state.task = doc.task || defaultTask();
+    state.keyframes = (doc.keyframes||[]).map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic}));
+    state.rotations = (doc.events||[]).filter(e=>e.type==='axial_rotation')
+      .map(e=>({id:e.id, bone:e.segment, label:e.label, start:e.start, end:e.end, epistemic:e.epistemic}));
+  } else {
+    const kfs = Array.isArray(doc.keyframes) ? doc.keyframes : (Array.isArray(doc) ? doc : []);
+    state.keyframes = kfs.map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic}));
+    const rots = doc.rotations || (doc.annotations||[]).filter(a=>a.type==='rotation')
+      .map(a=>({bone:a.bone, label:a.name||a.label, start:a.start, end:a.end}));
+    state.rotations = rots.map(r=>({id:r.id, bone:r.bone, label:r.label||r.name, start:r.start, end:r.end}));
+    state.task = defaultTask();
+  }
+  ensureIds(); resyncCounters();
+  state.keyframes.forEach(k=>enforceProportions(k.joints));
+  state.currentTime = sortedKf()[0] ? sortedKf()[0].time : 0;
+  state.selectedRotId = null;
+  return true;
+}
 
 function interpJoints(t){
   const ks = sortedKf();
@@ -360,7 +438,7 @@ document.getElementById('addRot').addEventListener('click', ()=>{
   if(label===null) return;
   const bone=document.getElementById('boneSelect').value;
   const start=state.currentTime, end=start+200;
-  const id=Date.now();
+  const id=uid('E');
   state.rotations.push({id, bone, label: label.toUpperCase(), start, end});
   state.selectedRotId=id; renderAll(); persist();
 });
@@ -390,40 +468,46 @@ function step(ts){
 document.getElementById('jsonBtn').addEventListener('click', ()=>{
   const p=document.getElementById('jsonPanel');
   p.style.display=p.style.display==='none'?'block':'none';
-  document.getElementById('jsonArea').value=JSON.stringify({
-    keyframes: sortedKf(),
-    annotations: state.rotations.map(r=>({type:'rotation', bone:r.bone, name:r.label, start:r.start, end:r.end}))
-  }, null, 2);
+  document.getElementById('jsonArea').value=JSON.stringify(buildCanonical(), null, 2);
+});
+document.getElementById('importJson').addEventListener('click', ()=>{
+  try{
+    const doc=JSON.parse(document.getElementById('jsonArea').value);
+    if(importModel(doc)){ renderAll(); persist(); }
+    else alert('JSON non riconosciuto.');
+  }catch(e){ alert('JSON non valido: '+e.message); }
 });
 document.getElementById('copyJson').addEventListener('click', ()=>{
   const ta=document.getElementById('jsonArea'); ta.select();
   try{ navigator.clipboard.writeText(ta.value); }catch(e){ try{ document.execCommand('copy'); }catch(e2){} }
 });
 document.getElementById('saveLocal').addEventListener('click', ()=>{
-  try{ localStorage.setItem('biomech-kf', JSON.stringify({keyframes:state.keyframes, rotations:state.rotations})); alert('Salvato in locale su questo browser.'); }
+  try{ localStorage.setItem('biomech-kf', JSON.stringify(buildCanonical())); alert('Salvato in locale su questo browser.'); }
   catch(e){ alert('Salvataggio non riuscito.'); }
 });
 document.getElementById('loadLocal').addEventListener('click', ()=>{
   try{ const raw=localStorage.getItem('biomech-kf');
-    if(raw){ const d=JSON.parse(raw); state.keyframes=d.keyframes||d; state.rotations=d.rotations||[]; state.currentTime=sortedKf()[0].time; renderAll(); }
-    else alert('Nessun salvataggio trovato.'); }
+    if(raw && importModel(JSON.parse(raw))){ renderAll(); }
+    else if(!raw) alert('Nessun salvataggio trovato.');
+    else alert('Salvataggio non riconosciuto.'); }
   catch(e){ alert('Caricamento non riuscito.'); }
 });
 document.getElementById('resetDefault').addEventListener('click', ()=>{
+  state.task=defaultTask();
   state.keyframes=[
-    {time:0,   joints:{shoulder:[130,110], elbow:[228,141], wrist:[314,113], hand:[358,72]}},
-    {time:300, joints:{shoulder:[130,110], elbow:[199,196], wrist:[187,285], hand:[224,326]}},
-    {time:600, joints:{shoulder:[130,110], elbow:[220,155], wrist:[168,90],  hand:[125,50]}}
+    {id:uid('KF'), time:0,   joints:{shoulder:[130,110], elbow:[228,141], wrist:[314,113], hand:[358,72]}},
+    {id:uid('KF'), time:300, joints:{shoulder:[130,110], elbow:[199,196], wrist:[187,285], hand:[224,326]}},
+    {id:uid('KF'), time:600, joints:{shoulder:[130,110], elbow:[220,155], wrist:[168,90],  hand:[125,50]}}
   ];
   state.keyframes.forEach(k=>enforceProportions(k.joints));
-  state.rotations=[{id:1, bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}];
+  state.rotations=[{id:uid('E'), bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}];
   state.currentTime=0; state.selectedRotId=null; renderAll(); persist();
 });
 
-function persist(){ try{ localStorage.setItem('biomech-kf-auto', JSON.stringify({keyframes:state.keyframes, rotations:state.rotations})); }catch(e){} }
+function persist(){ try{ localStorage.setItem('biomech-kf-auto', JSON.stringify(buildCanonical())); }catch(e){} }
 function tryAutoLoad(){
   try{ const raw=localStorage.getItem('biomech-kf-auto');
-    if(raw){ const d=JSON.parse(raw); if(d.keyframes&&d.keyframes.length>=2){ state.keyframes=d.keyframes; state.rotations=d.rotations||[]; } }
+    if(raw){ const d=JSON.parse(raw); if((d.keyframes||[]).length>=2) importModel(d); }
   }catch(e){}
 }
 function renderAll(){ renderCanvas(); renderTimeline(); }
