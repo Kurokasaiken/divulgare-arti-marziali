@@ -413,7 +413,7 @@ const viewsWrap = document.getElementById('viewsWrap');
 VIEWS.forEach(v=>{
   const box=document.createElement('div'); box.className='viewBox'+(v.id==='side'?' main':'');
   const lab=document.createElement('div'); lab.className='viewLabel';
-  lab.textContent=v.label+' ('+AXES[v.axes[0]]+'-'+AXES[v.axes[1]]+')';
+  lab.textContent=v.label+' ('+AXES[v.axes[0]]+'-'+AXES[v.axes[1]]+')'+(v.id==='side'?'':' · drag = solo x');
   const svg=document.createElementNS(NS,'svg');
   svg.setAttribute('viewBox','0 0 600 340');
   box.appendChild(lab); box.appendChild(svg); viewsWrap.appendChild(box);
@@ -633,17 +633,21 @@ function svgPoint(svg, clientX, clientY){
 }
 
 // il drag avviene nella vista di origine: modifica solo i due assi proiettati,
-// l'asse perpendicolare resta invariato (una posa 3D, viste = proiezioni)
-function dragUpdate(clientX, clientY){
+// l'asse perpendicolare resta invariato (una posa 3D, viste = proiezioni).
+// Nelle viste secondarie (frontale/zenitale) il drag modifica di default solo
+// l'asse x — l'unico che la laterale non mostra — cosi' la posa laterale resta
+// intatta. Con Shift si sblocca il drag completo su entrambi gli assi.
+function dragUpdate(clientX, clientY, shiftKey){
   const kf=exactKfAtTime(state.currentTime); if(!kf || !dragView) return;
   const [u0,w0]=svgPoint(dragView.svg, clientX, clientY);
   const u=u0-dragView.off[0], w=w0-dragView.off[1];
   const [a0,a1]=dragView.axes;
+  const xOnly = dragView.id!=='side' && !shiftKey;
   const j=kf.joints;
-  const target=p=>{ const q=p.slice(); q[a0]=u; q[a1]=w; return q; };
+  const target=p=>{ const q=p.slice(); q[a0]=u; if(!xOnly) q[a1]=w; return q; };
   if(dragJoint==='shoulder'){
-    const delta=[u-j.shoulder[a0], w-j.shoulder[a1]];
-    JOINTS.forEach(k=>{ j[k][a0]+=delta[0]; j[k][a1]+=delta[1]; });
+    const delta=[u-j.shoulder[a0], xOnly?0:w-j.shoulder[a1]];
+    JOINTS.forEach(k=>{ j[k][a0]+=delta[0]; if(!xOnly) j[k][a1]+=delta[1]; });
   } else if(dragJoint==='elbow'){
     const dir=norm(sub(target(j.elbow), j.shoulder));
     const newElbow=add(j.shoulder, scl(dir, LEN.shoulderElbow));
@@ -664,8 +668,8 @@ function dragUpdate(clientX, clientY){
   }
   renderViews(); renderTimeline(); persist();
 }
-window.addEventListener('mousemove', e=>{ if(dragJoint) dragUpdate(e.clientX,e.clientY); });
-window.addEventListener('touchmove', e=>{ if(dragJoint && e.touches[0]) dragUpdate(e.touches[0].clientX,e.touches[0].clientY); });
+window.addEventListener('mousemove', e=>{ if(dragJoint) dragUpdate(e.clientX,e.clientY,e.shiftKey); });
+window.addEventListener('touchmove', e=>{ if(dragJoint && e.touches[0]) dragUpdate(e.touches[0].clientX,e.touches[0].clientY,false); });
 window.addEventListener('mouseup', ()=>{ dragJoint=null; dragView=null; });
 window.addEventListener('touchend', ()=>{ dragJoint=null; dragView=null; });
 
