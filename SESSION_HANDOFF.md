@@ -253,3 +253,17 @@ updated: 2026-09-20
   bias da profondità mancante; Monte Carlo su jitter da fare.
 - Prossimo passo: script P-A2.2 standalone (de Leva 1996 per masse
   segmentali; σ landmark stimato dal jitter in guardia).
+
+## Aggiunta (2026-09-21, P-A2.2 eseguito — primo risultato quantitativo)
+
+- `analysis/pa2_inertia.py` standalone (nessuna dipendenza dall'editor):
+  I planare del braccio sx attorno all'asse verticale tronco; aste omogenee
+  + mano puntuale, frazioni de Leva 1996, scala da biacromiale 0.40 m IPO,
+  asse = mediana spalle.
+- Risultato: dI ~50% (guardia ~110e-4 vs retratta ~55e-4 m^2/M_corpo),
+  IC95% MC>0 in 5/5 reps. Registrato in wiki/03 come INT con ambito
+  circoscritto.
+- Fix metodologico: media -> mediana (un frame con spalla misdetectata in
+  rep_003 produceva I=13460e-4; robustezza necessaria su dati ML Kit).
+- Aperto: bias di proiezione planare non quantificabile senza azimut camera;
+  se serve stima 3D vera -> nuova cattura laterale/stereo o landmark con z.

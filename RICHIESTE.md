@@ -455,4 +455,10 @@ modello adottato. (2026-09-21)
   finestre ~0-10 guardia / ~30-45 retratta) su tutte le reps.
 - Gate SUPERATO con caveat: stima planare di I con bias di proiezione
   dichiarato; `I_estimated` INT, non misura.
-- Prossimo: calcolo P-A2.2 standalone + Monte Carlo su jitter landmark.
+- P-A2.2 eseguito (`analysis/pa2_inertia.py`): mediana robusta su finestre
+  rilevate da regola, Monte Carlo (N=2000) con sigma stimato dal jitter in
+  guardia. Risultato (INT): I_braccio planare ~-50% in retratta, IC95%>0
+  in tutte le reps; rep_003 conteneva un frame con landmark esploso —
+  risolto passando da media a mediana.
+- Esito registrato in wiki/03 con ambito dichiarato (I_estimated nel
+  modello, non dimostra funzione LOCK).
