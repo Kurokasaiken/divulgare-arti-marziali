@@ -101,7 +101,10 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
       <button id="delRot">✕ Elimina rotazione</button>
       <span style="width:1px;height:18px;background:var(--grid);"></span>
       <button id="jsonBtn">{ } JSON</button>
+      <button id="loadExample">Esempio A2</button>
+      <label style="font-size:10px; letter-spacing:.03em; color:var(--dim, #888)"><input type="checkbox" id="ghost" checked> ghost</label>
       <span id="timeLabel">t = 0 ms</span>
+      <span id="poseInfo" style="font-size:10.5px; opacity:.75"></span>
     </div>
     <svg id="tl" viewBox="0 0 860 96" preserveAspectRatio="none"></svg>
     <div class="hint">Riga superiore = keyframe di posa (clic = seleziona/sblocca drag giunti · trascina = sposta nel tempo · doppio clic sulla linea = nuovo keyframe). Riga inferiore viola = rotazioni assiali (clic sulla barra = seleziona · trascina le maniglie alle estremità = cambia inizio/fine). "+ Rotazione" crea una rotazione sul segmento scelto, da t attuale a t+200ms.</div>
@@ -336,8 +339,32 @@ function renderViews(){
   const editable = !!exactKfAtTime(state.currentTime);
   const ks = sortedKf();
 
+  // lettura angoli della posa corrente (INT: angoli planari 3D->angolo vero tra segmenti)
+  const s=joints.shoulder, e=joints.elbow, w=joints.wrist, h=joints.hand;
+  const ang=(a,b,c)=>{ const u=norm(sub(a,b)), vv=norm(sub(c,b));
+    return Math.round(Math.acos(Math.max(-1,Math.min(1,u[0]*vv[0]+u[1]*vv[1]+u[2]*vv[2])))*180/Math.PI); };
+  document.getElementById('poseInfo').textContent =
+    `gomito ${ang(s,e,w)}° · polso ${ang(e,w,h)}° · mano [${h.map(v=>Math.round(v)).join(', ')}]`;
+
   VIEWS.forEach(v=>{
     const svg=v.svg; svg.innerHTML='';
+
+    // ghost dei keyframe adiacenti (sbiaditi) per l'authoring fedele
+    if(document.getElementById('ghost').checked){
+      const cur=sortedKf().findIndex(k=>k.time===state.currentTime);
+      [cur-1,cur+1].forEach(i=>{
+        if(i<0||i>=ks.length) return;
+        [['shoulder','elbow'],['elbow','wrist'],['wrist','hand']].forEach(([j1,j2])=>{
+          const p1=proj(ks[i].joints[j1],v), p2=proj(ks[i].joints[j2],v);
+          const l=document.createElementNS(NS,'line');
+          l.setAttribute('x1',p1[0]); l.setAttribute('y1',p1[1]);
+          l.setAttribute('x2',p2[0]); l.setAttribute('y2',p2[1]);
+          l.setAttribute('stroke','#888'); l.setAttribute('stroke-width','1');
+          l.setAttribute('opacity','0.35'); l.setAttribute('stroke-dasharray','3 3');
+          svg.appendChild(l);
+        });
+      });
+    }
 
     const pts = ks.map(k=>proj(k.joints.elbow,v));
     if(pts.length>1){
@@ -652,6 +679,14 @@ document.getElementById('importJson').addEventListener('click', ()=>{
     if(importModel(doc)){ renderAll(); persist(); }
     else alert('JSON non riconosciuto.');
   }catch(e){ alert('JSON non valido: '+e.message); }
+});
+document.getElementById('ghost').addEventListener('change', ()=>renderViews());
+document.getElementById('loadExample').addEventListener('click', async ()=>{
+  try{
+    const doc = await (await fetch('examples/anello-2-retrazione.json')).json();
+    if(importModel(doc)){ renderAll(); persist(); }
+    else alert('Esempio non riconosciuto.');
+  }catch(e){ alert('Impossibile caricare l\'esempio (serve il server locale in tools/). '+e.message); }
 });
 document.getElementById('copyJson').addEventListener('click', ()=>{
   const ta=document.getElementById('jsonArea'); ta.select();
