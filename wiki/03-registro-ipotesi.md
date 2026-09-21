@@ -42,6 +42,16 @@ diventerebbe una razionalizzazione della tecnica già conosciuta.
   attuali coincidono a ±1 frame in 5/5 reps — **non falsificabile a 17 fps,
   richiede cattura ≥100 fps o EMG**.
 
+### Predizioni dalla scheda Anello 5 (`02`, scheda compilata)
+
+- **P-A5.1** — in esecuzioni corrette l'onset dell'estensione del braccio
+  destro (R_elb > ~90°) segue il flip pelvico/scapolare di un margine
+  risolvibile; nei dati attuali l'estensione completa arriva ~10–15 frame
+  dopo il flip e il gomito **flette ulteriormente** durante la rotazione
+  (mano "raccolta" — OSS). Variante "a spinta" con estensione anticipata
+  dovrebbe mostrare dinamica finale diversa — confronto di varianti a
+  parità di capture.
+
 ### Predizioni dalla scheda Anello 2 (`02`, scheda compilata)
 
 - **P-A2.1** — ritardare/eliminare il LOCK dovrebbe alterare timing o velocità

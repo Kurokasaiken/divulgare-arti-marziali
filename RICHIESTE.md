@@ -481,3 +481,24 @@ perché i capture contengono già i landmark della parte bassa.
   Registrato come predizione **P-A0.1** in `wiki/03` (richiede ≥100fps).
 - Limite dichiarato: carico tallone→avampiede NON osservabile nei landmark
   (serve pressione/GRF).
+
+---
+
+## R-022 — Schede Anelli 3, 4, 5, 6
+
+**Richiesta:** *"procedi cn tutti gli anelli"* (2026-09-21) — completamento
+delle schede di analisi per tutti gli anelli della catena.
+**Data:** 2026-09-21
+**Stato:** `fatta`
+**Cosa è successo:**
+- Schede 12-passi compilate in `wiki/02` per Anelli 3 (bacino — assegnata
+  intestazione mancante), 4 (tronco), 5 (spalla+mano dx), 6 (config
+  finale).
+- OSS da capture integrati: flip sdx/hips_dx sincroni allo stesso frame;
+  gomito dx flette ulteriormente durante la rotazione prima di estendere
+  (conferma "mano raccolta"); plateau di tenuta ~15 frame a ~165-178°;
+  lean tronco ≈0 all'impatto.
+- Artefatto documentato: velocita' polso nel transito rapido NON
+  misurabile (salti landmark con confidence 1.0 — motion blur a 17fps).
+- Nuova predizione P-A5.1 in wiki/03 (estensione segue il flip di ~10-15
+  frame; testabile con varianti "a spinta").

@@ -278,3 +278,14 @@ updated: 2026-09-20
   registrata; serve cattura densa (>=100fps) o EMG.
 - Struttura proxy: hips_dx e' OSS cinematico ma la sua lettura come
   "rotazione bacino" e' INT (dipende da azimut camera).
+
+## Aggiunta (2026-09-21, schede Anelli 3-6 — R-022)
+
+- Tutti gli anelli ora hanno la scheda 12-passi: 0+1, 2, 3, 4, 5, 6.
+- Anello 3 (bacino) aveva il contenuto ma non l'intestazione — assegnata.
+- OSS dai capture integrati in tutte le schede. Due limiti dati emersi:
+  velocita' polso non misurabile (tracking artifacts nel transito rapido);
+  ordine temporale tra anelli irrisolvibile a 17fps (P-A0.1, P-A5.1
+  richiedono cattura densa o confronto varianti).
+- Predizioni attive: P-A0.1 (ordine bacino/braccio), P-A2.1 (LOCK->tronco),
+  P-A2.2 (eseguita, INT -50%), P-A5.1 (onset estensione dopo flip).
