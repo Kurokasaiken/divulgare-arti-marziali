@@ -318,3 +318,14 @@ updated: 2026-09-20
   condizionale su A2 (funzione LOCK) e A5 (criterio commutazione mano).
 - La matrice wiki/10 resta registro sperimentale per la futura cattura
   densa (baseline osservata vs candidato).
+
+## Aggiunta (2026-09-21, teoria dei candidati — R-025)
+
+- wiki/12: formalizzazione teorica completa degli anelli 0-6 (problema/
+  obiettivo/vincoli/trade-off/perche'/anello successivo/letteratura/IPO).
+- Regola registrata: Δ=0 = nessuna modifica proposta, non ottimalita';
+  nessun Δ -> cattura automatica.
+- Anello 3 = nodo teorico centrale: lead pelvico giustificato (SSC,
+  pross->dist) MA la sincronia osservata potrebbe essere corretta per un
+  colpo corto. Domanda aperta dichiarata: quale variabile migliorerebbe e
+  a quale costo — da rispondere prima di progettare la cattura.
