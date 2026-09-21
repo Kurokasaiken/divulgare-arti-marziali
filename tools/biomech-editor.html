@@ -96,6 +96,7 @@ svg#tl{width:100%; height:104px; touch-action:none; cursor:crosshair; background
 .vec{stroke:var(--accent2); stroke-width:2; fill:none;}
 .handbody{fill:var(--panel); stroke:var(--line); stroke-width:2.5; stroke-linejoin:round;}
 .handaxis{stroke:var(--sub); stroke-width:1.2; stroke-dasharray:3 3; opacity:.6;}
+.torso{fill:var(--bg); stroke:var(--sub); stroke-width:1.5; opacity:.55;}
 .thumb{fill:none; stroke:var(--accent); stroke-width:6.5; stroke-linecap:round;}
 .handctl{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
 .handctl label{display:flex; align-items:center; gap:6px; font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.05em;}
@@ -450,6 +451,23 @@ function renderViews(){
 
   VIEWS.forEach(v=>{
     const svg=v.svg; svg.innerHTML='';
+
+    // riferimento corporeo ancorato alla spalla (contesto, non modello):
+    // frontale = busto a V senza punta (spalle larghe, fianchi stretti);
+    // zenitale = trapezio come rettangolo visto dall'alto
+    if(joints.shoulder){
+      const s=proj(joints.shoulder,v);
+      if(v.id==='front'){
+        const t=document.createElementNS(NS,'path');
+        t.setAttribute('d',`M ${s[0]} ${s[1]} L ${s[0]-95} ${s[1]} L ${s[0]-72} ${s[1]+135} L ${s[0]-22} ${s[1]+135} Z`);
+        t.setAttribute('class','torso'); svg.appendChild(t);
+      } else if(v.id==='top'){
+        const r=document.createElementNS(NS,'rect');
+        r.setAttribute('x',s[0]-95); r.setAttribute('y',s[1]-32);
+        r.setAttribute('width',103); r.setAttribute('height',64); r.setAttribute('rx',10);
+        r.setAttribute('class','torso'); svg.appendChild(r);
+      }
+    }
 
     // ghost dei keyframe adiacenti (sbiaditi) per l'authoring fedele
     if(document.getElementById('ghost').checked){
