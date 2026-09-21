@@ -94,6 +94,13 @@ svg#tl{width:100%; height:104px; touch-action:none; cursor:crosshair; background
 .rothandle{fill:var(--rot); stroke:var(--panel); stroke-width:1.5; cursor:ew-resize;}
 .rotbarlabel{font-size:9px; fill:var(--rot); font-weight:bold;}
 .vec{stroke:var(--accent2); stroke-width:2; fill:none;}
+.palm{stroke:var(--accent2); stroke-width:5; stroke-linecap:round; opacity:.75;}
+.finger{stroke:var(--line); stroke-width:2.5; stroke-linecap:round;}
+.thumb{stroke:var(--accent); stroke-width:4; stroke-linecap:round;}
+.handctl{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
+.handctl label{display:flex; align-items:center; gap:6px; font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.05em;}
+.handctl input[type=range]{flex:1; accent-color:var(--accent);}
+.handctl span{min-width:44px; text-align:right; font-variant-numeric:tabular-nums;}
 .lockseg{stroke:var(--rot); stroke-width:6; fill:none; stroke-linecap:round; opacity:.45;}
 .semrow{display:flex; gap:6px; align-items:center; flex-wrap:wrap; padding:5px 0; border-top:1px solid var(--grid); font-size:10.5px;}
 .semrow .semid{font-weight:bold; min-width:30px; color:var(--sub);}
@@ -112,6 +119,12 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
   <h1>Editor Biomeccanico</h1>
   <div class="transport">
     <button id="playBtn" title="Avvia/metti in pausa">▶ Play</button>
+    <select id="speedSel" title="Velocità di riproduzione">
+      <option value="0.25">¼×</option>
+      <option value="0.5" selected>½×</option>
+      <option value="1">1×</option>
+      <option value="2">2×</option>
+    </select>
     <span id="timeLabel">00:00.000</span>
   </div>
   <div class="top-actions">
@@ -125,7 +138,11 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
     <div class="insp-sec">
       <div class="insp-title">Posa corrente</div>
       <div id="poseInfo"></div>
-      <div class="hint" style="margin-top:6px">Trascina i giunti nelle viste. Su keyframe sono editabili (pieni); su tempi interpolati sono in sola lettura.</div>
+      <div class="handctl">
+        <label>apertura dita <input type="range" id="handOpen" min="0" max="100" value="100"><span id="handOpenV">aperta</span></label>
+        <label>supinazione <input type="range" id="handSup" min="-180" max="180" value="0"><span id="handSupV">0°</span></label>
+      </div>
+      <div class="hint" style="margin-top:6px">Trascina i giunti nelle viste. Su keyframe sono editabili (pieni) e gli slider scrivono nel keyframe; su tempi interpolati tutto è in sola lettura.</div>
     </div>
     <div class="insp-sec">
       <div class="insp-title">Esempi</div>
@@ -278,6 +295,19 @@ const add=(a,b)=>a.map((v,i)=>v+b[i]);
 const scl=(a,s)=>a.map(v=>v*s);
 const dist=(a,b)=>Math.hypot(...sub(a,b));
 function norm(v){ const d=Math.hypot(...v)||1; return v.map(x=>x/d); }
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+
+// ---- mano articolata: per-keyframe {open 0..1, sup gradi} interpolati come le pose ----
+const handOf = k => (k && k.hand) ? k.hand : {open:1, sup:0};
+function interpHand(t){
+  const ks=sortedKf(); if(!ks.length) return {open:1,sup:0};
+  if(t<=ks[0].time) return {...handOf(ks[0])};
+  if(t>=ks[ks.length-1].time) return {...handOf(ks[ks.length-1])};
+  let a=ks[0], b=ks[ks.length-1];
+  for(let i=0;i<ks.length-1;i++){ if(t>=ks[i].time && t<=ks[i+1].time){ a=ks[i]; b=ks[i+1]; break; } }
+  const f=(t-a.time)/((b.time-a.time)||1), ha=handOf(a), hb=handOf(b);
+  return {open:ha.open+(hb.open-ha.open)*f, sup:ha.sup+(hb.sup-ha.sup)*f};
+}
 
 // applica proporzioni fisse ricostruendo la catena a partire dalla spalla
 function enforceProportions(joints){
@@ -308,7 +338,7 @@ function buildCanonical(){
     task: state.task || defaultTask(),
     skeleton: SKELETON,
     views: VIEWS.map(v=>({id:v.id, label:v.label, projection:'orthographic', axes:v.axes.map(i=>AXES[i])})),
-    keyframes: sortedKf().map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic||'IPO', provenance:k.provenance||'authored'})),
+    keyframes: sortedKf().map(k=>({id:k.id, time:k.time, joints:k.joints, ...(k.hand?{hand:{open:k.hand.open, sup:k.hand.sup}}:{}), epistemic:k.epistemic||'IPO', provenance:k.provenance||'authored'})),
     events: state.rotations.map(r=>({id:r.id, type:'axial_rotation', segment:r.bone, label:r.label, start:r.start, end:r.end, epistemic:r.epistemic||'IPO', provenance:r.provenance||'authored',
       ...(r.representationStatus?{representationStatus:r.representationStatus}:{}), ...(r.representationReason?{representationReason:r.representationReason}:{})})),
     states: state.sem.states,
@@ -330,7 +360,7 @@ function importModel(doc){
   if(doc.schemaVersion===SCHEMA_VERSION || doc.schemaVersion===2){
     state.task = doc.task || defaultTask();
     state.meta = doc.meta || {};
-    state.keyframes = (doc.keyframes||[]).map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), epistemic:k.epistemic, provenance:k.provenance}));
+    state.keyframes = (doc.keyframes||[]).map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), ...(k.hand?{hand:{open:+(k.hand.open??1), sup:+(k.hand.sup??0)}}:{}), epistemic:k.epistemic, provenance:k.provenance}));
     state.rotations = (doc.events||[]).filter(e=>e.type==='axial_rotation')
       .map(e=>({id:e.id, bone:e.segment, label:e.label, start:e.start, end:e.end, epistemic:e.epistemic, provenance:e.provenance,
         representationStatus:e.representationStatus, representationReason:e.representationReason}));
@@ -342,7 +372,7 @@ function importModel(doc){
     };
   } else {
     const kfs = Array.isArray(doc.keyframes) ? doc.keyframes : (Array.isArray(doc) ? doc : []);
-    state.keyframes = kfs.map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), epistemic:k.epistemic}));
+    state.keyframes = kfs.map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), ...(k.hand?{hand:{open:+(k.hand.open??1), sup:+(k.hand.sup??0)}}:{}), epistemic:k.epistemic}));
     const rots = doc.rotations || (doc.annotations||[]).filter(a=>a.type==='rotation')
       .map(a=>({bone:a.bone, label:a.name||a.label, start:a.start, end:a.end}));
     state.rotations = rots.map(r=>({id:r.id, bone:r.bone, label:r.label||r.name, start:r.start, end:r.end}));
@@ -408,6 +438,8 @@ function renderViews(){
   const joints = interpJoints(state.currentTime);
   const editable = !!exactKfAtTime(state.currentTime);
   const ks = sortedKf();
+  const hd = interpHand(state.currentTime);
+  syncHandUI(editable, hd);
 
   // lettura angoli della posa corrente (INT: angoli planari 3D->angolo vero tra segmenti)
   const s=joints.shoulder, e=joints.elbow, w=joints.wrist, h=joints.hand;
@@ -504,6 +536,9 @@ function renderViews(){
       t.setAttribute('class','jlabel'); t.textContent=LABELS[j]; svg.appendChild(t);
     });
 
+    // mano articolata: palmo, dita (aperte/chiuse) e pollice separato, orientati da 'sup'
+    if(joints.wrist && joints.hand) drawHand(svg, v, joints, hd);
+
     // annotazioni di rotazione attive al tempo corrente
     state.rotations.forEach(r=>{
       if(state.currentTime < r.start || state.currentTime > r.end) return;
@@ -527,6 +562,53 @@ function renderViews(){
     });
   });
 }
+
+// disegna palmo + dita + pollice come sotto-segmenti 3D proiettati nella vista:
+// 'sup' ruota il piano del palmo attorno all'asse polso->mano (supinazione visibile),
+// 'open' fa passare le dita da estese a chiuse a pugno, il pollice resta un tratto a parte
+function drawHand(svg, v, joints, hd){
+  const w=joints.wrist, h=joints.hand;
+  const dAxis=norm(sub(h,w));
+  let ref=[0,0,1]; if(Math.abs(dAxis[2])>0.9) ref=[0,1,0];
+  const u=norm(cross(dAxis,ref));           // normale del palmo a sup=0
+  const vv=cross(dAxis,u);                  // direzione pollice-mignolo a sup=0
+  const rad=(hd.sup||0)*Math.PI/180;
+  const palmDir=norm(add(scl(u,Math.cos(rad)), scl(vv,Math.sin(rad))));
+  const thumbDir=norm(add(scl(u,-Math.sin(rad)), scl(vv,Math.cos(rad))));
+  const mid=add(w, scl(dAxis, LEN.wristHand*0.4));
+  const seg=(a,b,cls)=>{ const p=proj(a,v), q=proj(b,v);
+    const l=document.createElementNS(NS,'line');
+    l.setAttribute('x1',p[0]); l.setAttribute('y1',p[1]);
+    l.setAttribute('x2',q[0]); l.setAttribute('y2',q[1]);
+    l.setAttribute('class',cls); svg.appendChild(l); };
+  const curl=1-Math.max(0,Math.min(1,hd.open??1));
+  // palmo: tratto corto lungo la normale del palmo
+  seg(sub(mid,scl(palmDir,9)), add(mid,scl(palmDir,9)), 'palm');
+  // dita: aperte proseguono l'asse della mano, chiuse si piegano verso il palmo
+  const tipDir=norm(add(scl(dAxis,1-curl*0.85), scl(palmDir,-curl)));
+  [-7,0,7].forEach(s=>{ const base=add(h,scl(thumbDir,s)); seg(base, add(base,scl(tipDir,15)), 'finger'); });
+  // pollice: separato dal mazzo delle dita, si richiude sopra il pugno
+  const tb=add(mid,scl(palmDir,5));
+  const td=norm(add(thumbDir, scl(palmDir,-curl*0.5)));
+  seg(tb, add(tb,scl(td,17)), 'thumb');
+}
+
+// slider mano: attivi solo su keyframe; su tempi interpolati mostrano il valore corrente
+function syncHandUI(editable, hd){
+  const o=document.getElementById('handOpen'), s=document.getElementById('handSup');
+  o.value=Math.round((hd.open??1)*100); s.value=Math.round(hd.sup||0);
+  o.disabled=s.disabled=!editable;
+  document.getElementById('handOpenV').textContent = hd.open>0.66?'aperta':(hd.open>0.33?'mezza':'chiusa');
+  document.getElementById('handSupV').textContent = Math.round(hd.sup||0)+'°';
+}
+document.getElementById('handOpen').addEventListener('input', e=>{
+  const kf=exactKfAtTime(state.currentTime); if(!kf) return;
+  kf.hand={...handOf(kf), open:+e.target.value/100}; renderViews(); persist();
+});
+document.getElementById('handSup').addEventListener('input', e=>{
+  const kf=exactKfAtTime(state.currentTime); if(!kf) return;
+  kf.hand={...handOf(kf), sup:+e.target.value}; renderViews(); persist();
+});
 
 function svgPoint(svg, clientX, clientY){
   const pt=svg.createSVGPoint(); pt.x=clientX; pt.y=clientY;
@@ -772,10 +854,14 @@ playBtn.addEventListener('click', ()=>{
   } else { playBtn.textContent='▶ Play'; playBtn.classList.remove('active'); }
 });
 function maxScaleTop(){ const ks=sortedKf(); return ks[ks.length-1]?.time||0; }
+document.getElementById('speedSel').addEventListener('change', ()=>{
+  if(state.playing){ playFromTime=state.currentTime; playStart=null; }
+});
 function step(ts){
   if(!state.playing) return;
   if(playStart===null) playStart=ts;
-  const elapsed=ts-playStart, top=maxScaleTop();
+  const speed=+document.getElementById('speedSel').value;
+  const elapsed=(ts-playStart)*speed, top=maxScaleTop();
   state.currentTime=Math.min(top, playFromTime+elapsed);
   renderAll();
   if(state.currentTime>=top){ state.playing=false; playBtn.textContent='▶ Play'; playBtn.classList.remove('active'); return; }

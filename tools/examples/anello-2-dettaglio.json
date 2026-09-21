@@ -18,7 +18,7 @@
       "authored": "dato inserito manualmente dall'autore",
       "measured": "dato derivato da misurazione"
     },
-    "note": "Anello 2 DETTAGLIATO: sotto-fasi della retrazione sx dalla scheda wiki/02 (scivolamento, arco, supinazione combinata, chiusura rapida a traiettoria stabile, LOCK ~45deg, tenuta durante rotazione, ritorno). Pose autoriali guidate dagli angoli osservati nel capture (gomito ~110 -> ~45). NON sostituisce il benchmark S2 (anello-2-retrazione.json, congelato)."
+    "note": "Anello 2 DETTAGLIATO: sotto-fasi della retrazione sx dalla scheda wiki/02 (scivolamento, arco, supinazione combinata, chiusura rapida a traiettoria stabile, LOCK ~45deg, tenuta durante rotazione, ritorno). Pose autoriali guidate dagli angoli osservati nel capture (gomito ~110 -> ~45). NON sostituisce il benchmark S2 (anello-2-retrazione.json, congelato). hand:{open,sup} per keyframe: apertura dita 0..1 e supinazione in gradi, autoriali."
   },
   "task": {
     "id": "anello-2-dettaglio",
@@ -131,6 +131,10 @@
           102,
           268
         ]
+      },
+      "hand": {
+        "open": 1,
+        "sup": 0
       }
     },
     {
@@ -159,6 +163,10 @@
           301,
           231
         ]
+      },
+      "hand": {
+        "open": 1,
+        "sup": 20
       }
     },
     {
@@ -187,6 +195,10 @@
           280,
           117
         ]
+      },
+      "hand": {
+        "open": 1,
+        "sup": 70
       }
     },
     {
@@ -215,6 +227,10 @@
           179,
           108
         ]
+      },
+      "hand": {
+        "open": 1,
+        "sup": 95
       }
     },
     {
@@ -243,6 +259,10 @@
           121,
           199
         ]
+      },
+      "hand": {
+        "open": 0,
+        "sup": 110
       }
     },
     {
@@ -271,6 +291,10 @@
           121,
           199
         ]
+      },
+      "hand": {
+        "open": 0,
+        "sup": 110
       }
     },
     {
@@ -299,6 +323,10 @@
           102,
           268
         ]
+      },
+      "hand": {
+        "open": 1,
+        "sup": 0
       }
     }
   ],
@@ -312,8 +340,8 @@
       "end": 380,
       "epistemic": "OSS",
       "provenance": "authored",
-      "representationStatus": "not_available",
-      "representationReason": "axial-rotation-not-represented: le aste punto-punto non esprimono il rollio del segmento",
+      "representationStatus": "represented",
+      "representationReason": "resa come orientazione del palmo della mano (hand.sup per keyframe, autoriale): non e piu una lacuna di rappresentazione delle aste",
       "notes": "retrazione+supinazione evento combinato [video]; finestra autoriale sovrapposta all'arco"
     }
   ],
@@ -411,7 +439,7 @@
       "epistemic": "INT",
       "provenance": "authored",
       "representationStatus": "represented",
-      "notes": "chiusura rapida quando la traiettoria e' stabile — evento non rappresentabile sulle aste"
+      "notes": "chiusura rapida quando la traiettoria e stabile — resa dal parametro hand.open (1 aperta -> 0 pugno)"
     },
     {
       "id": "M4",
