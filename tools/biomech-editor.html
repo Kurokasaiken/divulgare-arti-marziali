@@ -136,6 +136,7 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
     <textarea id="jsonArea"></textarea>
     <div class="tl-row" style="margin-top:8px;">
       <button id="copyJson">Copia</button>
+      <button id="downloadJson">Scarica file</button>
       <button id="importJson">Importa</button>
       <button id="saveLocal">Salva (locale)</button>
       <button id="loadLocal">Carica (locale)</button>
@@ -325,6 +326,9 @@ function interpJoints(t){
   return out;
 }
 function exactKfAtTime(t){ return state.keyframes.find(k=>k.time===t); }
+function nearestKf(t){ let best=null,bd=1e18;
+  state.keyframes.forEach(k=>{ const d=Math.abs(k.time-t); if(d<bd){bd=d;best=k;} });
+  return best; }
 const BONE_PAIRS={'shoulder-elbow':['shoulder','elbow'],'elbow-wrist':['elbow','wrist'],'wrist-hand':['wrist','hand']};
 
 // ---------- VISTE (proiezioni ortografiche dello stesso store 3D) ----------
@@ -430,8 +434,11 @@ function renderViews(){
       const c=document.createElementNS(NS,'circle');
       c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',7); c.setAttribute('class','joint');
       c.style.opacity = editable?1:0.55; c.dataset.joint=j;
-      c.addEventListener('mousedown', e=>{ if(editable){ dragJoint=j; dragView=v; e.preventDefault(); }});
-      c.addEventListener('touchstart', e=>{ if(editable){ dragJoint=j; dragView=v; }}, {passive:true});
+      const grab=e=>{ if(!editable){ const k=nearestKf(state.currentTime);
+        if(!k) return; state.currentTime=k.time; renderAll(); }
+        dragJoint=j; dragView=v; };
+      c.addEventListener('mousedown', e=>{ grab(); e.preventDefault(); });
+      c.addEventListener('touchstart', ()=>grab(), {passive:true});
       svg.appendChild(c);
       const t=document.createElementNS(NS,'text'); t.setAttribute('x',p[0]+10); t.setAttribute('y',p[1]-8);
       t.setAttribute('class','jlabel'); t.textContent=LABELS[j]; svg.appendChild(t);
@@ -698,6 +705,13 @@ document.getElementById('loadExample').addEventListener('click', async ()=>{
 document.getElementById('copyJson').addEventListener('click', ()=>{
   const ta=document.getElementById('jsonArea'); ta.select();
   try{ navigator.clipboard.writeText(ta.value); }catch(e){ try{ document.execCommand('copy'); }catch(e2){} }
+});
+document.getElementById('downloadJson').addEventListener('click', ()=>{
+  const doc=buildCanonical();
+  const name=(doc.task&&doc.task.id||'modello')+'-'+new Date().toISOString().slice(0,10)+'.json';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(doc,null,2)],{type:'application/json'}));
+  a.download=name; a.click(); URL.revokeObjectURL(a.href);
 });
 document.getElementById('saveLocal').addEventListener('click', ()=>{
   try{ localStorage.setItem('biomech-kf', JSON.stringify(buildCanonical())); alert('Salvato in locale su questo browser.'); }
