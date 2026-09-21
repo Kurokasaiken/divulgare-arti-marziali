@@ -34,6 +34,14 @@ diventerebbe una razionalizzazione della tecnica già conosciuta.
 - **Configurazione strutturale finale** — trasmissione del carico con poca
   attività muscolare, verificata finora solo empiricamente (spinta contro parete).
 
+### Predizioni dalla scheda Anelli 0+1 (`02`, scheda compilata)
+
+- **P-A0.1** — se il bacino guida il gesto (schema APA), il flip
+  `hips_dx = R_hip.x − L_hip.x` precede la retrazione del braccio di un
+  intervallo risolvibile; se il drive è comune, sono simultanei. Nei dati
+  attuali coincidono a ±1 frame in 5/5 reps — **non falsificabile a 17 fps,
+  richiede cattura ≥100 fps o EMG**.
+
 ### Predizioni dalla scheda Anello 2 (`02`, scheda compilata)
 
 - **P-A2.1** — ritardare/eliminare il LOCK dovrebbe alterare timing o velocità

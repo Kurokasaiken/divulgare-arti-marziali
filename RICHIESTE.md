@@ -462,3 +462,22 @@ modello adottato. (2026-09-21)
   risolto passando da media a mediana.
 - Esito registrato in wiki/03 con ambito dichiarato (I_estimated nel
   modello, non dimostra funzione LOCK).
+
+---
+
+## R-021 — Scheda Anelli 0+1 con OSS quantitativi dai capture
+
+**Richiesta:** *"possiamo cominciare a lavorare sul primo anello della
+catena cinetica?"* (2026-09-21) — ramo C della sequenza R-020, eseguito
+perché i capture contengono già i landmark della parte bassa.
+**Data:** 2026-09-21
+**Stato:** `fatta`
+**Cosa è successo:**
+- Scheda 12-passi compilata in `wiki/02` per Anelli 0+1 con OSS da capture:
+  sollevamento piede (~2% frame), salita bacino (~1-1.7%), flip del proxy
+  pelvico `hips_dx` in tutte le reps.
+- **Risultato nuovo:** flip pelvico e retrazione braccio sincroni a ±1
+  frame in 5/5 reps — a 17fps l'ordine bacino↔braccio non è risolvibile.
+  Registrato come predizione **P-A0.1** in `wiki/03` (richiede ≥100fps).
+- Limite dichiarato: carico tallone→avampiede NON osservabile nei landmark
+  (serve pressione/GRF).
