@@ -84,3 +84,19 @@ logico di C, V1~V2 come ipotesi da specificare solo quando si testa).
 **Decisione sospesa:** nessuna modifica allo schema finché il Director non
 decide quali ambiguità meritano un campo e quali restano "aperte per
 design". S2 resta chiusa.
+
+## Appendice — decisione del Director (2026-09-21)
+
+| Ambiguità | Decisione | Implementazione |
+|-----------|-----------|-----------------|
+| unità/calibrazione | **CHIUSO** | `meta.units` + `calibration:'not-calibrated'` (R-017) |
+| legenda epistemica | **CHIUSO** | `meta.epistemicLegend` + `provenanceLegend` (R-018) |
+| E1 non rappresentabile | **CHIUSO** | `representationStatus`/`representationReason` esteso agli eventi (R-019) — senza tassonomia traslazione/rotazione/orientamento |
+| KF2 ≡ KF3 | APERTO per design | stessa configurazione ≠ nessun movimento intervenuto |
+| ruolo logico di C | APERTO per design | è la domanda scientifica di C-02 |
+| relazione V1~V2 | APERTO per design | `≈` richiede una metrica da ricerca, non da schema |
+| onset L1 dentro M1 | APERTO/documentato | il vincolo emerge nella coda di M1 — intenzionale |
+| LOCK meta vs functional-lock | APERTO/documentato | terminologia colloquiale, non ambiguità bloccante |
+
+S2 resta il benchmark congelato: queste sono richieste nuove generate dal
+test, non correzioni retroattive del caso di studio.

@@ -228,3 +228,15 @@ updated: 2026-09-20
   al-tronco; legenda OSS/INT/IPO assente nel JSON.
 - S2 resta FERMATA. Prossima decisione del Director: quali ambiguità
   meritano correzione del linguaggio vs restano aperte per design.
+
+## Aggiunta (2026-09-21, chiusure post cold-read — R-017/018/019)
+
+- Decisione del Director sugli 8 AMBIGUO del cold-read: 3 da chiudere
+  (units/calibration, legenda epistemica, representationStatus per eventi),
+  5 aperti per design (KF2≡KF3, ruolo logico di C, V1~V2, onset L1,
+  terminologia LOCK nel meta). S2 resta benchmark congelato.
+- Editor: `meta` ora emette units + epistemicLegend + provenanceLegend di
+  default e preserva il meta importato nel round-trip; eventi portano
+  representationStatus/reason opzionali (data-level, niente UI).
+- Concetto confermato dal test: `representationStatus` non era rattoppo per
+  M2 — identifica una dimensione del modello (dichiarato vs rappresentabile).

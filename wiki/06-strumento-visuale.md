@@ -105,6 +105,13 @@ Cosa fa già:
   in tutte le viste), annotazioni;
 - ogni oggetto semantico porta `epistemic` (OSS/INT/IPO, editabile) e
   `provenance` (`authored` — `measured` arriverà con l'import mocap);
+- `meta` auto-documentante (post cold-read R-016): `units` dichiara
+  `position:px`, `time:ms`, `calibration:not-calibrated` — niente pseudo-unità
+  fisiche; `epistemicLegend` e `provenanceLegend` espandono gli acronimi;
+- `representationStatus` esteso agli **eventi**: un evento dichiarato può non
+  essere rappresentabile cinematicamente (E1 supinazione: la rotazione assiale
+  non è esprimibile su aste punto-punto) — stessa distinzione
+  dichiarato/rappresentato già applicata ai movimenti (M2);
 - salvataggio locale (localStorage) nello stesso formato canonico;
 - tema chiaro/scuro.
 

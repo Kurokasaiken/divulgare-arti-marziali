@@ -204,6 +204,7 @@ let state = {
     {id:uid('E'), bone:'elbow-wrist', label:'SUPINAZIONE', start:120, end:360}
   ],
   sem: defaultSem(),
+  meta: {},
   currentTime: 0,
   selectedRotId: null,
   playing: false
@@ -242,12 +243,19 @@ state.keyframes.forEach(k=>enforceProportions(k.joints));
 function buildCanonical(){
   return {
     schemaVersion: SCHEMA_VERSION,
-    meta: {tool:'biomech-editor', model:'S->M->C->S', exportedAt:new Date().toISOString()},
+    meta: {
+      units:{position:'px', time:'ms', calibration:'not-calibrated'},
+      epistemicLegend:{OSS:'osservazione', INT:'interpretazione', IPO:'ipotesi'},
+      provenanceLegend:{authored:'dato inserito manualmente dall autore', measured:'dato derivato da misurazione'},
+      ...(state.meta||{}),
+      tool:'biomech-editor', model:'S->M->C->S', exportedAt:new Date().toISOString()
+    },
     task: state.task || defaultTask(),
     skeleton: SKELETON,
     views: VIEWS.map(v=>({id:v.id, label:v.label, projection:'orthographic', axes:v.axes.map(i=>AXES[i])})),
     keyframes: sortedKf().map(k=>({id:k.id, time:k.time, joints:k.joints, epistemic:k.epistemic||'IPO', provenance:k.provenance||'authored'})),
-    events: state.rotations.map(r=>({id:r.id, type:'axial_rotation', segment:r.bone, label:r.label, start:r.start, end:r.end, epistemic:r.epistemic||'IPO', provenance:r.provenance||'authored'})),
+    events: state.rotations.map(r=>({id:r.id, type:'axial_rotation', segment:r.bone, label:r.label, start:r.start, end:r.end, epistemic:r.epistemic||'IPO', provenance:r.provenance||'authored',
+      ...(r.representationStatus?{representationStatus:r.representationStatus}:{}), ...(r.representationReason?{representationReason:r.representationReason}:{})})),
     states: state.sem.states,
     movements: state.sem.movements,
     conditions: state.sem.conditions,
@@ -266,9 +274,11 @@ function importModel(doc){
   if(!doc || typeof doc!=='object') return false;
   if(doc.schemaVersion===SCHEMA_VERSION || doc.schemaVersion===2){
     state.task = doc.task || defaultTask();
+    state.meta = doc.meta || {};
     state.keyframes = (doc.keyframes||[]).map(k=>({id:k.id, time:k.time, joints:joints3(k.joints), epistemic:k.epistemic, provenance:k.provenance}));
     state.rotations = (doc.events||[]).filter(e=>e.type==='axial_rotation')
-      .map(e=>({id:e.id, bone:e.segment, label:e.label, start:e.start, end:e.end, epistemic:e.epistemic, provenance:e.provenance}));
+      .map(e=>({id:e.id, bone:e.segment, label:e.label, start:e.start, end:e.end, epistemic:e.epistemic, provenance:e.provenance,
+        representationStatus:e.representationStatus, representationReason:e.representationReason}));
     const s=doc;
     state.sem = {
       states:s.states||[], movements:s.movements||[], conditions:s.conditions||[],
@@ -283,6 +293,7 @@ function importModel(doc){
     state.rotations = rots.map(r=>({id:r.id, bone:r.bone, label:r.label||r.name, start:r.start, end:r.end}));
     state.task = defaultTask();
     state.sem = defaultSem();
+    state.meta = {};
   }
   ensureIds(); resyncCounters();
   state.keyframes.forEach(k=>enforceProportions(k.joints));
