@@ -289,3 +289,12 @@ updated: 2026-09-20
   richiedono cattura densa o confronto varianti).
 - Predizioni attive: P-A0.1 (ordine bacino/braccio), P-A2.1 (LOCK->tronco),
   P-A2.2 (eseguita, INT -50%), P-A5.1 (onset estensione dopo flip).
+
+## Aggiunta (2026-09-21, matrice di falsificazione — R-023)
+
+- wiki/10: matrice completa predizione->misura->supporta/falsifica per
+  tutte le P e H + IPO residue delle schede; requisiti cattura densa
+  derivati dalla matrice.
+- Progetto ora in fase di verifica: il prossimo artefatto utile e' il
+  protocollo concreto della cattura densa (o una nuova cattura con
+  varianti controllate).

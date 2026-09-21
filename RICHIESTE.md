@@ -502,3 +502,23 @@ delle schede di analisi per tutti gli anelli della catena.
   misurabile (salti landmark con confidence 1.0 — motion blur a 17fps).
 - Nuova predizione P-A5.1 in wiki/03 (estensione segue il flip di ~10-15
   frame; testabile con varianti "a spinta").
+
+---
+
+## R-023 — Matrice di falsificazione
+
+**Richiesta:** *"il prossimo documento utile da produrre: una matrice
+Predizione → misura necessaria → risultato che la supporterebbe →
+risultato che la indebolirebbe/falsificherebbe."* La cattura densa deve
+essere progettata come esperimento che massimizza le predizioni
+distinguibili. (2026-09-21)
+**Data:** 2026-09-21
+**Stato:** `fatta`
+**Cosa è successo:**
+- `wiki/10-matrice-falsificazione.md`: tutte le predizioni (P-A0.1,
+  P-A2.1, P-A2.2, P-A5.1), le ipotesi H1–H6 e le IPO residue dalle schede
+  mappate a misura/strumentazione/supporta/falsifica.
+- Requisiti minimi della cattura densa derivati dalla matrice (VD, 3D,
+  VAR, GRF, EMG, IMP, raw data).
+- Punto chiave: le **varianti controllate** sono l'unico elemento che
+  separa correlazione da funzione.
