@@ -32,12 +32,14 @@ h1{font-size:15px; letter-spacing:.04em; margin:0; text-transform:uppercase;}
 main{flex:1; display:flex; flex-direction:column; gap:10px; padding:6px 18px 18px; max-width:920px; margin:0 auto; width:100%;}
 .panel{background:var(--panel); border:1px solid var(--grid); border-radius:2px;}
 #canvasWrap{padding:8px; overflow-x:auto;}
-.viewsGrid{display:flex; gap:8px;}
-.viewBox{flex:1; min-width:0;}
-.viewLabel{font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.05em; margin-bottom:2px;}
+.viewsGrid{display:flex; gap:10px;}
+.viewBox{flex:1; min-width:0; background:var(--bg); border:1px solid var(--grid); border-radius:6px; padding:6px 6px 2px;}
+.viewLabel{font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.08em; margin-bottom:2px; text-align:center;}
 svg{display:block; width:100%; height:auto;}
-.joint{cursor:grab; fill:var(--panel); stroke:var(--line); stroke-width:2;}
+.joint{cursor:grab; fill:var(--panel); stroke:var(--sub); stroke-width:2; transition:stroke-width .1s;}
+.joint:hover{stroke:var(--accent); stroke-width:3.5;}
 .joint:active{cursor:grabbing;}
+.joint.editable{stroke:var(--accent);}
 .jlabel{font-size:11px; fill:var(--sub); font-family:inherit;}
 .bone{stroke:var(--line); stroke-width:3; fill:none; stroke-linecap:round;}
 .traj{stroke:var(--accent2); stroke-width:1.4; fill:none; stroke-dasharray:4 3; opacity:.85;}
@@ -46,15 +48,23 @@ svg{display:block; width:100%; height:auto;}
 .rotLabel{font-size:10px; fill:var(--rot); font-weight:bold; letter-spacing:.03em;}
 #timelineWrap{padding:12px 16px 14px;}
 .tl-row{display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;}
-select{font-family:inherit; font-size:11px; background:var(--panel); color:var(--ink); border:1px solid var(--line); padding:5px 6px; border-radius:2px;}
-button{font-family:inherit; font-size:11px; letter-spacing:.03em; text-transform:uppercase; background:var(--panel); color:var(--ink); border:1px solid var(--line); padding:6px 10px; border-radius:2px; cursor:pointer;}
+select{font-family:inherit; font-size:11px; background:var(--panel); color:var(--ink); border:1px solid var(--grid); padding:5px 6px; border-radius:4px;}
+select:hover{border-color:var(--accent);}
+button{font-family:inherit; font-size:11px; letter-spacing:.03em; text-transform:uppercase; background:var(--panel); color:var(--ink); border:1px solid var(--grid); padding:6px 10px; border-radius:4px; cursor:pointer; transition:background .12s,border-color .12s;}
 button:hover{background:var(--accent); border-color:var(--accent); color:#fff;}
 button.active{background:var(--accent); color:#fff; border-color:var(--accent);}
 button:disabled{opacity:.35; cursor:default; background:var(--panel); color:var(--ink);}
-#timeLabel{font-size:11px; color:var(--sub); margin-left:auto;}
+button.primary{background:var(--accent); border-color:var(--accent); color:#fff; font-weight:bold;}
+button.primary:hover{filter:brightness(1.15);}
+.ctrl-group{display:flex; align-items:center; gap:5px; padding:3px 8px; border:1px solid var(--grid); border-radius:6px; background:var(--bg);}
+.ctrl-group .glab{font-size:8.5px; letter-spacing:.08em; color:var(--sub); text-transform:uppercase; margin-right:2px;}
+.ctrl-group button{border-radius:3px;}
+#timeLabel{font-size:11px; color:var(--sub);}
+#timeLabel.editable{color:var(--accent); font-weight:bold;}
 svg#tl{width:100%; height:96px; touch-action:none;}
 .tltrack{stroke:var(--track); stroke-width:3;}
-.kfdot{stroke:var(--kf); stroke-width:2; fill:var(--panel); cursor:pointer;}
+.kfdot{stroke:var(--kf); stroke-width:2; fill:var(--panel); cursor:pointer; transition:r .1s;}
+.kfdot:hover{r:10;}
 .kfdot.sel{fill:var(--kf-sel); stroke:var(--kf-sel);}
 .playhead{stroke:var(--accent); stroke-width:2;}
 .kftime{font-size:9px; fill:var(--sub);}
@@ -88,25 +98,31 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
 
   <div class="panel" id="timelineWrap">
     <div class="tl-row">
-      <button id="playBtn">▶ Play</button>
-      <button id="addKf">+ Keyframe</button>
-      <button id="delKf">✕ Elimina keyframe</button>
-      <span style="width:1px;height:18px;background:var(--grid);"></span>
-      <select id="boneSelect">
-        <option value="shoulder-elbow">Braccio (spalla–gomito)</option>
-        <option value="elbow-wrist" selected>Avambraccio (gomito–polso)</option>
-        <option value="wrist-hand">Mano (polso–mano)</option>
-      </select>
-      <button id="addRot">↻ + Rotazione</button>
-      <button id="delRot">✕ Elimina rotazione</button>
-      <span style="width:1px;height:18px;background:var(--grid);"></span>
-      <button id="jsonBtn">{ } JSON</button>
-      <select id="exampleSel">
-        <option value="anello-2-dettaglio.json">A2 dettaglio</option>
-        <option value="anello-2-retrazione.json">A2 benchmark S2</option>
-      </select>
-      <button id="loadExample">Carica esempio</button>
-      <label style="font-size:10px; letter-spacing:.03em; color:var(--dim, #888)"><input type="checkbox" id="ghost" checked> ghost</label>
+      <div class="ctrl-group"><span class="glab">animazione</span>
+        <button id="playBtn" title="Avvia/metti in pausa l'animazione">▶ Play</button>
+      </div>
+      <div class="ctrl-group"><span class="glab">keyframe</span>
+        <button id="addKf" class="primary" title="Crea un keyframe al tempo corrente (posa interpolata)">+ Keyframe</button>
+        <button id="delKf" title="Elimina il keyframe selezionato">✕</button>
+      </div>
+      <div class="ctrl-group"><span class="glab">rotazione</span>
+        <select id="boneSelect" title="Segmento della rotazione assiale">
+          <option value="shoulder-elbow">Braccio</option>
+          <option value="elbow-wrist" selected>Avambraccio</option>
+          <option value="wrist-hand">Mano</option>
+        </select>
+        <button id="addRot" title="Nuova rotazione assiale da t a t+200ms">↻ +</button>
+        <button id="delRot" title="Elimina la rotazione selezionata">✕</button>
+      </div>
+      <div class="ctrl-group"><span class="glab">file</span>
+        <select id="exampleSel" title="Esempio da caricare">
+          <option value="anello-2-dettaglio.json">A2 dettaglio</option>
+          <option value="anello-2-retrazione.json">A2 benchmark S2</option>
+        </select>
+        <button id="loadExample" title="Carica l'esempio selezionato">Carica</button>
+        <button id="jsonBtn" title="Apri il pannello JSON canonico">{ } JSON</button>
+      </div>
+      <label title="Mostra i keyframe adiacenti sbiaditi" style="font-size:10px; letter-spacing:.03em; color:var(--sub)"><input type="checkbox" id="ghost" checked> ghost</label>
       <span id="timeLabel">t = 0 ms</span>
       <span id="poseInfo" style="font-size:10.5px; opacity:.75"></span>
     </div>
@@ -432,8 +448,9 @@ function renderViews(){
     JOINTS.forEach(j=>{
       const p=proj(joints[j],v);
       const c=document.createElementNS(NS,'circle');
-      c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',7); c.setAttribute('class','joint');
-      c.style.opacity = editable?1:0.55; c.dataset.joint=j;
+      c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',7);
+      c.setAttribute('class','joint'+(editable?' editable':''));
+      c.style.opacity = editable?1:0.45; c.dataset.joint=j;
       const grab=e=>{ if(!editable){ const k=nearestKf(state.currentTime);
         if(!k) return; state.currentTime=k.time; renderAll(); }
         dragJoint=j; dragView=v; };
@@ -625,7 +642,10 @@ function renderTimeline(){
   const ph=document.createElementNS(NS,'line'); ph.setAttribute('x1',px); ph.setAttribute('y1',6); ph.setAttribute('x2',px); ph.setAttribute('y2',80);
   ph.setAttribute('class','playhead'); tl.appendChild(ph);
 
-  document.getElementById('timeLabel').textContent='t = '+Math.round(state.currentTime)+' ms'+(exactKfAtTime(state.currentTime)?' (keyframe · editabile)':' (interpolato)');
+  const tlEl=document.getElementById('timeLabel');
+  const onKf=!!exactKfAtTime(state.currentTime);
+  tlEl.textContent='t = '+Math.round(state.currentTime)+' ms'+(onKf?' ● keyframe — editabile':' ○ interpolato — clic un pallino o + Keyframe');
+  tlEl.classList.toggle('editable',onKf);
   document.getElementById('delKf').disabled = state.keyframes.length<=2 || !exactKfAtTime(state.currentTime);
   document.getElementById('delRot').disabled = state.selectedRotId===null;
 }
