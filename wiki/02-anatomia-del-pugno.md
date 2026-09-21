@@ -74,6 +74,138 @@ Quale di queste funzioni sia effettivamente necessaria — e in che misura — �
 IPO. La quantificazione del contributo alla rotazione richiede GRF e cinematica
 3D. (IPO, non verificata con i dati attuali)
 
+### Scheda di analisi compilata — Anelli 0+1 (base e spostamento)
+
+> Seconda applicazione del formato `04`. A differenza di Anello 2, qui il
+> capture 2D vede la parte bassa del corpo (landmark 23–32, confidence ~1.0)
+> ma **non** la distribuzione del carico tallone/avampiede — quella resta
+> osservazione empirica non misurabile sui dati attuali.
+
+**1. COSA SUCCEDE? (OSS, con provenienza)**
+
+- `[video]` il piede sinistro si solleva, atterra con il tallone, il carico
+  passa verso l'avampiede, la gamba si estende leggermente.
+- `[capture]` `L_foot_index.y` e `L_ankle.y` mostrano un sollevamento del
+  piede di ~2% dell'altezza di frame (dy ≈ −0.02 unità normalizzate),
+  consistente in 5/5 reps.
+- `[capture]` `L_hip.y` scende di ~1–1.7% frame durante l'azione → il bacino
+  **sale**, come già osservato a video (ora confermato su dato).
+- `[capture]` `R_hip.x − L_hip.x` **cambia segno** in tutte le reps
+  (−0.05 → +0.02/0.04): proxy planare di rotazione/scivolamento dell'asse
+  pelvico. Interpretazione come "rotazione" è INT (dipende dall'azimut
+  camera); come evento cinematico è OSS.
+- `[empirico]` la parte sinistra del bacino viene spinta posteriormente
+  (sensazione dell'esecutore — non separabile come OSS su dati 2D).
+
+**2. CINEMATICA**
+
+- Sequenza osservabile: sollevamento piede → spostamento → appoggio →
+  salita bacino; le finestre esatte variano tra reps (foot-lift max a
+  f26–f52, hip-rise max a f26–f46).
+- **Sincronia critica:** il flip di `hips_dx` e il primo frame con
+  `gomito_sx < 80°` coincidono entro ±1 frame in tutte le reps
+  (f11/f11, f15/f15, f16/f16, f19/f19, f28/f27). A Δt ≈ 59 ms l'ordine
+  bacino↔braccio **non è risolvibile**.
+- Limite dichiarato: a 17 fps non si può distinguere anticipazione
+  posturale (bacino prima) da drive comune (sincroni) da risposta
+  (bacino dopo).
+
+**3. FORZE/MOMENTI COINVOLTI** — *interamente INT/IPO: nessuna misura GRF.*
+
+- Appoggio tallone → carico avampiede: ridistribuzione della reazione
+  vincolare normale; l'attrito al suolo è la sola fonte possibile di forza
+  orizzontale esterna sul sistema (vincolo meccanico, non misurato).
+- Estensione gamba + salita bacino: lavoro contro gravità sul CoM —
+  energia spesa verticalmente, candidata a preload o a riposizionamento.
+- Spinta posteriore del bacino sx: se reale, implica momento sul bacino
+  attorno all'asse verticale — coerente con il flip `hips_dx` (IPO di
+  lettura congiunta).
+
+**4. FUNZIONE MECCANICA — candidati (non scelta a priori)**
+
+- ancoraggio: fissare il lato anteriore come fulcro per le fasi
+  successive;
+- impulso: contribuire forza orizzontale via attrito al moto del sistema;
+- riposizionamento: portare il sistema nella configurazione spaziale utile
+  alla rotazione (distanza/offset del bacino);
+- preload/postura: estensione gamba + bacino alto come condizione
+  energetica o geometrica preparatoria;
+- nessuna funzione attiva: semplice conseguenza dello spostamento (ipotesi
+  nulla da non scartare).
+
+**5. COSTO**
+
+- Tempo del passo vs partenza diretta del colpo.
+- Impegno posturale: il passo vincola la base fino all'atterraggio.
+- Shock all'appoggio del tallone (dissipazione, non recuperabile).
+- Energia spesa nel sollevamento del CoM.
+
+**6. PERCHÉ QUESTA CONFIGURAZIONE?**
+
+- Perché tallone prima? (INT: appoggio stabile rapido / rotolamento
+  controllato — da verificare).
+- Perché poi carico su avampiede? (INT: prepara la rotazione sul
+  avampiede come pivot — serve GRF o vista laterale).
+- Perché il bacino sale? (INT candidati: estensione gamba per pivotare;
+  aggiustamento altezza CoM; artefatto della rotazione pelvica in
+  proiezione).
+- Perché spinta posteriore del lato sx? (INT: contro-rotazione pelvica che
+  accompagna/prepara la rotazione del tronco).
+
+**7. EFFETTO SULLA FASE SUCCESSIVA**
+
+- Fornisce l'ancoraggio sinistro durante la retrazione del braccio
+  (Anello 2) e la rotazione del tronco — la sincronia bacino↔braccio a
+  ±1 frame è **compatibile** con accoppiamento causale, non lo dimostra.
+- Se il piede sx funge da pivot, la configurazione finale del passo
+  determina l'asse attorno a cui la rotazione può svilupparsi (INT).
+
+**8. ALTERNATIVE**
+
+- Nessun passo (colpo da fermo) — confronto diretto possibile in cattura.
+- Appoggio diretto su avampiede senza fase tallone.
+- Passo più ampio/più corto — trade-off distanza vs tempo.
+- Bacino senza salita (estensione diversa della gamba).
+
+**9. COSA SA LA LETTERATURA?**
+
+- APA (anticipatory postural adjustments): l'attività posturale di
+  gambe/bacino *precede* tipicamente il gesto rapido dell'arto — la nostra
+  sincronia ±1 frame non la esclude né la conferma (risoluzione).
+- GRF nei colpi: la letteratura sullo striking documenta il contributo
+  della spinta al suolo alla potenza del pugno (mapping in `08` da
+  completare); il ruolo del piede pivot in gyaku-zuki è discusso.
+- Nessuna fonte consultata ancora sul segnale specifico tallone→avampiede
+  nel passo d'ingresso.
+
+**10. COSA STIAMO IPOTIZZANDO? (IPO + predizioni)**
+
+- Il piede sx contribuisce causalmente (ancoraggio/impulso) e non è solo
+  spettatore — IPO.
+- **Predizione P-A0.1 (nuova):** se il bacino guida il gesto (modello
+  APA), l'inizio del flip `hips_dx` precede la retrazione del braccio di
+  almeno un intervallo risolvibile; se il drive è comune o il braccio guida,
+  no. **Non falsificabile a 17fps — richiede cattura ≥100fps o EMG.**
+- La salita del bacino dovrebbe comparire anche in esecuzioni senza impatto
+  reale se è funzionale alla configurazione (vs artefatto del contatto).
+
+**11. COME POTREMMO MISURARLO?**
+
+- Subito (dati attuali): timing dei proxy cinematici (foot lift, hip rise,
+  hips_dx) — fatto; confronto varianti con/senza passo.
+- Serve: cattura ≥100–240 fps per l'ordine bacino↔braccio; pedana di forza
+  o solette a pressione per tallone→avampiede; vista laterale o 3D per la
+  componente in profondità del bacino; EMG arti inferiori.
+
+**12. COSA NON DIMOSTRIAMO ANCORA**
+
+- Che il passo/base sia *causalmente* necessario (vs risposta
+  accompagnatoria).
+- Che il carico tallone→avampiede avvenga davvero come descritto
+  (non osservabile nei landmark).
+- L'ordine temporale bacino↔braccio (sincroni a 17 fps).
+- La quota di forza orizzontale effettivamente prodotta al suolo.
+
 ## Anello 2 — Braccio sinistro
 
 ### Traiettoria del gomito

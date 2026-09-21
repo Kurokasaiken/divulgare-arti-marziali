@@ -267,3 +267,14 @@ updated: 2026-09-20
   rep_003 produceva I=13460e-4; robustezza necessaria su dati ML Kit).
 - Aperto: bias di proiezione planare non quantificabile senza azimut camera;
   se serve stima 3D vera -> nuova cattura laterale/stereo o landmark con z.
+
+## Aggiunta (2026-09-21, Anelli 0+1 — R-021)
+
+- Scheda 12-passi compilata in wiki/02 con OSS quantitativi dai capture:
+  piede sx sollevato ~2% frame, bacino sale ~1-1.7%, hips_dx (proxy
+  rotazione pelvica) cambia segno in 5/5 reps.
+- Scoperta: flip pelvico e gomito_sx<80° coincidono a ±1 frame in tutte le
+  reps -> ordine bacino/braccio IRRISOLVIBILE a 17fps. Predizione P-A0.1
+  registrata; serve cattura densa (>=100fps) o EMG.
+- Struttura proxy: hips_dx e' OSS cinematico ma la sua lettura come
+  "rotazione bacino" e' INT (dipende da azimut camera).
