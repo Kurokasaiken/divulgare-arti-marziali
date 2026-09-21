@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Capture Viewer — quando succede cosa</title>
+<style>
+  :root { --bg:#141519; --panel:#1d1f26; --line:#2c2f3a; --fg:#dfe3ea; --dim:#8a90a0; --acc:#5aa2ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui,sans-serif; }
+  header { display:flex; gap:12px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); }
+  header h1 { font-size:15px; font-weight:600; margin:0; }
+  select, button { background:var(--panel); color:var(--fg); border:1px solid var(--line); border-radius:6px; padding:5px 10px; font:inherit; cursor:pointer; }
+  button:hover, select:hover { border-color:var(--acc); }
+  main { display:flex; gap:0; height:calc(100vh - 49px); }
+  #stage { flex:1; display:flex; align-items:center; justify-content:center; position:relative; }
+  canvas#skel { background:var(--panel); border-radius:8px; }
+  #hud { position:absolute; top:12px; left:16px; font-family:ui-monospace,monospace; font-size:12px; color:var(--dim); white-space:pre; }
+  #side { width:360px; border-left:1px solid var(--line); display:flex; flex-direction:column; }
+  #tlwrap { padding:14px 16px 6px; }
+  #timeline { position:relative; height:64px; background:var(--panel); border:1px solid var(--line); border-radius:6px; }
+  #playhead { position:absolute; top:0; bottom:0; width:2px; background:#fff; opacity:.8; pointer-events:none; }
+  .mk { position:absolute; top:0; bottom:0; width:10px; margin-left:-5px; cursor:ew-resize; }
+  .mk::before { content:""; position:absolute; left:4px; top:0; bottom:0; width:2px; background:var(--c); }
+  .mk i { position:absolute; top:4px; left:11px; font:10px ui-monospace,monospace; font-style:normal; color:var(--c); white-space:nowrap; pointer-events:none; }
+  .seg { position:absolute; top:46px; height:8px; border-radius:4px; opacity:.35; pointer-events:none; }
+  #table { flex:1; overflow:auto; padding:8px 16px 16px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; color:var(--dim); font-weight:500; padding:6px 6px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg); }
+  td { padding:5px 6px; border-bottom:1px solid var(--line); font-family:ui-monospace,monospace; }
+  td.n { font-family:inherit; }
+  tr.cur td { color:#fff; }
+  .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
+  #note { padding:10px 16px; border-top:1px solid var(--line); color:var(--dim); font-size:11px; }
+  .ring { color:var(--acc); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Capture Viewer — <span class="ring">quando succede cosa</span></h1>
+  <select id="rep"></select>
+  <button id="play">▶ play</button>
+  <button id="reset">reset timing</button>
+  <span id="cur" style="margin-left:auto;font:12px ui-monospace,monospace;color:var(--dim)"></span>
+</header>
+<main>
+  <div id="stage">
+    <canvas id="skel" width="640" height="520"></canvas>
+    <div id="hud"></div>
+  </div>
+  <div id="side">
+    <div id="tlwrap"><div id="timeline"></div></div>
+    <div id="table"></div>
+    <div id="note">Trascina un marker per cambiare <i>quando</i> accade l'evento: le pose restano quelle
+      catturate, il tempo tra i marker viene rimappato (le pose intermedie sono interpolate tra i frame
+      reali del segmento). Landmark = OSS · eventi = INT euristico, correggibili a mano.</div>
+  </div>
+</main>
+<script>
+const CONN = [[11,12],[12,24],[24,23],[23,11],[11,13],[13,15],[12,14],[14,16],
+  [15,17],[15,19],[17,19],[16,18],[16,20],[18,20],[15,21],[16,22],
+  [23,25],[25,27],[27,29],[29,31],[24,26],[26,28],[28,30],[30,32],
+  [11,23],[12,24],[23,25],[24,26],[27,31],[28,32]];
+const EVENTS = [
+  ["retract_start","A2 inizio retrazione sx","#ffb454"],
+  ["lock","A2 LOCK (mano sx dietro)","#ff7a59"],
+  ["pelvis_flip","A3 flip bacino","#5aa2ff"],
+  ["ext_start","A5 inizio estensione dx","#7bd88f"],
+  ["impact","A6 impatto","#ff5f6d"],
+  ["return_start","rientro","#9a8cf5"],
+];
+let data=null, marks=[], curT=0, playing=false, raf=0, t0=0;
+const cv=document.getElementById('skel'), cx=cv.getContext('2d');
+const tl=document.getElementById('timeline');
+
+async function load(rep){
+  data = await (await fetch('captures/'+rep+'.json')).json();
+  marks = EVENTS.map(([k])=>({key:k, frame:data.events[k] ?? 0}))
+                .filter(m=>m.frame>0).sort((a,b)=>a.frame-b.frame);
+  if(marks[0].frame>0) marks.unshift({key:'start',frame:0});
+  buildTL(); drawTable(); show(0); document.getElementById('hud').textContent='';
+}
+function tEnd(){ return data.frames[data.frames.length-1].t; }
+function markT(m){ return m.t ?? data.frames[m.frame].t; }
+function poseAt(t){
+  // pose rimappata: dentro ogni segmento [markA,markB] si interpola tra i frame reali del segmento
+  const seg=[...marks, {key:'end',frame:data.frames.length-1}];
+  for(let i=0;i<seg.length-1;i++){
+    const a=seg[i], b=seg[i+1], tA=markT(a), tB=markT(b);
+    if(t<tA) break;
+    if(t<=tB || i===seg.length-2){
+      const u = tB>tA ? Math.min(1,(t-tA)/(tB-tA)) : 0;
+      const fr = a.frame + (b.frame-a.frame)*u;
+      const i0=Math.floor(fr), i1=Math.min(data.frames.length-1,i0+1), w=fr-i0;
+      return data.frames[i0].lm.map((p,j)=>{
+        const q=data.frames[i1].lm[j];
+        return [p[0]+(q[0]-p[0])*w, p[1]+(q[1]-p[1])*w];
+      });
+    }
+  }
+  return data.frames[0].lm;
+}
+function draw(lm){
+  cx.clearRect(0,0,cv.width,cv.height);
+  const X=x=>x*cv.width*0.8+cv.width*0.1, Y=y=>y*cv.height*0.8+cv.height*0.1;
+  cx.strokeStyle='#4d5468'; cx.lineWidth=2;
+  for(const [a,b] of CONN){ if(!lm[a]||!lm[b])continue;
+    cx.beginPath(); cx.moveTo(X(lm[a][0]),Y(lm[a][1])); cx.lineTo(X(lm[b][0]),Y(lm[b][1])); cx.stroke(); }
+  lm.forEach((p,i)=>{ if(!p)return;
+    cx.fillStyle = i===15?'#ff7a59' : i===16?'#7bd88f' : (i===23||i===24)?'#5aa2ff' : '#dfe3ea';
+    cx.beginPath(); cx.arc(X(p[0]),Y(p[1]), i>=15&&i<=16?5:3.5, 0, 7); cx.fill(); });
+}
+function curSeg(t){
+  const seg=[...marks.map(m=>({...m,t:markT(m)})), {key:'end',t:tEnd(),frame:data.frames.length-1}];
+  for(let i=0;i<seg.length-1;i++) if(t>=seg[i].t&&t<=seg[i+1].t) return i;
+  return seg.length-2;
+}
+function show(t){
+  curT=t; draw(poseAt(t));
+  document.getElementById('playhead').style.left=(t/tEnd()*100)+'%';
+  const i=curSeg(t), m=marks[i];
+  const ev=EVENTS.find(e=>e[0]===m?.key);
+  document.getElementById('cur').textContent=`t=${t.toFixed(0)}ms  ·  ${ev?ev[1]:m?m.key:''}`;
+  document.getElementById('hud').textContent=`t=${t.toFixed(0)} ms`;
+  document.querySelectorAll('#table tr').forEach((r,j)=>r.classList.toggle('cur',j===i));
+}
+function buildTL(){
+  tl.querySelectorAll('.mk,.seg').forEach(e=>e.remove());
+  const rect=()=>tl.getBoundingClientRect();
+  const all=[...marks,{key:'end',frame:data.frames.length-1}];
+  for(let i=0;i<all.length-1;i++){
+    const s=document.createElement('div'); s.className='seg';
+    const c=(EVENTS.find(e=>e[0]===all[i].key)||[])[2]||'#555';
+    s.style.background=c;
+    s.dataset.i=i; tl.appendChild(s);
+  }
+  marks.forEach((m,i)=>{
+    const d=document.createElement('div'); d.className='mk'; d.dataset.i=i;
+    const c=(EVENTS.find(e=>e[0]===m.key)||[])[2]||'#888';
+    d.style.setProperty('--c',c);
+    d.innerHTML=`<i>${m.key}</i>`;
+    d.onpointerdown=e=>{ d.setPointerCapture(e.pointerId);
+      const move=ev=>{ const r=rect(); const u=Math.min(1,Math.max(0,(ev.clientX-r.left)/r.width));
+        const t=u*tEnd();
+        const prev=i>0?markT(marks[i-1]):0, next=i<marks.length-1?markT(marks[i+1]):tEnd();
+        m.t=Math.min(next-1,Math.max(prev+1,t)); layout(); drawTable(); show(m.t); };
+      d.onpointermove=move; d.onpointerup=()=>{d.onpointermove=null;}; };
+    tl.appendChild(d);
+  });
+  const ph=document.createElement('div'); ph.id='playhead'; tl.appendChild(ph);
+  tl.onpointerdown=e=>{ if(e.target===tl){ const r=rect(); show((e.clientX-r.left)/r.width*tEnd()); } };
+  layout();
+}
+function layout(){
+  const all=[...marks,{key:'end',frame:data.frames.length-1}];
+  tl.querySelectorAll('.mk').forEach(d=>{ const m=marks[+d.dataset.i];
+    d.style.left=(markT(m)/tEnd()*100)+'%'; });
+  tl.querySelectorAll('.seg').forEach(s=>{ const i=+s.dataset.i;
+    const a=markT(all[i]), b=markT(all[i+1]);
+    s.style.left=(a/tEnd()*100)+'%'; s.style.width=((b-a)/tEnd()*100)+'%'; });
+}
+function drawTable(){
+  const rows=[];
+  let prev=null;
+  marks.forEach((m,i)=>{
+    const ev=EVENTS.find(e=>e[0]===m.key); const t=markT(m);
+    rows.push(`<tr><td class="n"><span class="dot" style="background:${ev?ev[2]:'#888'}"></span>${ev?ev[1]:m.key}</td>
+      <td>f${m.frame}</td><td>${t.toFixed(0)}</td><td>${prev==null?'—':'+'+(t-prev).toFixed(0)}</td></tr>`);
+    prev=t;
+  });
+  document.getElementById('table').innerHTML=
+    `<table><tr><th>evento</th><th>frame</th><th>t (ms)</th><th>Δt prec.</th></tr>${rows.join('')}</table>`;
+}
+document.getElementById('play').onclick=()=>{
+  playing=!playing; document.getElementById('play').textContent=playing?'⏸ pausa':'▶ play';
+  if(playing){ t0=performance.now()-curT;
+    const step=()=>{ if(!playing)return;
+      let t=performance.now()-t0; if(t>tEnd()){t=0;t0=performance.now();}
+      show(t); raf=requestAnimationFrame(step); };
+    raf=requestAnimationFrame(step);
+  } else cancelAnimationFrame(raf);
+};
+document.getElementById('reset').onclick=()=>{ marks.forEach(m=>delete m.t); layout(); drawTable(); show(0); };
+(async()=>{
+  const sel=document.getElementById('rep');
+  ['rep_001','rep_002','rep_003','rep_004','rep_005'].forEach(r=>{
+    const o=document.createElement('option'); o.value=o.textContent=r; sel.appendChild(o); });
+  sel.onchange=()=>load(sel.value);
+  await load('rep_001');
+})();
+</script>
+</body>
+</html>
