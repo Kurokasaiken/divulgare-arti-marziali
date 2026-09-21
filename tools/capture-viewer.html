@@ -39,7 +39,12 @@
   <h1>Capture Viewer — <span class="ring">quando succede cosa</span></h1>
   <select id="rep"></select>
   <button id="play">▶ play</button>
+  <select id="speed">
+    <option value="0.15">0.15×</option><option value="0.3">0.3×</option>
+    <option value="0.5" selected>0.5×</option><option value="1">1×</option>
+  </select>
   <button id="reset">reset timing</button>
+  <label style="font-size:12px;color:var(--dim)"><input type="checkbox" id="smooth"> smoothing (INT)</label>
   <span id="cur" style="margin-left:auto;font:12px ui-monospace,monospace;color:var(--dim)"></span>
 </header>
 <main>
@@ -68,7 +73,8 @@ const EVENTS = [
   ["impact","A6 impatto","#ff5f6d"],
   ["return_start","rientro","#9a8cf5"],
 ];
-let data=null, marks=[], curT=0, playing=false, raf=0, t0=0;
+let data=null, marks=[], curT=0, playing=false, raf=0, t0=0, artifacts=new Set(), smoothState=null;
+const JUMP_TH=0.09; // salto landmark/frame oltre il plausibile a ~17fps => artefatto tracking
 const cv=document.getElementById('skel'), cx=cv.getContext('2d');
 const tl=document.getElementById('timeline');
 
@@ -77,7 +83,22 @@ async function load(rep){
   marks = EVENTS.map(([k])=>({key:k, frame:data.events[k] ?? 0}))
                 .filter(m=>m.frame>0).sort((a,b)=>a.frame-b.frame);
   if(marks[0].frame>0) marks.unshift({key:'start',frame:0});
+  artifacts=new Set();
+  for(let i=1;i<data.frames.length;i++){
+    const a=data.frames[i-1].lm,b=data.frames[i].lm;
+    for(let j=0;j<33;j++){
+      if(Math.hypot(b[j][0]-a[j][0],b[j][1]-a[j][1])>JUMP_TH){artifacts.add(i);break;}
+    }
+  }
   buildTL(); drawTable(); show(0); document.getElementById('hud').textContent='';
+}
+function frameIdxAt(t){
+  const seg=[...marks,{key:'end',frame:data.frames.length-1}];
+  for(let i=0;i<seg.length-1;i++){
+    const a=seg[i],b=seg[i+1],tA=markT(a),tB=markT(b);
+    if(t<=tB||i===seg.length-2) return a.frame+(b.frame-a.frame)*(tB>tA?Math.min(1,(t-tA)/(tB-tA)):0);
+  }
+  return 0;
 }
 function tEnd(){ return data.frames[data.frames.length-1].t; }
 function markT(m){ return m.t ?? data.frames[m.frame].t; }
@@ -115,12 +136,21 @@ function curSeg(t){
   return seg.length-2;
 }
 function show(t){
-  curT=t; draw(poseAt(t));
+  curT=t;
+  let lm=poseAt(t);
+  if(document.getElementById('smooth').checked){
+    if(!smoothState) smoothState=lm.map(p=>[...p]);
+    lm=lm.map((p,j)=>{ const s=smoothState[j]; s[0]+= (p[0]-s[0])*0.25; s[1]+=(p[1]-s[1])*0.25; return s; });
+  } else smoothState=null;
+  draw(lm);
+  const fr=frameIdxAt(t), isArt=[...artifacts].some(a=>Math.abs(fr-a)<0.6);
   document.getElementById('playhead').style.left=(t/tEnd()*100)+'%';
   const i=curSeg(t), m=marks[i];
   const ev=EVENTS.find(e=>e[0]===m?.key);
   document.getElementById('cur').textContent=`t=${t.toFixed(0)}ms  ·  ${ev?ev[1]:m?m.key:''}`;
-  document.getElementById('hud').textContent=`t=${t.toFixed(0)} ms`;
+  document.getElementById('hud').textContent=`t=${t.toFixed(0)} ms  ~f${fr.toFixed(1)}`
+    +(isArt?'   ⚠ artefatto tracking':'');
+  document.getElementById('hud').style.color=isArt?'#ff5f6d':'var(--dim)';
   document.querySelectorAll('#table tr').forEach((r,j)=>r.classList.toggle('cur',j===i));
 }
 function buildTL(){
@@ -172,14 +202,16 @@ function drawTable(){
 }
 document.getElementById('play').onclick=()=>{
   playing=!playing; document.getElementById('play').textContent=playing?'⏸ pausa':'▶ play';
-  if(playing){ t0=performance.now()-curT;
+  if(playing){ const s=+document.getElementById('speed').value; t0=performance.now()-curT/s;
     const step=()=>{ if(!playing)return;
-      let t=performance.now()-t0; if(t>tEnd()){t=0;t0=performance.now();}
+      let t=(performance.now()-t0)*+document.getElementById('speed').value;
+      if(t>tEnd()){t=0;t0=performance.now();}
       show(t); raf=requestAnimationFrame(step); };
     raf=requestAnimationFrame(step);
   } else cancelAnimationFrame(raf);
 };
 document.getElementById('reset').onclick=()=>{ marks.forEach(m=>delete m.t); layout(); drawTable(); show(0); };
+document.getElementById('speed').onchange=e=>{ if(playing){ t0=performance.now()-curT/(+e.target.value); } };
 (async()=>{
   const sel=document.getElementById('rep');
   ['rep_001','rep_002','rep_003','rep_004','rep_005'].forEach(r=>{
