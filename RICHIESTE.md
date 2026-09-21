@@ -567,3 +567,22 @@ successivo, letteratura, IPO. (2026-09-21)
   essere la soluzione corretta per un colpo corto (whip non sempre paga).
 - Tabella stato: Anello 3 = nodo teorico piu' carico; domanda aperta
   "quale variabile dovrebbe migliorare e a quale costo" prima di testare.
+
+---
+
+## R-026 — Viewer "quando succede cosa" sui capture reali
+
+**Richiesta:** *"voglio poter modificare anello x anello cosa succede
+quando, e poi voglio che tu mi mostri a schermo il 'quando' di ogni cosa.
+Si comincia da mano avanti (sinistra) che va indietro."* (2026-09-21)
+**Data:** 2026-09-21
+**Stato:** `in corso`
+**Cosa è successo:**
+- Verificato che le 5 reps sono tutte dalla stessa angolazione: le
+  porzioni laterali del movimento della camera non sono nei file salvati.
+- `analysis/export_capture.py`: msgpack -> `tools/captures/rep_*.json`
+  (landmark 2D + ts + marker eventi seminati euristicamente).
+- `tools/capture-viewer.html`: scheletro reale animato (OSS) + timeline
+  con marker trascinabili per evento d'anello; spostare un marker
+  ri-tempizza il segmento interpolando tra le pose reali catturate.
+  Tabella evento/frame/t/Dt = "il quando di ogni cosa".
