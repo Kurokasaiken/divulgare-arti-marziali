@@ -94,7 +94,7 @@ svg#tl{width:100%; height:104px; touch-action:none; cursor:crosshair; background
 .rothandle{fill:var(--rot); stroke:var(--panel); stroke-width:1.5; cursor:ew-resize;}
 .rotbarlabel{font-size:9px; fill:var(--rot); font-weight:bold;}
 .vec{stroke:var(--accent2); stroke-width:2; fill:none;}
-.palm{fill:var(--panel); stroke:var(--accent2); stroke-width:1.8;}
+.palm{fill:var(--accent2); fill-opacity:.14; stroke:var(--accent2); stroke-width:1.8;}
 .finger{stroke:var(--line); stroke-width:15; stroke-linecap:round; opacity:.92;}
 .thumb{stroke:var(--accent); stroke-width:6.5; stroke-linecap:round;}
 .handctl{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
@@ -597,10 +597,11 @@ function drawHand(svg, v, joints, hd){
   // dita: blocco unico — esteso lungo l'asse quando aperto, ripiegato sul palmo quando chiuso
   const tipDir=norm(add(scl(dAxis,1-curl*0.85), scl(palmDir,-curl)));
   seg(h, add(h,scl(tipDir,6+16*(1-curl))), 'finger');
-  // pollice: capsula separata sul lato thumbDir del palmo, si richiude sopra il pugno
-  const tb=add(add(w,scl(dAxis,LEN.wristHand*0.35)), scl(thumbDir,13));
-  const td=norm(add(add(scl(thumbDir,0.75),scl(dAxis,0.5)), scl(palmDir,-curl*0.35)));
-  seg(tb, add(tb,scl(td,14)), 'thumb');
+  // pollice: capsula separata sul lato thumbDir del palmo, punta verso le dita,
+  // si richiude sopra il pugno
+  const tb=add(add(w,scl(dAxis,LEN.wristHand*0.4)), scl(thumbDir,12));
+  const td=norm(add(add(scl(thumbDir,0.5),scl(dAxis,0.8)), scl(palmDir,-curl*0.35)));
+  seg(tb, add(tb,scl(td,13)), 'thumb');
 }
 
 // slider mano: attivi solo su keyframe; su tempi interpolati mostrano il valore corrente
