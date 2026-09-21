@@ -41,6 +41,17 @@ diventerebbe una razionalizzazione della tecnica già conosciuta.
 - **P-A2.2** — `I_tronco+braccio` stimato (landmark + tabelle antropometriche)
   più basso con retrazione completa. **Calcolabile subito**, senza nuova
   strumentazione — primo candidato di verifica quantitativa.
+  **ESITO (2026-09-21, `analysis/pa2_inertia.py`, 5 reps — INT):** nella
+  proiezione planare 2D del modello segmentale (de Leva 1996, mano puntuale,
+  asse = mediana spalle, scala da biacromiale 0.40 m), la configurazione
+  retratta mostra `I_braccio` ~50% inferiore alla guardia in tutte le reps
+  (mediana ΔI ≈ 54e-4 m²·M_corpo, IC95% Monte Carlo > 0 in ogni rep).
+  **Ambito del risultato:** vale solo *dentro il modello adottato* — i dati
+  sono 2D (no profondità, bias di proiezione dichiarato in
+  `spikes/P-A2.2-DATA-01`); NON dimostra che la retrazione *serva* a ridurre
+  I né che la riduzione faciliti la rotazione del tronco (passaggi dinamici
+  ulteriori). Sensibilità residua: rep_005 ha jitter ~5× le altre →
+  incertezza maggiore ma stesso segno.
 
 ## Errori già corretti nella discussione
 
