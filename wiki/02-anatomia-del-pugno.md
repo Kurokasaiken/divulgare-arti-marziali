@@ -411,6 +411,8 @@ modello dati non sa esprimere, si corregge il modello dati (es. vettori
 `displacement` per V₁≈V₂ — uno spostamento nel tempo non è un vettore
 giunto→giunto).
 
+## Anello 3 — Bacino
+
 Quando il braccio sinistro raggiunge la configurazione terminale, nella
 descrizione del Director comincia la parte importante della rotazione
 tronco/bacino:
@@ -430,6 +432,100 @@ stabilito). La relazione con la velocità angolare dipende dalla dinamica
 complessiva e dalle coppie applicate — quindi "il braccio compatto accelera la
 rotazione" è IPO, non conclusione.
 
+### Scheda di analisi compilata — Anello 3 (bacino)
+
+**1. COSA SUCCEDE? (OSS, con provenienza)**
+
+- `[capture]` `hips_dx = R_hip.x − L_hip.x` cambia segno in 5/5 reps
+  (−0.05 → +0.02/0.06) — evento cinematico OSS; lettura come "rotazione
+  pelvica" è INT (proxy dipendente da azimut camera).
+- `[capture]` il flip avviene allo **stesso frame** del flip della linea
+  delle spalle (`sdx`) e a ±1 frame dalla retrazione del braccio
+  (`gomito_sx < 80°`): f11, f15, f16, f19, f28 nelle cinque reps.
+- `[capture]` il bacino sale (OSS già registrato in Anelli 0+1).
+- `[video/empirico]` piede sx come vincolo, lato sx del bacino spinto
+  posteriormente, piede dx che spinge anteriormente.
+
+**2. CINEMATICA**
+
+- Flip pelvico osservabile come inversione dell'ordine x delle anche in
+  proiezione — la finestra di transizione è breve (~pochi frame).
+- Il bacino precede di alcuni frame il picco di salita e accompagna la
+  retrazione del braccio (sincronia ±1 frame — vedi P-A0.1).
+- Nessuna cinematica 3D: la rotazione vera attorno all'asse verticale non
+  è misurabile, solo il proxy planare.
+
+**3. FORZE/MOMENTI COINVOLTI** — *INT/IPO, nessuna misura.*
+
+- Coppia contralaterale candidata: piede sx vincolato + spinta posteriore
+  bacino sx + spinta anteriore piede dx → possibile `τ` sul bacino attorno
+  all'asse verticale. (IPO — serve GRF.)
+- Il momento torcente risultante, se esiste, è ciò che accelera la
+  rotazione del segmento tronco+bacino.
+
+**4. FUNZIONE MECCANICA — candidati**
+
+- generatore di momento torcente (coppia contralaterale);
+- fulcro/pivot attorno a cui la rotazione si organizza;
+- riposizionatore del CoM e della configurazione per lo strike;
+- trasmettitore: il bacino come giunzione tra spinta dal suolo e tronco.
+
+**5. COSTO**
+
+- La rotazione pelvica impegna la base: se il piede non è ancorato la
+  coppia non si sviluppa (dipendenza dal ring precedente).
+- Energia dei muscoli del core e degli arti inferiori.
+- Richiede timing stretto con braccio e tronco.
+
+**6. PERCHÉ QUESTA CONFIGURAZIONE?**
+
+- Perché la rotazione parte dal bacino e non dal tronco da solo?
+  (INT: il bacino è il segmento con massa maggiore — momento torcente
+  più efficace; e collega la catena al suolo.)
+- Perché sincrono con la retrazione? (IPO: accoppiamento funzionale —
+  oppure drive comune, o risposta — non risolvibile a 17fps.)
+
+**7. EFFETTO SULLA FASE SUCCESSIVA**
+
+- Determina l'asse e il momento disponibile per la rotazione del tronco
+  (Anello 4) e per l'avanzamento della spalla destra (Anello 5).
+- Se la coppia contralaterale esiste, il LOCK del braccio sx (Anello 2)
+  potrebbe chiuderne il lato destro — IPO di sistema.
+
+**8. ALTERNATIVE**
+
+- Rotazione solo del tronco senza contributo pelvico (possibile ma
+  meccanicamente meno efficace — IPO).
+- Sequenza bacino→tronco strettamente seriale vs sovrapposta (come CSM/SSM
+  per l'arto — stessa distinzione a livello inferiore).
+- Senza coppia contralaterale: solo spinta del piede posteriore.
+
+**9. COSA SA LA LETTERATURA?**
+
+- La rotazione pelvica come contributo primario alla potenza dello striking
+  è documentata (kinematic sequence, proximal-to-distal).
+- Force couple e contributo GRF nel pugno: presente in letteratura boxing/
+  karate — mapping in `08` da completare.
+
+**10. COSA STIAMO IPOTIZZANDO? (IPO + predizioni)**
+
+- Che esista una coppia contralaterale misurabile (serve GRF).
+- Che la sincronia bacino↔braccio non sia casuale ma coordinata
+  (P-A0.1 copre il caso discriminante).
+
+**11. COME POTREMMO MISURARLO?**
+
+- Proxy attuali: timing e ampiezza del flip `hips_dx` — fatto.
+- Serve: vista zenitale o 3D per angolo pelvico vero; GRF per la coppia;
+  ≥100fps per l'ordine relativo agli altri anelli.
+
+**12. COSA NON DIMOSTRIAMO ANCORA**
+
+- Che il flip `hips_dx` sia rotazione pelvica e non artefatto di
+  traslazione/perspettiva.
+- Che la coppia contralaterale esista.
+- La quota di momento torcente fornita dal bacino vs dal tronco.
+
 ## Anello 4 — Tronco
 
 Il progetto interpreta il tronco come **struttura dinamicamente organizzata** —
@@ -438,6 +534,92 @@ trasferimento e coordinamento tra parte inferiore e superiore (INT del
 progetto, non operazionalizzata). Funzioni candidate da verificare: consentire
 la rotazione, trasferire movimento/forze, mantenere una configurazione utile,
 non produrre perturbazione posturale inutile.
+
+### Scheda di analisi compilata — Anello 4 (tronco)
+
+**1. COSA SUCCEDE? (OSS, con provenienza)**
+
+- `[capture]` `sdx = R_shoulder.x − L_shoulder.x` cambia segno allo stesso
+  frame del flip pelvico in 5/5 reps — proxy planare della rotazione del
+  cingolo scapolare (INT la lettura come rotazione; OSS l'evento).
+- `[capture]` all'estensione massima del pugno il tronco resta impilato:
+  `lean = midshoulder.x − midhip.x ≈ 0` (−0.00 → +0.02) in tutte le reps.
+- `[video]` il tronco ruota e trasferisce il moto dal basso verso il
+  braccio che colpisce.
+
+**2. CINEMATICA**
+
+- Onset della rotazione scapolare sincrono col flip pelvico (±0 frame) —
+  **nessun ritardo misurabile** bacino→cingolo a 17fps: coerente con
+  rotazione "a blocco" del segmento tronco-bacino in questa finestra, o con
+  risoluzione insufficiente a vedere il ritardo.
+- Rotazione prosegue mentre il pugno estende (finestra f~24–30 in rep_001)
+  e si stabilizza nel plateau.
+
+**3. FORZE/MOMENTI COINVOLTI** — *INT/IPO.*
+
+- Se bacino e cingolo ruotano insieme, il tronco trasmette il momento
+  generato sotto verso il braccio: funzione di **trasmissione** più che di
+  generazione in questa finestra (INT).
+- Rigidezza variabile ("struttura dinamicamente organizzata") è IPO non
+  operazionalizzata: un tronco troppo cedevole dissiperebbe il momento,
+  troppo rigido impedirebbe il sequenziamento — nessuna misura attuale
+  distingue.
+
+**4. FUNZIONE MECCANICA — candidati**
+
+- trasmettere momento torcente dal bacino alla spalla destra;
+- mantenere impilamento posturale (lean ≈ 0 osservato);
+- permettere differenziale di rotazione in una fase successiva (se esiste
+  un ritardo fine non risolto a 17fps).
+
+**5. COSTO**
+
+- Co-contrazione del core per la rigidità funzionale (energia).
+- Un tronco rigido rende tutto il sistema un unico corpo inerziale —
+  riduce i DOF disponibili per correzioni.
+
+**6. PERCHÉ QUESTA CONFIGURAZIONE?**
+
+- Perché impilato (lean ≈ 0) e non inclinato? (INT: minimizza momento
+  destabilizzante e mantiene l'asse di rotazione vicino al CoM — da
+  verificare.)
+
+**7. EFFETTO SULLA FASE SUCCESSIVA**
+
+- Porta la spalla destra nella regione da cui la mano può partire verso la
+  traiettoria finale (Anello 5) — è l'anello che rende possibile
+  "l'ultimo momento utile".
+
+**8. ALTERNATIVE**
+
+- Tronco inclinato in avanti (lean > 0): più massa dietro il colpo ma
+  meno stabilità di recupero.
+- Rotazione differenziata bacino→cingolo (whip più marcato): non osservata
+  nei dati a questa risoluzione.
+
+**9. COSA SA LA LETTERATURA?**
+
+- Kinematic sequence / proximal-to-distal sequencing è il modello standard
+  dello striking; il nostro dato (sincronia bacino↔cingolo a 17fps) non la
+  conferma né la smentisce — la sequenza fine non è risolta.
+
+**10. COSA STIAMO IPOTIZZANDO?**
+
+- Che il tronco si comporti da trasmettitore organizzato e non da massa
+  passiva; che il lean ≈ 0 sia funzionale e non casuale.
+
+**11. COME POTREMMO MISURARLO?**
+
+- Angolo relativo cingolo–bacino in 3D (vista zenitale o mocap con z);
+  ≥100fps per l'eventuale ritardo fine; EMG core per "organizzato vs
+  rigido vs rilassato".
+
+**12. COSA NON DIMOSTRIAMO ANCORA**
+
+- L'esistenza di un ritardo bacino→cingolo (risoluzione insufficiente).
+- Che il tronco trasferisca momento e non lo dissipa.
+- Che il lean ≈ 0 sia causale alla trasmissione.
 
 ## Anello 5 — Spalla destra e mano destra
 
@@ -479,6 +661,109 @@ Principio: **minimo movimento non utile** — non "sempre linea retta", ma evita
 deviazioni che non contribuiscono all'obiettivo. Da rappresentare: punto
 iniziale, punto finale, traiettoria, vettore, deviazioni, momento di transizione.
 
+### Scheda di analisi compilata — Anello 5 (spalla e mano destra)
+
+**1. COSA SUCCEDE? (OSS, con provenienza)**
+
+- `[capture]` durante la fase di rotazione il gomito destro **flette
+  ulteriormente** prima di estendere: R_elb scende a ~25–50° mentre il
+  bacino ruota, poi estende a ~165–178° — la mano resta "raccolta" come
+  descritto (conferma su dato della qualifica nel testo sopra).
+- `[capture]` il polso dx resta ~stazionario in x (~0.34–0.45) durante il
+  flip, poi avanza rapidamente a ~0.56 nella finestra di estensione
+  (rep_001: f24→f30).
+- `[capture]` la traiettoria del polso durante l'estensione è circa
+  monotona in x — coerente con "minimo movimento non utile" (INT la
+  qualifica di "non utile"; OSS la monotonia).
+- `[capture]` **artefatto noto:** durante il transito rapido i landmark del
+  polso mostrano salti (~0.17 unità/frame, es. rep_001 f18–f21) pur con
+  confidence 1.0 — motion blur/occlusione. La velocità di punta del pugno
+  NON è misurabile su questi dati; i picchi apparenti sono spurî.
+
+**2. CINEMATICA**
+
+- Sequenza: raccolta (flessione ulteriore durante la rotazione) →
+  estensione rapida (~5–10 frame) → plateau a pugno esteso (~15 frame) →
+  rientro.
+- L'estensione completa **~10–15 frame dopo** il flip pelvico/scapolare in
+  tutte le reps — la mano parte dopo che la rotazione è iniziata
+  (OSS sui tempi; il criterio "ultimo momento utile" resta IPO).
+
+**3. FORZE/MOMENTI COINVOLTI** — *INT/IPO.*
+
+- L'avanzamento della mano eredita la velocità del cingolo rotante più
+  l'estensione del gomito — composizione dei due contributi non
+  scomponibile senza 3D e dinamica.
+- Il mantenere la mano raccolta riduce `I` del lato destro durante la
+  rotazione (stesso principio di P-A2.2, lato opposto — IPO simmetrica).
+
+**4. FUNZIONE MECCANICA — candidati**
+
+- ritardare l'estensione per massimizzare il contributo della rotazione
+  prima della traiettoria finale;
+- preservare un DOF correttivo fino all'ultimo momento (robustezza contro
+  errori di mira — candidato forte);
+- ridurre I durante la fase di accelerazione rotatoria.
+
+**5. COSTO**
+
+- Tempo di raccolta: la mano parte dopo → il colpo arriva più tardi (se
+  non compensato dalla rotazione).
+- La finestra di decisione è stretta: transizione tardiva → colpo corto;
+  precoce → perde il contributo rotatorio.
+
+**6. PERCHÉ QUESTA CONFIGURAZIONE?**
+
+- Perché flettere *di più* durante la rotazione invece di restare fermi?
+  (IPO: compattare il lato destro riduce I e preserva il DOF.)
+- Perché l'estensione parte a rotazione avviata e non prima? (IPO: la
+  commutazione avviene quando continuare la raccolta non è più utile —
+  "ultimo momento utile", debito di formalizzazione dichiarato sopra.)
+
+**7. EFFETTO SULLA FASE SUCCESSIVA**
+
+- Determina la configurazione all'impatto (Anello 6): allineamento
+  polso-gomito-spalla e stato del sistema post-contatto.
+
+**8. ALTERNATIVE**
+
+- Estensione simultanea alla rotazione (colpo "a spinta") vs estensione
+  differita — documentato nella pratica di stili diversi.
+- Mano raccolta ma gomito meno flesso (raccolta parziale).
+
+**9. COSA SA LA LETTERATURA?**
+
+- Il sequenziamento prossimale→distale (spalla prima, mano dopo) è il
+  modello canonico — i nostri dati sono coerenti (estensione completa dopo
+  il flip), ma non dimostrano il meccanismo.
+- Switching boundary / optimal control: candidati per la formalizzazione
+  dell'"ultimo momento utile" (già notato nel testo; spike C-02).
+
+**10. COSA STIAMO IPOTIZZANDO? (IPO + predizioni)**
+
+- **Predizione P-A5.1 (nuova):** in esecuzioni corrette l'onset
+  dell'estensione (R_elb che supera ~90°) segue il flip pelvico/scapolare
+  di un margine risolvibile; una variante "a spinta" (estensione anticipata)
+  dovrebbe mostrare velocità finale del polso diversa — verificabile con
+  confronto di varianti a parità di capture.
+- L'ultimo momento utile come frontiera nello spazio degli stati (IPO —
+  debito di formalizzazione esplicito).
+
+**11. COME POTREMMO MISURARLO?**
+
+- Subito: timing onset estensione vs flip (fatto — margine ~10–15 frame).
+- Serve: ≥100fps e/o camera ad alta risoluzione temporale per la velocità
+  reale del polso (i picchi attuali sono artefatti); 3D per la
+  traiettoria vera; parametrizzazione dell'errore dalla traiettoria
+  desiderata per operazionalizzare la commutazione.
+
+**12. COSA NON DIMOSTRIAMO ANCORA**
+
+- Che il ritardo dell'estensione sia una strategia (vs semplice ritardo
+  muscolare).
+- La velocità finale del pugno (dati inaffidabili nel transito rapido).
+- Quale variabile commuta la mano (posizione/velocità/errore/tempo).
+
 ## Anello 6 — Configurazione strutturale finale
 
 OSS (prove di allineamento e spinta contro una parete): esiste una configurazione
@@ -493,3 +778,96 @@ Formulazione più scientifica di "posizione corretta":
 
 La metafora della "lancia" è utile didatticamente, ma non è una dimostrazione
 biomeccanica. (INT)
+### Scheda di analisi compilata — Anello 6 (configurazione finale)
+
+**1. COSA SUCCEDE? (OSS, con provenienza)**
+
+- `[capture]` al plateau di estensione (rep_001: f30–f45) il gomito destro
+  sta a ~165–178° — **quasi esteso ma non in iperestensione**; il polso è
+  stazionario (x ~0.56, varianza piccola) per ~15 frame: esiste una fase di
+  **tenuta** della configurazione, non solo un istante di picco.
+- `[capture]` al massimo dell'estensione il tronco resta impilato
+  (lean ≈ 0) — la configurazione finale conserva l'allineamento
+  spalle-bacino in proiezione.
+- `[empirico]` prova contro parete: la configurazione trasmette carico con
+  poca attività muscolare *percepita* (sensazione, non EMG).
+- `[video]` allineamento polso–gomito–spalla visibile in proiezione.
+
+**2. CINEMATICA**
+
+- Finestra di tenuta osservabile: ~0.9 s a 17fps (plateau f30–f45) — il
+  sistema mantiene la configurazione oltre l'istante di estensione
+  massima.
+- Gomito quasi-esteso: ~165–178° — il margine residuo rispetto ai 180° è
+  OSS, la sua funzione (riserva di corsa / evitare il blocco articolare /
+  tolleranza del landmark) è INT.
+
+**3. FORZE/MOMENTI COINVOLTI** — *INT/IPO, nessuna misura di carico.*
+
+- Se la trasmissione è strutturale, il carico dovrebbe passare per
+  compressioni articolari allineate piuttosto che per momenti muscolari —
+  l'allineamento osservato è *necessario ma non sufficiente* a
+  dimostrarlo.
+- La tenuta prolungata (0.9 s) suggerisce basso costo di mantenimento —
+  compatibile con "poca attività muscolare" ma non la dimostra (serve EMG).
+
+**4. FUNZIONE MECCANICA — candidati**
+
+- trasmissione del carico dall'impatto al suolo attraverso la catena
+  (funzione primaria candidata);
+- stabilità post-contatto: la tenuta permette assorbimento controllato;
+- configurazione di riferimento per il rientro/ritorno in guardia.
+
+**5. COSTO**
+
+- La configurazione strutturale è rigida: poca capacità di correzione
+  durante il contatto; un impatto fuori asse scaricherebbe sulle
+  articolazioni.
+- Il tempo di tenuta è tempo non disponibile al colpo successivo.
+
+**6. PERCHÉ QUESTA CONFIGURAZIONE?**
+
+- Perché ~170° e non estensione completa? (IPO: margine anti-iperestensione
+  e capacità di assorbimento; alternativa: semplice limite di tracking.)
+- Perché tenuta e non rimbalzo immediato? (INT: verifica della trasmissione
+  / abitudine alla prova contro parete — il soggetto è l'autore del
+  modello.)
+
+**7. EFFETTO SULLA FASE SUCCESSIVA**
+
+- La configurazione di tenuta è lo stato da cui parte il rientro in
+  guardia (ritorno osservabile f45–f60: polso rientra, gomito riflette).
+
+**8. ALTERNATIVE**
+
+- Contatto e rimbalzo immediato (snap) vs tenuta: i dati mostrano tenuta
+  — la scelta è autoriale/stilistica finché non si confrontano varianti.
+- Iperestensione completa vs margine: il margine osservato è consistente
+  con l'evitamento del blocco articolare passivo.
+
+**9. COSA SA LA LETTERATURA?**
+
+- Il concetto di *effective mass* all'impatto e di allineamento strutturale
+  è documentato nella biomeccanica dello striking — la nostra
+  configurazione ne è un'istanza candidata; effective mass reale richiede
+  dinamica dell'impatto, non posa statica.
+- "Trasmissione a basso costo muscolare" — affine a concetti di stiffness/
+  impedance control; serve EMG per verificarla.
+
+**10. COSA STIAMO IPOTIZZANDO?**
+
+- Che la tenuta osservata corrisponda alla configurazione a basso costo
+  percepita (empirico); che il margine ~170° sia funzionale e non artefatto.
+
+**11. COME POTREMMO MISURARLO?**
+
+- Impatto su bersaglio strumentato (forza) + EMG del braccio durante la
+  tenuta; confronto angolo gomito vs forza trasmessa; angolo 3D vero per
+  l'allineamento (2D proietta).
+
+**12. COSA NON DIMOSTRIAMO ANCORA**
+
+- Che la configurazione trasmetta meglio di alternative (nessuna misura di
+  carico).
+- Che "poca attività muscolare" sia vera (percepito ≠ EMG).
+- Che l'allineamento in proiezione 2D sia allineamento 3D reale.
