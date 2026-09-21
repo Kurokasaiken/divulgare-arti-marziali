@@ -34,7 +34,7 @@ main{flex:1; display:flex; flex-direction:column; gap:12px; padding:8px 22px 22p
 #canvasWrap{padding:12px;}
 .viewsGrid{display:grid; grid-template-columns:1.5fr 1fr; grid-template-rows:auto auto; gap:12px;}
 .viewBox{min-width:0; background:var(--bg); border:1px solid var(--grid); border-radius:8px; padding:8px 8px 4px;}
-.viewBox.main{grid-row:1/3;}
+.viewBox.main{grid-column:1; grid-row:1/3;}
 .viewLabel{font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.1em; margin-bottom:2px; text-align:center; font-weight:bold;}
 svg{display:block; width:100%; height:auto;}
 .joint{cursor:grab; fill:var(--panel); stroke:var(--sub); stroke-width:2; transition:stroke-width .1s;}
@@ -357,7 +357,7 @@ const BONE_PAIRS={'shoulder-elbow':['shoulder','elbow'],'elbow-wrist':['elbow','
 // ---------- VISTE (proiezioni ortografiche dello stesso store 3D) ----------
 const viewsWrap = document.getElementById('viewsWrap');
 VIEWS.forEach(v=>{
-  const box=document.createElement('div'); box.className='viewBox'+(v.id==='front'?' main':'');
+  const box=document.createElement('div'); box.className='viewBox'+(v.id==='side'?' main':'');
   const lab=document.createElement('div'); lab.className='viewLabel';
   lab.textContent=v.label+' ('+AXES[v.axes[0]]+'-'+AXES[v.axes[1]]+')';
   const svg=document.createElementNS(NS,'svg');
