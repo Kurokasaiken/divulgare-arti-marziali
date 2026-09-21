@@ -427,3 +427,32 @@ traslazione/rotazione/orientamento ora. (2026-09-21)
 - **Restano aperti per design** (decisione Director): KF2≡KF3 (stessa
   configurazione ≠ nessun movimento), ruolo logico di C, relazione V1~V2,
   onset L1 dentro M1, terminologia LOCK nel meta.
+
+---
+
+## R-020 — P-A2.2 standalone con data-gate, S4 rinviato
+
+**Richiesta:** *"Procedere con A, ma preceduta da una micro-fase di
+estrazione/validazione dei landmark. Non farei subito S4 completo."*
+Sequenza: capture msgpack → estrazione landmark braccio → validazione
+qualità → P-A2.2 standalone → risultato INT + incertezza → solo dopo,
+eventuale S4. Riformulazione della domanda: *"nel capture disponibile, il
+modello segmentale adottato stima un momento d'inerzia diverso tra la
+configurazione retratta e quella di riferimento?"* — `I_estimated`, non
+`I_measured`. Richiesta stima Monte Carlo della sensibilità agli errori
+landmark. Primo gate: spike `P-A2.2-DATA-01` (quali landmark/frame/fps/
+coordinate/unità/confidence/missing; identificazione riproducibile della
+configurazione retratta). C parallelo non-gate; C-02 deferito. P-A2.2 non
+dimostra la funzione del LOCK: `I_retracted < I_ref` è circoscritto al
+modello adottato. (2026-09-21)
+**Data:** 2026-09-21
+**Stato:** `in corso`
+**Cosa è successo:**
+- Spike `P-A2.2-DATA-01` completato (`spikes/P-A2.2-DATA-01.md`):
+  capture = 33 landmark ML Kit x,y normalizzati + inFrameLikelihood
+  (**nessuna profondità reale**), ~17fps, 5 reps senza gap.
+- Configurazione retratta riproducibile (gomito sx <80° + oltre mediana,
+  finestre ~0-10 guardia / ~30-45 retratta) su tutte le reps.
+- Gate SUPERATO con caveat: stima planare di I con bias di proiezione
+  dichiarato; `I_estimated` INT, non misura.
+- Prossimo: calcolo P-A2.2 standalone + Monte Carlo su jitter landmark.

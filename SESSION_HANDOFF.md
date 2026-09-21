@@ -240,3 +240,16 @@ updated: 2026-09-20
   representationStatus/reason opzionali (data-level, niente UI).
 - Concetto confermato dal test: `representationStatus` non era rattoppo per
   M2 — identifica una dimensione del modello (dichiarato vs rappresentabile).
+
+## Aggiunta (2026-09-21, direzione post cold-read — R-020 in corso)
+
+- Scelta del Director: A (P-A2.2 standalone) prima, B (S4 import) dopo solo
+  se i dati lo meritano; C parallelo non-gate; D deferito. P-A2.2 NON deve
+  usare l'editor né introdurre provenance:measured — calcolo standalone.
+- Spike P-A2.2-DATA-01 fatto: **i capture sono 2D** (3° valore =
+  inFrameLikelihood ML Kit, non z). Retrazione identificabile
+  riproducibilmente (gomito sx flette ~110°→~50°, oltrepassa la mediana,
+  finestre 0-10 / 30-45). Gate superato con caveat: I planare proiettata +
+  bias da profondità mancante; Monte Carlo su jitter da fare.
+- Prossimo passo: script P-A2.2 standalone (de Leva 1996 per masse
+  segmentali; σ landmark stimato dal jitter in guardia).
