@@ -21,3 +21,4 @@ Una riga per pagina. Formato: `[file](path) — una frase — \`tag\``
 [08-letteratura-biomeccanica.md](08-letteratura-biomeccanica.md) — mapping concetti nostri ↔ letteratura; le 4 categorie esplicative; fonti raccolte — `letteratura` `mapping` `ricerca`
 [09-stato-della-ricerca.md](09-stato-della-ricerca.md) — conosciamo / osservato / interpretato / ipotizziamo / non sappiamo / da verificare / prossima domanda — `stato` `orientamento`
 [10-matrice-falsificazione.md](10-matrice-falsificazione.md) — predizione → misura → supporta/falsifica; requisiti della cattura densa — `verifica` `protocollo`
+[11-problemi-ottimizzazione.md](11-problemi-ottimizzazione.md) — ogni anello come problema meccanico: osservato/problema/vincoli/alternative/candidato aperto — `ottimizzazione` `tecnica`
