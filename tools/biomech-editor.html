@@ -96,7 +96,7 @@ svg#tl{width:100%; height:104px; touch-action:none; cursor:crosshair; background
 .vec{stroke:var(--accent2); stroke-width:2; fill:none;}
 .handbody{fill:var(--panel); stroke:var(--line); stroke-width:2.5; stroke-linejoin:round;}
 .handaxis{stroke:var(--sub); stroke-width:1.2; stroke-dasharray:3 3; opacity:.6;}
-.thumb{stroke:var(--accent); stroke-width:6.5; stroke-linecap:round;}
+.thumb{fill:none; stroke:var(--accent); stroke-width:6.5; stroke-linecap:round;}
 .handctl{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
 .handctl label{display:flex; align-items:center; gap:6px; font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.05em;}
 .handctl input[type=range]{flex:1; accent-color:var(--accent);}
@@ -598,15 +598,15 @@ function drawHand(svg, v, joints, hd){
   axis.setAttribute('x1',a1[0]); axis.setAttribute('y1',a1[1]);
   axis.setAttribute('x2',a2[0]); axis.setAttribute('y2',a2[1]);
   axis.setAttribute('class','handaxis'); svg.appendChild(axis);
-  // pollice: capsula separata sul lato thumbDir, punta verso le dita,
-  // si richiude sopra il pugno
-  const tb=add(add(w,scl(dAxis,18)),scl(thumbDir,13));
-  const td=norm(add(add(scl(thumbDir,0.45),scl(dAxis,0.75)),scl(palmDir,-curl*0.3)));
-  const p1=proj(tb,v), p2=proj(add(tb,scl(td,13)),v);
-  const l=document.createElementNS(NS,'line');
-  l.setAttribute('x1',p1[0]); l.setAttribute('y1',p1[1]);
-  l.setAttribute('x2',p2[0]); l.setAttribute('y2',p2[1]);
-  l.setAttribute('class','thumb'); svg.appendChild(l);
+  // pollice: aperto = capsula laterale che punta alle dita; in chiusura si
+  // avvolge sulla faccia del pugno — il gesto visivo che rende il pugno leggibile
+  const tb=proj(add(add(w,scl(dAxis,16)),scl(thumbDir,14)),v);
+  const tc=proj(add(add(w,scl(dAxis,32)),scl(thumbDir,15-curl*9)),v);
+  const tt=proj(add(add(w,scl(dAxis,30+curl*8)),
+                   add(scl(thumbDir,10-curl*10),scl(palmDir,-curl*5))),v);
+  const th=document.createElementNS(NS,'path');
+  th.setAttribute('d',`M ${tb[0].toFixed(1)} ${tb[1].toFixed(1)} Q ${tc[0].toFixed(1)} ${tc[1].toFixed(1)} ${tt[0].toFixed(1)} ${tt[1].toFixed(1)}`);
+  th.setAttribute('class','thumb'); svg.appendChild(th);
 }
 
 // slider mano: attivi solo su keyframe; su tempi interpolati mostrano il valore corrente
