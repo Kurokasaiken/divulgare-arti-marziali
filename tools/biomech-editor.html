@@ -95,6 +95,7 @@ svg#tl{width:100%; height:104px; touch-action:none; cursor:crosshair; background
 .rotbarlabel{font-size:9px; fill:var(--rot); font-weight:bold;}
 .vec{stroke:var(--accent2); stroke-width:2; fill:none;}
 .handbody{fill:var(--panel); stroke:var(--line); stroke-width:2.5; stroke-linejoin:round;}
+.handaxis{stroke:var(--sub); stroke-width:1.2; stroke-dasharray:3 3; opacity:.6;}
 .thumb{stroke:var(--accent); stroke-width:6.5; stroke-linecap:round;}
 .handctl{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
 .handctl label{display:flex; align-items:center; gap:6px; font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.05em;}
@@ -568,8 +569,10 @@ function renderViews(){
 // pugno = compatto, largo alle nocche, stretto al polso; aperta = allungata.
 // 'sup' ruota thumbDir/palmDir attorno all'asse polso->mano: la silhouette gira
 // con l'avambraccio e di taglio si assottiglia (foreshortening corretto).
-const HAND_FIST=[[4,-8],[16,-13],[30,-15],[40,-12],[46,-5],[46,5],[40,12],[30,15],[16,13],[4,8]];
-const HAND_OPEN=[[4,-7],[18,-11],[34,-11],[52,-8],[64,-4],[68,0],[64,4],[52,8],[34,11],[4,7]];
+// cuneo asimmetrico: prossimale stretto al polso, lato mignolo inclinato,
+// nocche larghe, faccia distale quasi verticale con spigoli arrotondati
+const HAND_FIST=[[2,-5],[10,-9],[26,-15],[38,-16],[48,-11],[50,-4],[50,4],[48,11],[38,16],[26,15],[10,9],[2,5]];
+const HAND_OPEN=[[2,-5],[14,-9],[34,-11],[52,-9],[64,-5],[68,-2],[68,2],[64,5],[52,9],[34,11],[14,9],[2,5]];
 function drawHand(svg, v, joints, hd){
   const w=joints.wrist;
   const dAxis=norm(sub(joints.hand,w));
@@ -588,6 +591,13 @@ function drawHand(svg, v, joints, hd){
   const path=document.createElementNS(NS,'path');
   path.setAttribute('d','M '+poly.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L ')+' Z');
   path.setAttribute('class','handbody'); svg.appendChild(path);
+  // asse polso->nocche disegnato dentro la silhouette: l'orientamento del
+  // segmento resta leggibile anche quando il volume della mano lo copre
+  const a1=proj(w,v), a2=proj(add(w,scl(dAxis,44)),v);
+  const axis=document.createElementNS(NS,'line');
+  axis.setAttribute('x1',a1[0]); axis.setAttribute('y1',a1[1]);
+  axis.setAttribute('x2',a2[0]); axis.setAttribute('y2',a2[1]);
+  axis.setAttribute('class','handaxis'); svg.appendChild(axis);
   // pollice: capsula separata sul lato thumbDir, punta verso le dita,
   // si richiude sopra il pugno
   const tb=add(add(w,scl(dAxis,18)),scl(thumbDir,13));
