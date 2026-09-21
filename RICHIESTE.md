@@ -545,3 +545,25 @@ la cattura densa futura registrera' la versione modificata dal modello.
   osservato su 0,1,4,6; possibile divergenza su Anello 3 (lead pelvico
   non osservato a 17fps); candidato condizionale su 2 e 5 (funzione del
   LOCK e criterio di commutazione non ancora decisi).
+
+---
+
+## R-025 — Formalizzazione teorica dei candidati (prima del protocollo)
+
+**Richiesta:** *"il prossimo lavoro non e' ancora il protocollo
+sperimentale. E' la formalizzazione teorica degli anelli candidati."*
+Correzioni esplicite: Δ=0 non significa ottimale, significa nessuna
+modifica proposta; nessun Δ implica automaticamente cattura; per il lead
+pelvico prima capire perche' dovrebbe essere vantaggioso, quali variabili
+migliora, quali costi introduce. Per anello: problema, obiettivo,
+vincoli, trade-off, preferibilita' vs alternative, effetto sul
+successivo, letteratura, IPO. (2026-09-21)
+**Data:** 2026-09-21
+**Stato:** `fatta`
+**Cosa è successo:**
+- `wiki/12-teoria-candidati.md`: sviluppo teorico completo per anello.
+- Anello 3 analizzato come confronto lead/simultaneo/inverso con costi
+  espliciti — inclusa l'ipotesi onesta che la sincronia osservata possa
+  essere la soluzione corretta per un colpo corto (whip non sempre paga).
+- Tabella stato: Anello 3 = nodo teorico piu' carico; domanda aperta
+  "quale variabile dovrebbe migliorare e a quale costo" prima di testare.
