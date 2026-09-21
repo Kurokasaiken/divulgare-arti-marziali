@@ -378,3 +378,52 @@ modello semantico non comunica abbastanza."* (2026-09-20)
   relazione attesa V1~V2).
 - S2 resta chiusa: nessuna modifica allo schema finché il Director non
   decide quali ambiguità meritano un campo.
+
+---
+
+## R-017 — Unità e calibrazione dichiarate in `meta`
+
+**Richiesta:** *"aggiungerei in `meta` qualcosa del tipo `units:
+{position:'px', time:'ms', calibration:'not-calibrated'}`. Non aggiungerei
+ancora velocityUnit/accelerationUnit — sarebbero conseguenze, non proprietà
+primitive. Non trasformerei px in una pseudo-unità fisica."* (2026-09-21,
+decisione su esito cold-read)
+**Data:** 2026-09-21
+**Stato:** `fatta`
+**Cosa è successo:**
+- `buildCanonical()` emette `meta.units` di default; `meta` importato è
+  preservato nel round-trip (merge shallow, `exportedAt` sempre aggiornato).
+- Esempio Anello 2 aggiornato; verificato in browser.
+
+## R-018 — Legenda epistemica e di provenance in `meta`
+
+**Richiesta:** *"`epistemicLegend` + `provenanceLegend` in `meta`, non dentro
+ogni oggetto. `authored` non significa `OSS`: epistemic e provenance sono due
+assi diversi."* Motivazione: 1 lettore su 3 ha espanso IPO come "Initial
+Proposal" e classificato i keyframe authored come OSS. (2026-09-21)
+**Data:** 2026-09-21
+**Stato:** `fatta`
+**Cosa è successo:**
+- `meta.epistemicLegend` (OSS/INT/IPO espansi) e `meta.provenanceLegend`
+  (authored/measured) emessi di default e preservati in import.
+- Esempio Anello 2 aggiornato; verificato in browser.
+
+## R-019 — `representationStatus` esteso agli eventi
+
+**Richiesta:** *"non inventerei un secondo meccanismo specifico per gli
+eventi. Estenderei il concetto a proprietà semantica generale [...] Una cosa
+può esistere nel modello semantico senza essere rappresentata
+cinematicamente."* Caso trovato dal cold-read: E1 supinazione — OSS
+dichiarato, non rappresentabile su aste punto-punto. Cautela: *"il test ha
+trovato il buco, non ci ha ancora detto come riempirlo"* — niente tassonomia
+traslazione/rotazione/orientamento ora. (2026-09-21)
+**Data:** 2026-09-21
+**Stato:** `fatta`
+**Cosa è successo:**
+- Eventi: `representationStatus` + `representationReason` passano nel
+  canonico (export/import), emessi solo se presenti — niente UI dedicata.
+- E1 nel JSON d'esempio: `not_available` +
+  `axial-rotation-not-represented`. Round-trip verificato.
+- **Restano aperti per design** (decisione Director): KF2≡KF3 (stessa
+  configurazione ≠ nessun movimento), ruolo logico di C, relazione V1~V2,
+  onset L1 dentro M1, terminologia LOCK nel meta.

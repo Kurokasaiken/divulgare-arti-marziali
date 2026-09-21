@@ -4,7 +4,21 @@
     "tool": "biomech-editor",
     "model": "S->M->C->S",
     "exportedAt": "2026-09-20T00:00:00.000Z",
-    "note": "Bozza autoriale dell'Anello 2 (retrazione braccio sinistro -> LOCK). Primo caso d'uso del linguaggio S2 — NON una formalizzazione scientifica: pose e tempi sono scelte autoriali che interpretano osservazioni [video]. Scheda di analisi completa in wiki/02. v2: keyframeId esplicito, representationStatus, LOCK con associatedState/role."
+    "units": {
+      "position": "px",
+      "time": "ms",
+      "calibration": "not-calibrated"
+    },
+    "epistemicLegend": {
+      "OSS": "osservazione",
+      "INT": "interpretazione",
+      "IPO": "ipotesi"
+    },
+    "provenanceLegend": {
+      "authored": "dato inserito manualmente dall'autore",
+      "measured": "dato derivato da misurazione"
+    },
+    "note": "Bozza autoriale dell'Anello 2 (retrazione braccio sinistro -> LOCK). Primo caso d'uso del linguaggio S2 — NON una formalizzazione scientifica: pose e tempi sono scelte autoriali che interpretano osservazioni [video]. Scheda di analisi completa in wiki/02. v2: keyframeId esplicito, representationStatus, LOCK con associatedState/role. v3 (post cold-read R-016): units+calibration dichiarate, legenda epistemica, representationStatus sugli eventi."
   },
   "task": {
     "id": "anello-2-retrazione",
@@ -185,6 +199,8 @@
       "end": 260,
       "epistemic": "OSS",
       "provenance": "authored",
+      "representationStatus": "not_available",
+      "representationReason": "axial-rotation-not-represented: le aste punto-punto non esprimono rotazione assiale (rollio) del segmento",
       "notes": "retrazione+supinazione come evento combinato, non sequenziale [video]; finestra temporale autoriale a ~17fps"
     }
   ],
