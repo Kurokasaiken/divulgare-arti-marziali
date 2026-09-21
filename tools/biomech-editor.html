@@ -94,9 +94,9 @@ svg#tl{width:100%; height:104px; touch-action:none; cursor:crosshair; background
 .rothandle{fill:var(--rot); stroke:var(--panel); stroke-width:1.5; cursor:ew-resize;}
 .rotbarlabel{font-size:9px; fill:var(--rot); font-weight:bold;}
 .vec{stroke:var(--accent2); stroke-width:2; fill:none;}
-.palm{stroke:var(--accent2); stroke-width:5; stroke-linecap:round; opacity:.75;}
-.finger{stroke:var(--line); stroke-width:2.5; stroke-linecap:round;}
-.thumb{stroke:var(--accent); stroke-width:4; stroke-linecap:round;}
+.palm{fill:var(--panel); stroke:var(--accent2); stroke-width:1.8;}
+.finger{stroke:var(--line); stroke-width:10; stroke-linecap:round; opacity:.92;}
+.thumb{stroke:var(--accent); stroke-width:5.5; stroke-linecap:round;}
 .handctl{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
 .handctl label{display:flex; align-items:center; gap:6px; font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.05em;}
 .handctl input[type=range]{flex:1; accent-color:var(--accent);}
@@ -520,6 +520,9 @@ function renderViews(){
       svg.appendChild(g);
     });
 
+    // mano a guanto sotto i giunti: i pallini restano visibili e trascinabili
+    if(joints.wrist && joints.hand) drawHand(svg, v, joints, hd);
+
     JOINTS.forEach(j=>{
       const p=proj(joints[j],v);
       const c=document.createElementNS(NS,'circle');
@@ -535,9 +538,6 @@ function renderViews(){
       const t=document.createElementNS(NS,'text'); t.setAttribute('x',p[0]+10); t.setAttribute('y',p[1]-8);
       t.setAttribute('class','jlabel'); t.textContent=LABELS[j]; svg.appendChild(t);
     });
-
-    // mano articolata: palmo, dita (aperte/chiuse) e pollice separato, orientati da 'sup'
-    if(joints.wrist && joints.hand) drawHand(svg, v, joints, hd);
 
     // annotazioni di rotazione attive al tempo corrente
     state.rotations.forEach(r=>{
@@ -563,9 +563,10 @@ function renderViews(){
   });
 }
 
-// disegna palmo + dita + pollice come sotto-segmenti 3D proiettati nella vista:
-// 'sup' ruota il piano del palmo attorno all'asse polso->mano (supinazione visibile),
-// 'open' fa passare le dita da estese a chiuse a pugno, il pollice resta un tratto a parte
+// mano "a guanto" (stile Pose Animator/Cascadeur): forme piene, non stecchini.
+// palmo = ellisse orientata che ruota e si assottiglia con la supinazione
+// (foreshortening = rotazione leggibile in ogni vista); dita = un blocco unico
+// che si chiude verso il palmo; pollice = capsula separata sul lato del palmo.
 function drawHand(svg, v, joints, hd){
   const w=joints.wrist, h=joints.hand;
   const dAxis=norm(sub(h,w));
@@ -575,22 +576,30 @@ function drawHand(svg, v, joints, hd){
   const rad=(hd.sup||0)*Math.PI/180;
   const palmDir=norm(add(scl(u,Math.cos(rad)), scl(vv,Math.sin(rad))));
   const thumbDir=norm(add(scl(u,-Math.sin(rad)), scl(vv,Math.cos(rad))));
-  const mid=add(w, scl(dAxis, LEN.wristHand*0.4));
+  const mid=add(w, scl(dAxis, LEN.wristHand*0.45));
   const seg=(a,b,cls)=>{ const p=proj(a,v), q=proj(b,v);
     const l=document.createElementNS(NS,'line');
     l.setAttribute('x1',p[0]); l.setAttribute('y1',p[1]);
     l.setAttribute('x2',q[0]); l.setAttribute('y2',q[1]);
     l.setAttribute('class',cls); svg.appendChild(l); };
   const curl=1-Math.max(0,Math.min(1,hd.open??1));
-  // palmo: tratto corto lungo la normale del palmo
-  seg(sub(mid,scl(palmDir,9)), add(mid,scl(palmDir,9)), 'palm');
-  // dita: aperte proseguono l'asse della mano, chiuse si piegano verso il palmo
+  // palmo: ellisse i cui assi sono le proiezioni di thumbDir (larghezza) e dAxis (lunghezza)
+  const pc=proj(mid,v);
+  const ax=sub(proj(add(mid,scl(thumbDir,13)),v),pc);
+  const bx=sub(proj(add(mid,scl(dAxis,12)),v),pc);
+  const e=document.createElementNS(NS,'ellipse');
+  e.setAttribute('cx',pc[0]); e.setAttribute('cy',pc[1]);
+  e.setAttribute('rx',Math.max(2,Math.hypot(bx[0],bx[1])));
+  e.setAttribute('ry',Math.max(2,Math.hypot(ax[0],ax[1])));
+  e.setAttribute('transform',`rotate(${Math.atan2(bx[1],bx[0])*180/Math.PI} ${pc[0]} ${pc[1]})`);
+  e.setAttribute('class','palm'); svg.appendChild(e);
+  // dita: blocco unico — esteso lungo l'asse quando aperto, ripiegato sul palmo quando chiuso
   const tipDir=norm(add(scl(dAxis,1-curl*0.85), scl(palmDir,-curl)));
-  [-7,0,7].forEach(s=>{ const base=add(h,scl(thumbDir,s)); seg(base, add(base,scl(tipDir,15)), 'finger'); });
-  // pollice: separato dal mazzo delle dita, si richiude sopra il pugno
-  const tb=add(mid,scl(palmDir,5));
-  const td=norm(add(thumbDir, scl(palmDir,-curl*0.5)));
-  seg(tb, add(tb,scl(td,17)), 'thumb');
+  seg(h, add(h,scl(tipDir,5+13*(1-curl))), 'finger');
+  // pollice: capsula separata sul lato thumbDir del palmo, si richiude sopra il pugno
+  const tb=add(mid,scl(thumbDir,11));
+  const td=norm(add(add(scl(thumbDir,0.6),scl(dAxis,0.55)), scl(palmDir,-curl*0.35)));
+  seg(tb, add(tb,scl(td,13)), 'thumb');
 }
 
 // slider mano: attivi solo su keyframe; su tempi interpolati mostrano il valore corrente
