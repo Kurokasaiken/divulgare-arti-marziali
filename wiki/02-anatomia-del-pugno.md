@@ -392,6 +392,18 @@ rapida della mano. È una **bozza autoriale** (pose e tempi scelti a mano,
 `provenance: authored`), non una formalizzazione scientifica: il test è che
 il JSON da solo basti a ricostruire il modello.
 
+
+
+### Variante dettagliata — anello-2-dettaglio.json
+
+`tools/examples/anello-2-dettaglio.json` scompone la stessa anello in 7
+keyframe autoriali (guardia 110° → scivolamento → arco 78° → traiettoria
+stabile 60° → LOCK 45° → tenuta → ritorno), con una transizione S-M-C-S
+per sotto-fase e condizioni esplicite (gate della chiusura della mano,
+gate del LOCK, rotazione tronco come condizione esterna). Gli angoli sono
+autoriali ma guidati dall'osservato (LOCK ~45°, coerente col dip 30-55°
+del capture). Non sostituisce il benchmark S2 congelato.
+
 Tre correzioni applicate dopo la prima lettura a freddo (rev. esterna):
 
 - **stato↔keyframe esplicito**: `S2.keyframeId = "KF2"` — prima il legame era
