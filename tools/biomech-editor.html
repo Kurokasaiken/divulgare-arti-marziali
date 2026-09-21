@@ -744,7 +744,9 @@ document.getElementById('pastePose').addEventListener('click', ()=>{
 // scorciatoie: Canc elimina il keyframe selezionato, Cmd/Ctrl+C/V copia-incolla la posa
 window.addEventListener('keydown', e=>{
   if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
-  if(e.key==='Delete'||e.key==='Backspace'){ e.preventDefault(); document.getElementById('delKf').click(); }
+  if(e.key==='Delete'||e.key==='Backspace'){ e.preventDefault();
+    if(exactKfAtTime(state.currentTime)) document.getElementById('delKf').click();
+    else if(state.selectedRotId!==null) document.getElementById('delRot').click(); }
   if((e.metaKey||e.ctrlKey)&&e.key==='c'){ poseClipboard=JSON.parse(JSON.stringify(interpJoints(state.currentTime))); renderTimeline(); }
   if((e.metaKey||e.ctrlKey)&&e.key==='v'){ e.preventDefault(); document.getElementById('pastePose').click(); }
 });
