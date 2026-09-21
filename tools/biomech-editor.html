@@ -25,17 +25,29 @@
 }
 *{box-sizing:border-box;}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);}
-body{padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); display:flex; flex-direction:column; min-height:100%;}
-header{padding:14px 18px 6px;}
-h1{font-size:15px; letter-spacing:.04em; margin:0; text-transform:uppercase;}
-.sub{font-size:11px; color:var(--sub); margin-top:3px;}
-main{flex:1; display:flex; flex-direction:column; gap:12px; padding:8px 22px 22px; max-width:1180px; margin:0 auto; width:100%;}
-.panel{background:var(--panel); border:1px solid var(--grid); border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,.08);}
-#canvasWrap{padding:12px;}
-.viewsGrid{display:grid; grid-template-columns:1.5fr 1fr; grid-template-rows:auto auto; gap:12px;}
-.viewBox{min-width:0; background:var(--bg); border:1px solid var(--grid); border-radius:8px; padding:8px 8px 4px;}
+body{display:flex; flex-direction:column; height:100vh; overflow:hidden; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);}
+
+/* ---- topbar ---- */
+.topbar{display:flex; align-items:center; gap:14px; height:48px; padding:0 16px; background:var(--panel); border-bottom:1px solid var(--grid); flex-shrink:0;}
+.topbar h1{font-size:13px; letter-spacing:.06em; margin:0; text-transform:uppercase;}
+.transport{display:flex; align-items:center; gap:8px;}
+#timeLabel{font-size:12px; color:var(--sub); font-variant-numeric:tabular-nums; min-width:150px;}
+#timeLabel.editable{color:var(--accent); font-weight:bold;}
+.top-actions{margin-left:auto; display:flex; align-items:center; gap:8px;}
+
+/* ---- area di lavoro: viste + ispettore ---- */
+.work{flex:1; display:grid; grid-template-columns:1fr 290px; min-height:0;}
+.viewsGrid{display:grid; grid-template-columns:1.6fr 1fr; grid-template-rows:1fr 1fr; gap:8px; padding:10px; min-height:0;}
+.viewBox{min-width:0; min-height:0; background:var(--panel); border:1px solid var(--grid); border-radius:8px; padding:8px 8px 4px; display:flex; flex-direction:column;}
 .viewBox.main{grid-column:1; grid-row:1/3;}
-.viewLabel{font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.1em; margin-bottom:2px; text-align:center; font-weight:bold;}
+.viewLabel{font-size:10px; color:var(--sub); text-transform:uppercase; letter-spacing:.1em; margin-bottom:4px; text-align:center; font-weight:bold;}
+.viewBox svg{flex:1;}
+.inspector{border-left:1px solid var(--grid); background:var(--panel); overflow-y:auto; display:flex; flex-direction:column;}
+.insp-sec{padding:12px 14px; border-bottom:1px solid var(--grid);}
+.insp-title{font-size:10px; letter-spacing:.08em; color:var(--sub); text-transform:uppercase; margin-bottom:8px; font-weight:bold;}
+#poseInfo{font-size:12px; line-height:1.6;}
+.sub{font-size:11px; color:var(--sub); margin-top:3px;}
+.panel{background:var(--panel); border:1px solid var(--grid); border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,.08);}
 svg{display:block; width:100%; height:auto;}
 .joint{cursor:grab; fill:var(--panel); stroke:var(--sub); stroke-width:2; transition:stroke-width .1s;}
 .joint:hover{stroke:var(--accent); stroke-width:3.5;}
@@ -45,6 +57,7 @@ svg{display:block; width:100%; height:auto;}
 details.panel summary{cursor:pointer; padding:10px 16px; font-size:11px; letter-spacing:.05em; color:var(--sub); text-transform:uppercase; user-select:none;}
 details.panel summary:hover{color:var(--accent);}
 details.panel[open] summary{border-bottom:1px solid var(--grid);}
+.tlwrap{flex-shrink:0; background:var(--panel); border-top:1px solid var(--grid); padding:8px 16px 8px;}
 .jlabel{font-size:11px; fill:var(--sub); font-family:inherit;}
 .bone{stroke:var(--line); stroke-width:4; fill:none; stroke-linecap:round;}
 .traj{stroke:var(--accent2); stroke-width:1.4; fill:none; stroke-dasharray:4 3; opacity:.85;}
@@ -64,16 +77,14 @@ button.primary:hover{filter:brightness(1.15);}
 .ctrl-group{display:flex; align-items:center; gap:5px; padding:3px 8px; border:1px solid var(--grid); border-radius:6px; background:var(--bg);}
 .ctrl-group .glab{font-size:8.5px; letter-spacing:.08em; color:var(--sub); text-transform:uppercase; margin-right:2px;}
 .ctrl-group button{border-radius:3px;}
-#timeLabel{font-size:11px; color:var(--sub);}
-#timeLabel.editable{color:var(--accent); font-weight:bold;}
 svg#tl{width:100%; height:104px; touch-action:none; cursor:crosshair; background:var(--bg); border:1px solid var(--grid); border-radius:6px;}
 .tltrack{stroke:var(--track); stroke-width:3;}
 .tick{stroke:var(--grid); stroke-width:1;}
 .tick.major{stroke:var(--sub); stroke-width:1.5;}
 .ticklab{font-size:8.5px; fill:var(--sub);}
 .lanelab{font-size:9px; fill:var(--sub); font-weight:bold; letter-spacing:.05em;}
-.kfdot{stroke:var(--kf); stroke-width:2; fill:var(--panel); cursor:pointer; transition:r .1s;}
-.kfdot:hover{r:11;}
+.kfdot{stroke:var(--kf); stroke-width:2; fill:var(--panel); cursor:pointer; rx:3px;}
+.kfdot:hover{stroke:var(--accent); stroke-width:3;}
 .kfdot.sel{fill:var(--kf-sel); stroke:var(--kf-sel);}
 .playhead{stroke:var(--accent); stroke-width:2; pointer-events:none;}
 .phhandle{fill:var(--accent); pointer-events:none;}
@@ -97,82 +108,88 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
 </style>
 </head>
 <body>
-<header>
-  <h1>Editor Biomeccanico — Keyframe</h1>
-  <div class="sub">spalla → gomito → polso → mano · proporzioni umane fisse (100 : 90 : 50) · tre viste ortografiche sulla stessa posa 3D · trascina i giunti su un keyframe selezionato</div>
-</header>
-<main>
-  <div class="panel" id="canvasWrap">
-    <div class="viewsGrid" id="viewsWrap"></div>
+<header class="topbar">
+  <h1>Editor Biomeccanico</h1>
+  <div class="transport">
+    <button id="playBtn" title="Avvia/metti in pausa">▶ Play</button>
+    <span id="timeLabel">00:00.000</span>
   </div>
-
-  <div class="panel" id="timelineWrap">
-    <div class="tl-row">
-      <div class="ctrl-group"><span class="glab">animazione</span>
-        <button id="playBtn" title="Avvia/metti in pausa l'animazione">▶ Play</button>
-      </div>
-      <div class="ctrl-group"><span class="glab">keyframe</span>
-        <button id="addKf" class="primary" title="Crea un keyframe al tempo corrente (posa interpolata)">+ Keyframe</button>
-        <button id="delKf" title="Elimina il keyframe selezionato">✕</button>
-      </div>
-      <div class="ctrl-group"><span class="glab">rotazione</span>
-        <select id="boneSelect" title="Segmento della rotazione assiale">
-          <option value="shoulder-elbow">Braccio</option>
-          <option value="elbow-wrist" selected>Avambraccio</option>
-          <option value="wrist-hand">Mano</option>
-        </select>
-        <button id="addRot" title="Nuova rotazione assiale da t a t+200ms">↻ +</button>
-        <button id="delRot" title="Elimina la rotazione selezionata">✕</button>
-      </div>
-      <div class="ctrl-group"><span class="glab">file</span>
+  <div class="top-actions">
+    <button id="themeBtn" title="Cambia tema chiaro/scuro">◐ tema</button>
+    <button id="jsonBtn" title="Pannello JSON canonico">{ } JSON</button>
+  </div>
+</header>
+<div class="work">
+  <div class="viewsGrid" id="viewsWrap"></div>
+  <aside class="inspector">
+    <div class="insp-sec">
+      <div class="insp-title">Posa corrente</div>
+      <div id="poseInfo"></div>
+      <div class="hint" style="margin-top:6px">Trascina i giunti nelle viste. Su keyframe sono editabili (pieni); su tempi interpolati sono in sola lettura.</div>
+    </div>
+    <div class="insp-sec">
+      <div class="insp-title">Esempi</div>
+      <div class="tl-row" style="margin:0">
         <select id="exampleSel" title="Esempio da caricare">
           <option value="anello-2-dettaglio.json">A2 dettaglio</option>
           <option value="anello-2-retrazione.json">A2 benchmark S2</option>
         </select>
         <button id="loadExample" title="Carica l'esempio selezionato">Carica</button>
-        <button id="jsonBtn" title="Apri il pannello JSON canonico">{ } JSON</button>
       </div>
-      <label title="Mostra i keyframe adiacenti sbiaditi" style="font-size:10px; letter-spacing:.03em; color:var(--sub)"><input type="checkbox" id="ghost" checked> ghost</label>
-      <span id="timeLabel">t = 0 ms</span>
-      <span id="poseInfo" style="font-size:10.5px; opacity:.75"></span>
+      <label title="Mostra i keyframe adiacenti sbiaditi" style="font-size:10px; letter-spacing:.03em; color:var(--sub); display:block; margin-top:8px;"><input type="checkbox" id="ghost" checked> ghost dei keyframe vicini</label>
     </div>
-    <svg id="tl" viewBox="0 0 860 96" preserveAspectRatio="none"></svg>
-    <div class="hint">Riga superiore = keyframe di posa: <b>clic sulla linea = muovi il playhead</b> (le viste mostrano la posa interpolata a quel tempo) · <b>clic su un pallino = seleziona quel keyframe</b> per editare i giunti · trascina un pallino = sposta il keyframe nel tempo · <b>+ Keyframe</b> (o doppio clic sulla linea) = crea un keyframe al tempo corrente con la posa interpolata. Riga inferiore viola = rotazioni assiali (clic sulla barra = seleziona · maniglie alle estremità = inizio/fine).</div>
-  </div>
-
-  <details class="panel" id="semPanel">
-    <summary>Semantica S→M→C→S — livello avanzato (clic per aprire)</summary>
-    <div style="padding:12px 16px;">
-      <div class="tl-row">
-        <select id="semType">
-          <option value="states">stato S</option>
-          <option value="movements">movimento M</option>
-          <option value="conditions">condizione C</option>
-          <option value="transitions">transizione T</option>
-          <option value="constraints">vincolo / LOCK</option>
-          <option value="vectors">vettore V</option>
-          <option value="annotations">annotazione</option>
-        </select>
-        <button id="semAdd">+ Aggiungi</button>
+    <details id="semPanel" style="border-bottom:1px solid var(--grid);">
+      <summary style="padding:12px 14px; cursor:pointer; font-size:10px; letter-spacing:.08em; color:var(--sub); text-transform:uppercase; font-weight:bold;">Semantica S→M→C→S</summary>
+      <div style="padding:0 14px 12px;">
+        <div class="tl-row">
+          <select id="semType">
+            <option value="states">stato S</option>
+            <option value="movements">movimento M</option>
+            <option value="conditions">condizione C</option>
+            <option value="transitions">transizione T</option>
+            <option value="constraints">vincolo / LOCK</option>
+            <option value="vectors">vettore V</option>
+            <option value="annotations">annotazione</option>
+          </select>
+          <button id="semAdd">+ Aggiungi</button>
+        </div>
+        <div id="semList"></div>
+        <div class="hint">Ogni oggetto porta livello epistemico (OSS/INT/IPO) e provenance <i>authored</i>. Transizioni: collega S→M→C→S per ID.</div>
       </div>
-      <div id="semList"></div>
-      <div class="hint">Ogni oggetto porta livello epistemico (OSS/INT/IPO) e provenance <i>authored</i>. Le condizioni nascono <b>unformalized</b>: la formalizzazione arriva solo dopo lo spike su C (gate S5a). Transizioni: collega S→M→C→S per ID.</div>
+    </details>
+    <div class="insp-sec" id="jsonPanel" style="display:none;">
+      <div class="insp-title">JSON canonico</div>
+      <textarea id="jsonArea"></textarea>
+      <div class="tl-row" style="margin-top:8px;">
+        <button id="copyJson">Copia</button>
+        <button id="downloadJson">Scarica</button>
+        <button id="importJson">Importa</button>
+        <button id="saveLocal">Salva</button>
+        <button id="loadLocal">Carica</button>
+        <button id="resetDefault">Reset</button>
+      </div>
     </div>
-  </details>
-
-  <div class="panel" id="jsonPanel" style="display:none; padding:10px;">
-    <textarea id="jsonArea"></textarea>
-    <div class="tl-row" style="margin-top:8px;">
-      <button id="copyJson">Copia</button>
-      <button id="downloadJson">Scarica file</button>
-      <button id="importJson">Importa</button>
-      <button id="saveLocal">Salva (locale)</button>
-      <button id="loadLocal">Carica (locale)</button>
-      <button id="resetDefault">Reset esempio</button>
+  </aside>
+</div>
+<div class="tlwrap">
+  <div class="tl-row">
+    <div class="ctrl-group"><span class="glab">keyframe</span>
+      <button id="addKf" class="primary" title="Registra la posa corrente come keyframe al playhead">◆ Registra posa</button>
+      <button id="delKf" title="Elimina il keyframe selezionato">✕</button>
+    </div>
+    <div class="ctrl-group"><span class="glab">rotazione</span>
+      <select id="boneSelect" title="Segmento della rotazione assiale">
+        <option value="shoulder-elbow">Braccio</option>
+        <option value="elbow-wrist" selected>Avambraccio</option>
+        <option value="wrist-hand">Mano</option>
+      </select>
+      <button id="addRot" title="Nuova rotazione assiale da t a t+200ms">↻ +</button>
+      <button id="delRot" title="Elimina la rotazione selezionata">✕</button>
     </div>
   </div>
-</main>
-<footer>proporzioni fisse tipo-umano · una sola posa 3D proiettata in tre viste — il JSON contiene un'unica configurazione articolare · rotazioni come annotazioni indipendenti dalla posa</footer>
+  <svg id="tl" viewBox="0 0 860 96" preserveAspectRatio="none"></svg>
+  <div class="hint"><b>Trascina sul righello</b> = muovi il playhead (le viste mostrano la posa interpolata live) · <b>clic su un rombo</b> = seleziona il keyframe → giunti editabili · <b>trascina un rombo</b> = sposta nel tempo · <b>◆ Registra posa</b> o doppio-clic sulla corsia KF = nuovo keyframe. Corsia ROT: barra viola = rotazione assiale, maniglie ai bordi = inizio/fine.</div>
+</div>
 
 <script>
 const NS='http://www.w3.org/2000/svg';
@@ -633,7 +650,7 @@ function renderTimeline(){
 
   sortedKf().forEach(k=>{
     const x=timeToX(k.time);
-    const c=el('circle',{cx:x,cy:KF_Y,r:8},'kfdot'+(k.time===state.currentTime?' sel':''));
+    const c=el('rect',{x:x-7,y:KF_Y-7,width:14,height:14,transform:`rotate(45 ${x} ${KF_Y})`},'kfdot'+(k.time===state.currentTime?' sel':''));
     c.addEventListener('pointerdown', e=>{ dragKf=k; state.currentTime=k.time; renderAll(); e.stopPropagation(); });
   });
 
@@ -655,7 +672,9 @@ function renderTimeline(){
 
   const tlEl=document.getElementById('timeLabel');
   const onKf=!!exactKfAtTime(state.currentTime);
-  tlEl.textContent='t = '+Math.round(state.currentTime)+' ms'+(onKf?' ● keyframe — editabile':' ○ interpolato — clic un pallino o + Keyframe');
+  const t=Math.round(state.currentTime);
+  const tc=`${String(Math.floor(t/60000)).padStart(2,'0')}:${String(Math.floor(t/1000)%60).padStart(2,'0')}.${String(t%1000).padStart(3,'0')}`;
+  tlEl.textContent=tc+(onKf?'  ● keyframe':'  ○ interpolato');
   tlEl.classList.toggle('editable',onKf);
   document.getElementById('delKf').disabled = state.keyframes.length<=2 || !exactKfAtTime(state.currentTime);
   document.getElementById('delRot').disabled = state.selectedRotId===null;
@@ -737,6 +756,16 @@ function step(ts){
   requestAnimationFrame(step);
 }
 
+// tema chiaro/scuro, persistito
+(function(){
+  const root=document.documentElement, saved=localStorage.getItem('biomech-theme');
+  if(saved) root.dataset.theme=saved;
+  document.getElementById('themeBtn').addEventListener('click', ()=>{
+    const cur=root.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    const next=cur==='dark'?'light':'dark';
+    root.dataset.theme=next; localStorage.setItem('biomech-theme',next);
+  });
+})();
 document.getElementById('jsonBtn').addEventListener('click', ()=>{
   const p=document.getElementById('jsonPanel');
   p.style.display=p.style.display==='none'?'block':'none';
