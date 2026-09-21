@@ -319,6 +319,9 @@ function interpJoints(t){
   const span=(b.time-a.time)||1, f=(t-a.time)/span;
   const out={};
   JOINTS.forEach(j=>{ const p1=a.joints[j], p2=b.joints[j]; out[j]=[0,1,2].map(i=>p1[i]+(p2[i]-p1[i])*f); });
+  // le lunghezze dei segmenti devono restare fisse anche nei frame interpolati:
+  // l'interpolazione lineare accorcerebbe le aste a meta' arco -> rinormalizza la catena
+  enforceProportions(out);
   return out;
 }
 function exactKfAtTime(t){ return state.keyframes.find(k=>k.time===t); }
