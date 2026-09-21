@@ -538,8 +538,10 @@ la cattura densa futura registrera' la versione modificata dal modello.
 **Stato:** `fatta`
 **Cosa è successo:**
 - `wiki/11-problemi-ottimizzazione.md`: per ogni anello, osservato →
-  problema meccanico → vincoli → alternative → candidato APERTO → output
-  atteso → verifica. La colonna "candidato" e' la coda di lavoro teorico.
-- Correzione del risultato P-A2.2 registrata nel framing: -50% I non
-  dimostra che la configurazione osservata sia ottima — abilita la
-  domanda di ottimo.
+  problema meccanico → vincoli → alternative → candidato → output
+  atteso → verifica.
+- Prima revisione teorica completata: candidati IPO formulati per tutti
+  gli anelli con perche'/delta-vs-osservato/stato. Esiti: candidato ~
+  osservato su 0,1,4,6; possibile divergenza su Anello 3 (lead pelvico
+  non osservato a 17fps); candidato condizionale su 2 e 5 (funzione del
+  LOCK e criterio di commutazione non ancora decisi).

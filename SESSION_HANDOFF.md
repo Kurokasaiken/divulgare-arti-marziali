@@ -308,3 +308,13 @@ updated: 2026-09-20
 - Prossimo lavoro: scegliere un anello e formulare funzionale da
   ottimizzare + vincoli + metrica di costo (Anello 2 e' il piu' maturo:
   I planare gia' calcolabile, LOCK e C1 gia' nel linguaggio S2).
+
+## Aggiunta (2026-09-21, revisione teorica anelli — R-024 completata)
+
+- wiki/11: colonna "candidato ottimizzato" riempita per tutti gli anelli
+  con proposte IPO derivate dal problema meccanico (perche', delta vs
+  osservato, stato). Pattern: candidato ~= osservato su 0,1,4,6;
+  divergenza potenziale su A3 (lead pelvico mai osservato a 17fps);
+  condizionale su A2 (funzione LOCK) e A5 (criterio commutazione mano).
+- La matrice wiki/10 resta registro sperimentale per la futura cattura
+  densa (baseline osservata vs candidato).
