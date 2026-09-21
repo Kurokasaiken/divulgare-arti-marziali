@@ -678,7 +678,7 @@ function renderTimeline(){
   const tc=`${String(Math.floor(t/60000)).padStart(2,'0')}:${String(Math.floor(t/1000)%60).padStart(2,'0')}.${String(t%1000).padStart(3,'0')}`;
   tlEl.textContent=tc+(onKf?'  ● keyframe':'  ○ interpolato');
   tlEl.classList.toggle('editable',onKf);
-  document.getElementById('delKf').disabled = state.keyframes.length<=2 || !exactKfAtTime(state.currentTime);
+  document.getElementById('delKf').disabled = state.keyframes.length<=1 || !exactKfAtTime(state.currentTime);
   document.getElementById('pastePose').disabled = !poseClipboard;
   document.getElementById('delRot').disabled = state.selectedRotId===null;
 }
@@ -725,7 +725,7 @@ document.getElementById('addKf').addEventListener('click', ()=>{
 });
 document.getElementById('delKf').addEventListener('click', ()=>{
   const kf=exactKfAtTime(state.currentTime);
-  if(kf && state.keyframes.length>2){ state.keyframes=state.keyframes.filter(k=>k!==kf); state.currentTime=sortedKf()[0].time; renderAll(); persist(); }
+  if(kf && state.keyframes.length>1){ state.keyframes=state.keyframes.filter(k=>k!==kf); state.currentTime=sortedKf()[0].time; renderAll(); persist(); }
 });
 // copia/incolla posa tra keyframe: la clipboard tiene la posa mostrata (kf o interpolata)
 let poseClipboard=null;
