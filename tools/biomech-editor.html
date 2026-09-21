@@ -66,12 +66,17 @@ button.primary:hover{filter:brightness(1.15);}
 .ctrl-group button{border-radius:3px;}
 #timeLabel{font-size:11px; color:var(--sub);}
 #timeLabel.editable{color:var(--accent); font-weight:bold;}
-svg#tl{width:100%; height:96px; touch-action:none;}
+svg#tl{width:100%; height:104px; touch-action:none; cursor:crosshair; background:var(--bg); border:1px solid var(--grid); border-radius:6px;}
 .tltrack{stroke:var(--track); stroke-width:3;}
+.tick{stroke:var(--grid); stroke-width:1;}
+.tick.major{stroke:var(--sub); stroke-width:1.5;}
+.ticklab{font-size:8.5px; fill:var(--sub);}
+.lanelab{font-size:9px; fill:var(--sub); font-weight:bold; letter-spacing:.05em;}
 .kfdot{stroke:var(--kf); stroke-width:2; fill:var(--panel); cursor:pointer; transition:r .1s;}
-.kfdot:hover{r:10;}
+.kfdot:hover{r:11;}
 .kfdot.sel{fill:var(--kf-sel); stroke:var(--kf-sel);}
-.playhead{stroke:var(--accent); stroke-width:2;}
+.playhead{stroke:var(--accent); stroke-width:2; pointer-events:none;}
+.phhandle{fill:var(--accent); pointer-events:none;}
 .kftime{font-size:9px; fill:var(--sub);}
 .rotbar{stroke:var(--rot); stroke-width:7; stroke-linecap:round; cursor:pointer; opacity:.85;}
 .rotbar.sel{stroke:var(--rot-sel); opacity:1;}
@@ -603,64 +608,50 @@ document.getElementById('semAdd').addEventListener('click', ()=>{
 // ---------- TIMELINE ----------
 const tl=document.getElementById('tl');
 let dragKf=null, dragRot=null;
-const TL_PAD=20, TL_W=820, KF_Y=22, ROT_Y=64;
+const TL_PAD=26, TL_W=810, KF_Y=44, ROT_Y=78, RULER_H=20;
 
 function timeToX(t){ return TL_PAD+(t/maxScale())*TL_W; }
 function xToTime(x){ return Math.max(0, Math.round(((x-TL_PAD)/TL_W)*maxScale()/10)*10); }
 
 function renderTimeline(){
   tl.innerHTML='';
-  const track=document.createElementNS(NS,'line');
-  track.setAttribute('x1',TL_PAD); track.setAttribute('y1',KF_Y); track.setAttribute('x2',TL_PAD+TL_W); track.setAttribute('y2',KF_Y);
-  track.setAttribute('class','tltrack');
-  tl.addEventListener('click', e=>{
-    if(e.target.tagName==='circle') return; // non su pallini keyframe/maniglie
-    const [x]=svgPoint(tl,e.clientX,e.clientY);
-    state.currentTime=xToTime(x); renderAll();
-  });
-  track.addEventListener('dblclick', e=>{
-    const [x]=svgPoint(tl,e.clientX,e.clientY); const t=xToTime(x);
-    if(!exactKfAtTime(t)){ state.keyframes.push({id:uid('KF'), time:t, joints:JSON.parse(JSON.stringify(interpJoints(t)))}); state.currentTime=t; renderAll(); persist(); }
-  });
-  tl.appendChild(track);
+  const el=(n,attrs,cls)=>{ const e=document.createElementNS(NS,n);
+    for(const k in attrs) e.setAttribute(k,attrs[k]); if(cls)e.setAttribute('class',cls); tl.appendChild(e); return e; };
 
-  const rtrack=document.createElementNS(NS,'line');
-  rtrack.setAttribute('x1',TL_PAD); rtrack.setAttribute('y1',ROT_Y); rtrack.setAttribute('x2',TL_PAD+TL_W); rtrack.setAttribute('y2',ROT_Y);
-  rtrack.setAttribute('class','tltrack'); tl.appendChild(rtrack);
+  // --- righello (tipo Flash): tick ogni 50ms, label ogni 200ms ---
+  el('line',{x1:TL_PAD,y1:RULER_H,x2:TL_PAD+TL_W,y2:RULER_H},'tltrack');
+  for(let t=0;t<=maxScale();t+=50){
+    const x=timeToX(t), major=t%200===0;
+    el('line',{x1:x,y1:major?10:14,x2:x,y2:RULER_H},'tick'+(major?' major':''));
+    if(major){ const tx=el('text',{x,y:9,'text-anchor':'middle'},'ticklab'); tx.textContent=t; }
+  }
+  // --- corsie ---
+  el('line',{x1:TL_PAD,y1:KF_Y,x2:TL_PAD+TL_W,y2:KF_Y},'tltrack');
+  el('line',{x1:TL_PAD,y1:ROT_Y,x2:TL_PAD+TL_W,y2:ROT_Y},'tltrack');
+  const l1=el('text',{x:2,y:KF_Y+3},'lanelab'); l1.textContent='KF';
+  const l2=el('text',{x:2,y:ROT_Y+3},'lanelab'); l2.textContent='ROT';
 
   sortedKf().forEach(k=>{
     const x=timeToX(k.time);
-    const c=document.createElementNS(NS,'circle');
-    c.setAttribute('cx',x); c.setAttribute('cy',KF_Y); c.setAttribute('r',8);
-    c.setAttribute('class','kfdot'+(k.time===state.currentTime?' sel':''));
-    c.addEventListener('mousedown', e=>{ dragKf=k; state.currentTime=k.time; renderAll(); e.stopPropagation(); });
-    c.addEventListener('touchstart', e=>{ dragKf=k; state.currentTime=k.time; renderAll(); }, {passive:true});
-    tl.appendChild(c);
-    const lbl=document.createElementNS(NS,'text'); lbl.setAttribute('x',x); lbl.setAttribute('y',KF_Y+16);
-    lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('class','kftime'); lbl.textContent=k.time+' ms'; tl.appendChild(lbl);
+    const c=el('circle',{cx:x,cy:KF_Y,r:8},'kfdot'+(k.time===state.currentTime?' sel':''));
+    c.addEventListener('pointerdown', e=>{ dragKf=k; state.currentTime=k.time; renderAll(); e.stopPropagation(); });
   });
 
   state.rotations.forEach(r=>{
     const x1=timeToX(r.start), x2=timeToX(r.end);
-    const bar=document.createElementNS(NS,'line');
-    bar.setAttribute('x1',x1); bar.setAttribute('y1',ROT_Y); bar.setAttribute('x2',x2); bar.setAttribute('y2',ROT_Y);
-    bar.setAttribute('class','rotbar'+(state.selectedRotId===r.id?' sel':''));
-    bar.addEventListener('mousedown', ()=>{ state.selectedRotId=r.id; renderTimeline(); });
-    tl.appendChild(bar);
+    const bar=el('line',{x1,y1:ROT_Y,x2,y2:ROT_Y},'rotbar'+(state.selectedRotId===r.id?' sel':''));
+    bar.addEventListener('pointerdown', e=>{ state.selectedRotId=r.id; renderTimeline(); e.stopPropagation(); });
     [['start',x1],['end',x2]].forEach(([edge,x])=>{
-      const h=document.createElementNS(NS,'circle');
-      h.setAttribute('cx',x); h.setAttribute('cy',ROT_Y); h.setAttribute('r',6); h.setAttribute('class','rothandle');
-      h.addEventListener('mousedown', e=>{ dragRot={r,edge}; state.selectedRotId=r.id; renderTimeline(); e.stopPropagation(); });
-      h.addEventListener('touchstart', e=>{ dragRot={r,edge}; state.selectedRotId=r.id; renderTimeline(); }, {passive:true});
-      tl.appendChild(h);
+      const h=el('circle',{cx:x,cy:ROT_Y,r:6},'rothandle');
+      h.addEventListener('pointerdown', e=>{ dragRot={r,edge}; state.selectedRotId=r.id; renderTimeline(); e.stopPropagation(); });
     });
-    const lbl=document.createElementNS(NS,'text'); lbl.setAttribute('x',(x1+x2)/2); lbl.setAttribute('y',ROT_Y+16);
-    lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('class','rotbarlabel'); lbl.textContent=r.label; tl.appendChild(lbl);
+    const lbl=el('text',{x:(x1+x2)/2,y:ROT_Y+16,'text-anchor':'middle'},'rotbarlabel'); lbl.textContent=r.label;
   });
 
+  // --- playhead con maniglia ---
   const px=timeToX(state.currentTime);
-  const ph=document.createElementNS(NS,'line'); ph.setAttribute('x1',px); ph.setAttribute('y1',6); ph.setAttribute('x2',px); ph.setAttribute('y2',80);
-  ph.setAttribute('class','playhead'); tl.appendChild(ph);
+  el('line',{x1:px,y1:RULER_H,x2:px,y2:96},'playhead');
+  el('path',{d:`M ${px-6} 2 L ${px+6} 2 L ${px} ${RULER_H-2} Z`},'phhandle');
 
   const tlEl=document.getElementById('timeLabel');
   const onKf=!!exactKfAtTime(state.currentTime);
@@ -670,6 +661,25 @@ function renderTimeline(){
   document.getElementById('delRot').disabled = state.selectedRotId===null;
 }
 
+// scrub: trascina sul righello/corsie vuote = muovi il playhead (vedi la posa interpolata live)
+let scrubbing=false;
+tl.addEventListener('pointerdown', e=>{
+  const cls=(e.target.getAttribute&&e.target.getAttribute('class'))||'';
+  if(/kfdot|rothandle|rotbar|ticklab|lanelab/.test(cls)) return;
+  scrubbing=true; try{tl.setPointerCapture(e.pointerId);}catch(_){}
+  const [x]=svgPoint(tl,e.clientX,e.clientY); state.currentTime=xToTime(x); renderAll();
+});
+tl.addEventListener('pointermove', e=>{
+  if(scrubbing){ const [x]=svgPoint(tl,e.clientX,e.clientY); state.currentTime=xToTime(x); renderAll(); }
+});
+window.addEventListener('pointerup',()=>{ scrubbing=false; });
+// doppio clic su corsia KF vuota = nuovo keyframe al tempo indicato
+tl.addEventListener('dblclick', e=>{
+  const cls=(e.target.getAttribute&&e.target.getAttribute('class'))||'';
+  if(/kfdot|rothandle|rotbar/.test(cls)) return;
+  const [x]=svgPoint(tl,e.clientX,e.clientY); const t=xToTime(x);
+  if(!exactKfAtTime(t)){ state.keyframes.push({id:uid('KF'), time:t, joints:JSON.parse(JSON.stringify(interpJoints(t)))}); state.currentTime=t; renderAll(); persist(); }
+});
 tl.addEventListener('mousemove', e=>{
   if(dragKf){ const [x]=svgPoint(tl,e.clientX,e.clientY); dragKf.time=xToTime(x); state.currentTime=dragKf.time; renderAll(); persist(); }
   if(dragRot){ const [x]=svgPoint(tl,e.clientX,e.clientY); const t=xToTime(x); const r=dragRot.r;
