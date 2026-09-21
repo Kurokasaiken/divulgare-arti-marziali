@@ -366,9 +366,21 @@ VIEWS.forEach(v=>{
   v.svg=svg;
 });
 let dragJoint=null, dragView=null;
-const proj=(p,v)=>[p[v.axes[0]], p[v.axes[1]]];
+// ogni vista centra il bounding box di tutti i keyframe nel suo viewBox (600x340)
+function computeOffsets(){
+  const ks=sortedKf();
+  VIEWS.forEach(v=>{
+    const [a0,a1]=v.axes; let m0=1e9,M0=-1e9,m1=1e9,M1=-1e9;
+    ks.forEach(k=>JOINTS.forEach(j=>{ const p=k.joints[j];
+      m0=Math.min(m0,p[a0]); M0=Math.max(M0,p[a0]);
+      m1=Math.min(m1,p[a1]); M1=Math.max(M1,p[a1]); }));
+    v.off=[300-(m0+M0)/2, 170-(m1+M1)/2];
+  });
+}
+const proj=(p,v)=>[p[v.axes[0]]+v.off[0], p[v.axes[1]]+v.off[1]];
 
 function renderViews(){
+  computeOffsets();
   const joints = interpJoints(state.currentTime);
   const editable = !!exactKfAtTime(state.currentTime);
   const ks = sortedKf();
@@ -502,7 +514,8 @@ function svgPoint(svg, clientX, clientY){
 // l'asse perpendicolare resta invariato (una posa 3D, viste = proiezioni)
 function dragUpdate(clientX, clientY){
   const kf=exactKfAtTime(state.currentTime); if(!kf || !dragView) return;
-  const [u,w]=svgPoint(dragView.svg, clientX, clientY);
+  const [u0,w0]=svgPoint(dragView.svg, clientX, clientY);
+  const u=u0-dragView.off[0], w=w0-dragView.off[1];
   const [a0,a1]=dragView.axes;
   const j=kf.joints;
   const target=p=>{ const q=p.slice(); q[a0]=u; q[a1]=w; return q; };
