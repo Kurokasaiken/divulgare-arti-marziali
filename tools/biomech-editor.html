@@ -96,6 +96,10 @@ svg#tl{width:100%; height:104px; touch-action:none; cursor:crosshair; background
 .vec{stroke:var(--accent2); stroke-width:2; fill:none;}
 .handbody{fill:var(--panel); stroke:var(--line); stroke-width:2.5; stroke-linejoin:round;}
 .handaxis{stroke:var(--sub); stroke-width:1.2; stroke-dasharray:3 3; opacity:.6;}
+.viewBox{position:relative;}
+.vlock{position:absolute; top:6px; right:10px; cursor:pointer; font-size:12px; opacity:.4; user-select:none;}
+.vlock:hover{opacity:1;}
+.vlock.on{opacity:1;}
 .torso{fill:var(--bg); stroke:var(--sub); stroke-width:1.5; opacity:.55;}
 .thumb{fill:none; stroke:var(--accent); stroke-width:6.5; stroke-linecap:round;}
 .handctl{margin-top:8px; display:flex; flex-direction:column; gap:6px;}
@@ -280,8 +284,10 @@ let state = {
   meta: {},
   currentTime: 0,
   selectedRotId: null,
-  playing: false
+  playing: false,
+  viewLocks: {front:false, side:false, top:false}
 };
+try{ const vl=JSON.parse(localStorage.getItem('biomech-viewlocks')||'null'); if(vl) state.viewLocks=vl; }catch(_){}
 
 function sortedKf(){ return [...state.keyframes].sort((a,b)=>a.time-b.time); }
 function maxScale(){
@@ -415,6 +421,12 @@ VIEWS.forEach(v=>{
   const box=document.createElement('div'); box.className='viewBox'+(v.id==='side'?' main':'');
   const lab=document.createElement('div'); lab.className='viewLabel';
   lab.textContent=v.label+' ('+AXES[v.axes[0]]+'-'+AXES[v.axes[1]]+')'+(v.id==='side'?'':' · drag = solo x');
+  const lock=document.createElement('span');
+  lock.className='vlock'; lock.title='Blocca gli assi di questa vista in tutte le viste';
+  lock.addEventListener('click', ()=>{ state.viewLocks[v.id]=!state.viewLocks[v.id];
+    try{localStorage.setItem('biomech-viewlocks',JSON.stringify(state.viewLocks));}catch(_){}
+    renderAll(); });
+  v.lockEl=lock; box.appendChild(lock);
   const svg=document.createElementNS(NS,'svg');
   svg.setAttribute('viewBox','0 0 600 340');
   box.appendChild(lab); box.appendChild(svg); viewsWrap.appendChild(box);
@@ -451,6 +463,7 @@ function renderViews(){
 
   VIEWS.forEach(v=>{
     const svg=v.svg; svg.innerHTML='';
+    if(v.lockEl){ v.lockEl.textContent=state.viewLocks[v.id]?'🔒':'🔓'; v.lockEl.classList.toggle('on',!!state.viewLocks[v.id]); }
 
     // riferimento corporeo ancorato alla spalla (contesto, non modello):
     // frontale = busto a V senza punta (spalle larghe, fianchi stretti);
@@ -660,12 +673,35 @@ function dragUpdate(clientX, clientY, shiftKey){
   const [u0,w0]=svgPoint(dragView.svg, clientX, clientY);
   const u=u0-dragView.off[0], w=w0-dragView.off[1];
   const [a0,a1]=dragView.axes;
-  const xOnly = dragView.id!=='side' && !shiftKey;
   const j=kf.joints;
-  const target=p=>{ const q=p.slice(); q[a0]=u; if(!xOnly) q[a1]=w; return q; };
+  // gli assi delle viste bloccate sono congelati globalmente
+  const locked=new Set(); VIEWS.forEach(vv=>{ if(state.viewLocks[vv.id]) vv.axes.forEach(a=>locked.add(a)); });
+  // viste secondarie senza Shift: si edita solo x, e si preserva la laterale
+  // esattamente — il Delta x del giunto si propaga verso la radice: i figli
+  // traslano rigidamente (direzioni e lunghezze invariate), i genitori
+  // scivolano in x per conservare le lunghezze. y,z di tutti i giunti restano
+  // identici, quindi la proiezione laterale non si muove.
+  if(dragView.id!=='side' && !shiftKey){
+    if(locked.has(0)) return;
+    const idx=JOINTS.indexOf(dragJoint);
+    const dx=u-j[dragJoint][0];
+    for(let i=idx;i<JOINTS.length;i++) j[JOINTS[i]][0]+=dx;
+    const SEG=[LEN.shoulderElbow,LEN.elbowWrist,LEN.wristHand];
+    for(let i=idx-1;i>=0;i--){
+      const c=j[JOINTS[i+1]], p=j[JOINTS[i]];
+      const dy=c[1]-p[1], dz=c[2]-p[2];
+      const rem=SEG[i]*SEG[i]-dy*dy-dz*dz; if(rem<0) break;
+      const s=Math.sqrt(rem), oldDx=c[0]-p[0];
+      p[0]=c[0]-(oldDx>=0?s:-s);
+    }
+    renderViews(); renderTimeline(); persist(); return;
+  }
+  const can0=!locked.has(a0), can1=!locked.has(a1);
+  if(!can0 && !can1) return;
+  const target=p=>{ const q=p.slice(); if(can0) q[a0]=u; if(can1) q[a1]=w; return q; };
   if(dragJoint==='shoulder'){
-    const delta=[u-j.shoulder[a0], xOnly?0:w-j.shoulder[a1]];
-    JOINTS.forEach(k=>{ j[k][a0]+=delta[0]; if(!xOnly) j[k][a1]+=delta[1]; });
+    const d0=can0?u-j.shoulder[a0]:0, d1=can1?w-j.shoulder[a1]:0;
+    JOINTS.forEach(k=>{ j[k][a0]+=d0; j[k][a1]+=d1; });
   } else if(dragJoint==='elbow'){
     const dir=norm(sub(target(j.elbow), j.shoulder));
     const newElbow=add(j.shoulder, scl(dir, LEN.shoulderElbow));
