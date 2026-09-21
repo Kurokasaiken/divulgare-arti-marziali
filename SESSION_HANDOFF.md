@@ -298,3 +298,13 @@ updated: 2026-09-20
 - Progetto ora in fase di verifica: il prossimo artefatto utile e' il
   protocollo concreto della cattura densa (o una nuova cattura con
   varianti controllate).
+
+## Aggiunta (2026-09-21, problemi di ottimizzazione — R-024)
+
+- wiki/11: ogni anello riformulato come problema meccanico con candidato
+  ottimizzato APERTO (coda di lavoro teorico). Reframing Director: i
+  capture = gesto osservato, non tecnica ideale; la cattura densa futura
+  confrontera' gesto osservato vs gesto candidato derivato dal modello.
+- Prossimo lavoro: scegliere un anello e formulare funzionale da
+  ottimizzare + vincoli + metrica di costo (Anello 2 e' il piu' maturo:
+  I planare gia' calcolabile, LOCK e C1 gia' nel linguaggio S2).

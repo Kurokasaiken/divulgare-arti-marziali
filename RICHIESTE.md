@@ -522,3 +522,24 @@ distinguibili. (2026-09-21)
   VAR, GRF, EMG, IMP, raw data).
 - Punto chiave: le **varianti controllate** sono l'unico elemento che
   separa correlazione da funzione.
+
+---
+
+## R-024 — Prima passata di ottimizzazione teorica per anello
+
+**Richiesta:** *"Non farei immediatamente una nuova cattura a 240 fps.
+Prima farei una prima passata di ottimizzazione teorica degli anelli 0–6
+[...] Non devi ancora riempire la colonna 'candidato ottimizzato' con
+supposizioni."* Reframing: i capture descrivono il gesto reale osservato,
+non la tecnica ideale; ogni anello diventa problema di ottimizzazione;
+la cattura densa futura registrera' la versione modificata dal modello.
+(2026-09-21)
+**Data:** 2026-09-21
+**Stato:** `fatta`
+**Cosa è successo:**
+- `wiki/11-problemi-ottimizzazione.md`: per ogni anello, osservato →
+  problema meccanico → vincoli → alternative → candidato APERTO → output
+  atteso → verifica. La colonna "candidato" e' la coda di lavoro teorico.
+- Correzione del risultato P-A2.2 registrata nel framing: -50% I non
+  dimostra che la configurazione osservata sia ottima — abilita la
+  domanda di ottimo.
