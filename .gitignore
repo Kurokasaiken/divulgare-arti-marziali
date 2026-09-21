@@ -43,3 +43,4 @@ mw-shutdown-monitor.log
 
 # MW runs: deliberation artifacts may contain provider responses
 .mw/runs/
+__pycache__/
