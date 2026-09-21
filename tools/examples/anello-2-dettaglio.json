@@ -1,0 +1,630 @@
+{
+  "schemaVersion": 3,
+  "meta": {
+    "tool": "biomech-editor",
+    "model": "S->M->C->S",
+    "exportedAt": "2026-09-21T00:00:00.000Z",
+    "units": {
+      "position": "px",
+      "time": "ms",
+      "calibration": "not-calibrated"
+    },
+    "epistemicLegend": {
+      "OSS": "osservazione",
+      "INT": "interpretazione",
+      "IPO": "ipotesi"
+    },
+    "provenanceLegend": {
+      "authored": "dato inserito manualmente dall'autore",
+      "measured": "dato derivato da misurazione"
+    },
+    "note": "Anello 2 DETTAGLIATO: sotto-fasi della retrazione sx dalla scheda wiki/02 (scivolamento, arco, supinazione combinata, chiusura rapida a traiettoria stabile, LOCK ~45deg, tenuta durante rotazione, ritorno). Pose autoriali guidate dagli angoli osservati nel capture (gomito ~110 -> ~45). NON sostituisce il benchmark S2 (anello-2-retrazione.json, congelato)."
+  },
+  "task": {
+    "id": "anello-2-dettaglio",
+    "desiredOutput": "LOCK funzionale del braccio sinistro utile alla rotazione successiva",
+    "targetInteraction": "nessuna (fase preparatoria)",
+    "temporalConstraints": {
+      "retractionWindow": "0-480 ms (autoriale, ~8 frame osservati a 17fps)",
+      "holdWindow": "480-900 ms durante rotazione tronco (fuori scheletro)"
+    },
+    "postActionState": {
+      "description": "lato sinistro vincolato durante la rotazione tronco/bacino"
+    },
+    "allowablePerturbation": {}
+  },
+  "skeleton": {
+    "model": "arm-chain-3d",
+    "coordinateSpace": "model-3d",
+    "axes": {
+      "x": "laterale",
+      "y": "verticale",
+      "z": "profondita"
+    },
+    "units": "px",
+    "joints": [
+      "shoulder",
+      "elbow",
+      "wrist",
+      "hand"
+    ],
+    "segments": [
+      {
+        "id": "shoulder-elbow",
+        "from": "shoulder",
+        "to": "elbow",
+        "length": 100
+      },
+      {
+        "id": "elbow-wrist",
+        "from": "elbow",
+        "to": "wrist",
+        "length": 90
+      },
+      {
+        "id": "wrist-hand",
+        "from": "wrist",
+        "to": "hand",
+        "length": 50
+      }
+    ],
+    "labels": {
+      "shoulder": "spalla",
+      "elbow": "gomito",
+      "wrist": "polso",
+      "hand": "mano"
+    }
+  },
+  "views": [
+    {
+      "id": "front",
+      "label": "frontale",
+      "projection": "orthographic",
+      "axes": [
+        "x",
+        "y"
+      ]
+    },
+    {
+      "id": "side",
+      "label": "laterale",
+      "projection": "orthographic",
+      "axes": [
+        "z",
+        "y"
+      ]
+    },
+    {
+      "id": "top",
+      "label": "zenitale",
+      "projection": "orthographic",
+      "axes": [
+        "x",
+        "z"
+      ]
+    }
+  ],
+  "keyframes": [
+    {
+      "id": "KF1",
+      "time": 0,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "joints": {
+        "shoulder": [
+          150,
+          130,
+          150
+        ],
+        "elbow": [
+          227,
+          181,
+          188
+        ],
+        "wrist": [
+          278,
+          127,
+          239
+        ],
+        "hand": [
+          310,
+          102,
+          268
+        ]
+      }
+    },
+    {
+      "id": "KF2",
+      "time": 140,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "joints": {
+        "shoulder": [
+          150,
+          130,
+          150
+        ],
+        "elbow": [
+          224,
+          187,
+          186
+        ],
+        "wrist": [
+          176,
+          258,
+          214
+        ],
+        "hand": [
+          157,
+          301,
+          231
+        ]
+      }
+    },
+    {
+      "id": "KF3",
+      "time": 300,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "joints": {
+        "shoulder": [
+          150,
+          130,
+          150
+        ],
+        "elbow": [
+          212,
+          207,
+          165
+        ],
+        "wrist": [
+          138,
+          248,
+          133
+        ],
+        "hand": [
+          103,
+          280,
+          117
+        ]
+      }
+    },
+    {
+      "id": "KF4",
+      "time": 400,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "joints": {
+        "shoulder": [
+          150,
+          130,
+          150
+        ],
+        "elbow": [
+          166,
+          224,
+          121
+        ],
+        "wrist": [
+          84,
+          189,
+          115
+        ],
+        "hand": [
+          35,
+          179,
+          108
+        ]
+      }
+    },
+    {
+      "id": "KF5",
+      "time": 480,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "joints": {
+        "shoulder": [
+          150,
+          130,
+          150
+        ],
+        "elbow": [
+          107,
+          208,
+          105
+        ],
+        "wrist": [
+          81,
+          148,
+          166
+        ],
+        "hand": [
+          55,
+          121,
+          199
+        ]
+      }
+    },
+    {
+      "id": "KF6",
+      "time": 900,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "joints": {
+        "shoulder": [
+          150,
+          130,
+          150
+        ],
+        "elbow": [
+          107,
+          208,
+          105
+        ],
+        "wrist": [
+          81,
+          148,
+          166
+        ],
+        "hand": [
+          55,
+          121,
+          199
+        ]
+      }
+    },
+    {
+      "id": "KF7",
+      "time": 1250,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "joints": {
+        "shoulder": [
+          150,
+          130,
+          150
+        ],
+        "elbow": [
+          227,
+          181,
+          188
+        ],
+        "wrist": [
+          278,
+          127,
+          239
+        ],
+        "hand": [
+          310,
+          102,
+          268
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "E1",
+      "type": "axial_rotation",
+      "segment": "elbow-wrist",
+      "label": "SUPINAZIONE",
+      "start": 140,
+      "end": 380,
+      "epistemic": "OSS",
+      "provenance": "authored",
+      "representationStatus": "not_available",
+      "representationReason": "axial-rotation-not-represented: le aste punto-punto non esprimono il rollio del segmento",
+      "notes": "retrazione+supinazione evento combinato [video]; finestra autoriale sovrapposta all'arco"
+    }
+  ],
+  "states": [
+    {
+      "id": "S1",
+      "label": "GUARDIA",
+      "time": 0,
+      "epistemic": "OSS",
+      "provenance": "authored",
+      "keyframeId": "KF1",
+      "notes": "gomito ~110deg, mano aperta avanti"
+    },
+    {
+      "id": "S2",
+      "label": "SCIvolOLO — avvio retrazione",
+      "time": 140,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "keyframeId": "KF2",
+      "notes": "il polso inizia ad arretrare, il gomito quasi fermo; mano ancora aperta"
+    },
+    {
+      "id": "S3",
+      "label": "ARCO MEDIO",
+      "time": 300,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "keyframeId": "KF3",
+      "notes": "gomito ~78deg sull'arco posteriore; supinazione in corso; mano aperta"
+    },
+    {
+      "id": "S4",
+      "label": "TRAIETTORIA STABILE",
+      "time": 400,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "keyframeId": "KF4",
+      "notes": "gomito ~60deg; in questo punto la chiusura della mano diventa possibile"
+    },
+    {
+      "id": "S5",
+      "label": "LOCK",
+      "time": 480,
+      "epistemic": "OSS",
+      "provenance": "authored",
+      "keyframeId": "KF5",
+      "notes": "gomito ~45deg, pugno chiuso alle costole (hikite); osservato [video], posa autoriale"
+    },
+    {
+      "id": "S6",
+      "label": "TENUTA DURANTE ROTAZIONE",
+      "time": 900,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "keyframeId": "KF6",
+      "notes": "la posa non cambia: il LOCK si mantiene mentre il tronco ruota (fuori scheletro)"
+    },
+    {
+      "id": "S7",
+      "label": "RITORNO A GUARDIA",
+      "time": 1250,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "keyframeId": "KF7",
+      "notes": "rientro alla configurazione iniziale"
+    }
+  ],
+  "movements": [
+    {
+      "id": "M1",
+      "label": "avvio scivolamento",
+      "fromTime": 0,
+      "toTime": 140,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "representationStatus": "represented",
+      "notes": "il polso arretra prima che il gomito fletta in modo marcato"
+    },
+    {
+      "id": "M2",
+      "label": "arco del gomito + supinazione",
+      "fromTime": 140,
+      "toTime": 300,
+      "epistemic": "OSS",
+      "provenance": "authored",
+      "representationStatus": "represented",
+      "notes": "traiettoria arcuata del gomito [video]; supinazione combinata (evento E1)"
+    },
+    {
+      "id": "M3",
+      "label": "stabilizzazione traiettoria + chiusura mano",
+      "fromTime": 300,
+      "toTime": 400,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "representationStatus": "represented",
+      "notes": "chiusura rapida quando la traiettoria e' stabile — evento non rappresentabile sulle aste"
+    },
+    {
+      "id": "M4",
+      "label": "LOCK-in",
+      "fromTime": 400,
+      "toTime": 480,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "representationStatus": "represented",
+      "notes": "assestamento finale nella configurazione di vincolo"
+    },
+    {
+      "id": "M5",
+      "label": "tenuta LOCK",
+      "fromTime": 480,
+      "toTime": 900,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "representationStatus": "represented",
+      "notes": "nessun movimento del braccio: la catena si muove attorno al vincolo"
+    },
+    {
+      "id": "M6",
+      "label": "ritorno a guardia",
+      "fromTime": 900,
+      "toTime": 1250,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "representationStatus": "represented"
+    }
+  ],
+  "conditions": [
+    {
+      "id": "C1",
+      "status": "unformalized",
+      "epistemic": "IPO",
+      "provenance": "authored",
+      "notes": "decisione di retrarre — condizione di avvio non modellata",
+      "predicates": []
+    },
+    {
+      "id": "C2",
+      "status": "unformalized",
+      "epistemic": "IPO",
+      "provenance": "authored",
+      "notes": "supinazione sufficientemente avanzata per continuare l'arco",
+      "predicates": []
+    },
+    {
+      "id": "C3",
+      "status": "unformalized",
+      "epistemic": "IPO",
+      "provenance": "authored",
+      "notes": "traiettoria sufficientemente stabile -> la chiusura rapida della mano diventa possibile (gate della chiusura)",
+      "predicates": []
+    },
+    {
+      "id": "C4",
+      "status": "unformalized",
+      "epistemic": "IPO",
+      "provenance": "authored",
+      "notes": "chiusura completata + configurazione terminale raggiunta -> LOCK",
+      "predicates": []
+    },
+    {
+      "id": "C5",
+      "status": "unformalized",
+      "epistemic": "IPO",
+      "provenance": "authored",
+      "notes": "rotazione tronco avviata — esterna allo scheletro del braccio",
+      "predicates": []
+    },
+    {
+      "id": "C6",
+      "status": "unformalized",
+      "epistemic": "IPO",
+      "provenance": "authored",
+      "notes": "fine finestra d'azione -> rientro",
+      "predicates": []
+    }
+  ],
+  "transitions": [
+    {
+      "id": "T1",
+      "from": "S1",
+      "movement": "M1",
+      "condition": "C1",
+      "to": "S2",
+      "intendedEffect": "avvio della retrazione",
+      "hypothesis": "il polso guida: la mano arretra prima della flessione marcata del gomito",
+      "prediction": "nei dati il polso sx inizia ad arretrare prima del dip del gomito",
+      "epistemic": "IPO",
+      "provenance": "authored"
+    },
+    {
+      "id": "T2",
+      "from": "S2",
+      "movement": "M2",
+      "condition": "C2",
+      "to": "S3",
+      "intendedEffect": "portare il gomito sull'arco posteriore",
+      "hypothesis": "retrazione e supinazione sono un evento combinato, non sequenziale",
+      "prediction": "la finestra di supinazione si sovrappone all'arco, non la segue",
+      "epistemic": "OSS",
+      "provenance": "authored"
+    },
+    {
+      "id": "T3",
+      "from": "S3",
+      "movement": "M3",
+      "condition": "C3",
+      "to": "S4",
+      "intendedEffect": "stabilizzare la traiettoria e chiudere la mano",
+      "hypothesis": "la mano resta aperta finche' la traiettoria non e' stabile; poi chiusura rapida",
+      "prediction": "se la traiettoria e' perturbata, la chiusura si ritarda",
+      "epistemic": "IPO",
+      "provenance": "authored"
+    },
+    {
+      "id": "T4",
+      "from": "S4",
+      "movement": "M4",
+      "condition": "C4",
+      "to": "S5",
+      "intendedEffect": "assestamento nel LOCK",
+      "hypothesis": "la configurazione terminale funziona da vincolo per la rotazione successiva",
+      "prediction": "P-A2.1: rimuovere/ritardare il LOCK altera timing o velocita' della rotazione del tronco",
+      "epistemic": "IPO",
+      "provenance": "authored"
+    },
+    {
+      "id": "T5",
+      "from": "S5",
+      "movement": "M5",
+      "condition": "C5",
+      "to": "S6",
+      "intendedEffect": "mantenere il vincolo durante la rotazione",
+      "hypothesis": "il LOCK resta attivo mentre il tronco ruota (ponte contralaterale — IPO)",
+      "prediction": "la configurazione LOCK non si degrada durante la rotazione",
+      "epistemic": "IPO",
+      "provenance": "authored"
+    },
+    {
+      "id": "T6",
+      "from": "S6",
+      "movement": "M6",
+      "condition": "C6",
+      "to": "S7",
+      "intendedEffect": "rientro",
+      "hypothesis": "",
+      "prediction": "",
+      "epistemic": "INT",
+      "provenance": "authored"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "L1",
+      "type": "functional-lock",
+      "target": "elbow-wrist",
+      "start": 480,
+      "end": 900,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "associatedState": "S5",
+      "role": "constrain-next-transition",
+      "notes": "vincolo funzionale del gomito ~45deg; finestra di validita', non durata di stato; NON articolazione bloccata"
+    }
+  ],
+  "vectors": [
+    {
+      "id": "V1",
+      "mode": "displacement",
+      "from": "elbow",
+      "startTime": 0,
+      "endTime": 480,
+      "epistemic": "INT",
+      "provenance": "authored",
+      "note": "vettore di retrazione del gomito lungo l'arco"
+    },
+    {
+      "id": "V2",
+      "mode": "displacement",
+      "from": "hand",
+      "startTime": 0,
+      "endTime": 480,
+      "epistemic": "IPO",
+      "provenance": "authored",
+      "note": "candidato V1~V2: direzione finale della mano simile a quella del gomito — sulle pose attuali divergono di ~21deg"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "A1",
+      "text": "mano aperta -> chiusura rapida a traiettoria stabile [video]",
+      "time": 380,
+      "epistemic": "OSS",
+      "provenance": "authored"
+    },
+    {
+      "id": "A2",
+      "text": "forma esatta dell'arco del gomito da verificare su dati densi",
+      "time": 300,
+      "epistemic": "IPO",
+      "provenance": "authored"
+    },
+    {
+      "id": "A3",
+      "text": "angoli autoriali guidati dall'osservato: gomito ~110deg guardia -> ~45deg LOCK (capture ~30-55deg durante la retrazione)",
+      "time": 0,
+      "epistemic": "INT",
+      "provenance": "authored"
+    }
+  ],
+  "sources": {}
+}

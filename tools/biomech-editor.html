@@ -101,7 +101,11 @@ footer{font-size:10px; color:var(--sub); text-align:center; padding:10px;}
       <button id="delRot">✕ Elimina rotazione</button>
       <span style="width:1px;height:18px;background:var(--grid);"></span>
       <button id="jsonBtn">{ } JSON</button>
-      <button id="loadExample">Esempio A2</button>
+      <select id="exampleSel">
+        <option value="anello-2-dettaglio.json">A2 dettaglio</option>
+        <option value="anello-2-retrazione.json">A2 benchmark S2</option>
+      </select>
+      <button id="loadExample">Carica esempio</button>
       <label style="font-size:10px; letter-spacing:.03em; color:var(--dim, #888)"><input type="checkbox" id="ghost" checked> ghost</label>
       <span id="timeLabel">t = 0 ms</span>
       <span id="poseInfo" style="font-size:10.5px; opacity:.75"></span>
@@ -683,7 +687,7 @@ document.getElementById('importJson').addEventListener('click', ()=>{
 document.getElementById('ghost').addEventListener('change', ()=>renderViews());
 document.getElementById('loadExample').addEventListener('click', async ()=>{
   try{
-    const doc = await (await fetch('examples/anello-2-retrazione.json')).json();
+    const doc = await (await fetch('examples/'+document.getElementById('exampleSel').value)).json();
     if(importModel(doc)){ renderAll(); persist(); }
     else alert('Esempio non riconosciuto.');
   }catch(e){ alert('Impossibile caricare l\'esempio (serve il server locale in tools/). '+e.message); }
