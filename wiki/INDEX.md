@@ -23,3 +23,4 @@ Una riga per pagina. Formato: `[file](path) — una frase — \`tag\``
 [10-matrice-falsificazione.md](10-matrice-falsificazione.md) — predizione → misura → supporta/falsifica; requisiti della cattura densa — `verifica` `protocollo`
 [11-problemi-ottimizzazione.md](11-problemi-ottimizzazione.md) — ogni anello come problema meccanico: osservato/problema/vincoli/alternative/candidato aperto — `ottimizzazione` `tecnica`
 [12-teoria-candidati.md](12-teoria-candidati.md) — formalizzazione teorica dei candidati per anello: problema/obiettivo/vincoli/trade-off/perche'/stato — `teoria` `candidati`
+[13-anello-2-analisi.md](13-anello-2-analisi.md) — analisi meccanica fase per fase dell'Anello 2 con le 4 domande; domande aperte (gate C3, bersaglio LOCK, V1≈V2) — `analisi` `anello-2`

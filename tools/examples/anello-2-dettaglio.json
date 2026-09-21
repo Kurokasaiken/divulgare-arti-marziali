@@ -341,7 +341,7 @@
       "epistemic": "OSS",
       "provenance": "authored",
       "representationStatus": "represented",
-      "representationReason": "resa come orientazione del palmo della mano (hand.sup per keyframe, autoriale): non e piu una lacuna di rappresentazione delle aste",
+      "representationReason": "resa come orientazione del palmo (hand.sup). Distinzione: l'EVENTO supinazione e' osservato; i valori angolari sup/open sono parametri autoriali della ricostruzione, non misure",
       "notes": "retrazione+supinazione evento combinato [video]; finestra autoriale sovrapposta all'arco"
     }
   ],
@@ -541,9 +541,9 @@
       "condition": "C2",
       "to": "S3",
       "intendedEffect": "portare il gomito sull'arco posteriore",
-      "hypothesis": "retrazione e supinazione sono un evento combinato, non sequenziale",
+      "hypothesis": "OSS: le due variazioni sono temporalmente sovrapposte nella cattura. INT/IPO: potrebbero costituire un'unica coordinazione funzionale anziche' due azioni sequenziali",
       "prediction": "la finestra di supinazione si sovrappone all'arco, non la segue",
-      "epistemic": "OSS",
+      "epistemic": "INT",
       "provenance": "authored"
     },
     {

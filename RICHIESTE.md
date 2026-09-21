@@ -586,3 +586,23 @@ Si comincia da mano avanti (sinistra) che va indietro."* (2026-09-21)
   con marker trascinabili per evento d'anello; spostare un marker
   ri-tempizza il segmento interpolando tra le pose reali catturate.
   Tabella evento/frame/t/Dt = "il quando di ogni cosa".
+
+---
+
+## R-027 — Anello 2 come banco di prova: analisi meccanica fase per fase
+
+**Richiesta:** usare il modello editabile `anello-2-dettaglio.json` come primo
+caso di perfezionamento: per ogni transizione rispondere a (A) risultato
+funzionale, (B) perche' questa geometria, (C) alternative, (D) candidato.
+Domande aperte prioritarie: variabile del gate C3, bersaglio del LOCK,
+razionale di V1≈V2. Niente nuova cattura finche' la teoria non dice cosa
+testare. (2026-09-21)
+**Data:** 2026-09-21
+**Stato:** `in corso`
+**Cosa è successo:**
+- Fix epistemici nel JSON: T2 da OSS a INT (la sovrapposizione temporale e'
+  OSS, "evento combinato" e' interpretazione); E1 chiarisce che sup/open sono
+  parametri autoriali, non misure.
+- `wiki/13-anello-2-analisi.md`: analisi M1–M6 con le 4 domande, candidati
+  per il gate C3 (impedenza, cross-talk, preparazione, residuo), candidati
+  per il bersaglio del LOCK, priorita' teoriche.
